@@ -80,55 +80,59 @@ Delete individual fields in the tag, they have the following name pattern:
 #### Load tags
 
 ```C
-	ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
-	if(tag == NULL)
-	{
-		tag = new_tag();
-	}
+ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+if(tag == NULL)
+{
+	tag = new_tag();
+}
 	
-	// Load the fields from the tag
-	ID3v2_frame* artist_frame = tag_get_artist(tag); // Get the full artist frame
-	// We need to parse the frame content to make readable
-	ID3v2_frame_text_content* artist_content = parse_text_frame_content(artist_frame); 
-	printf("ARTIST: %s\n", artist_content->data); // Show the artist info
+// Load the fields from the tag
+ID3v2_frame* artist_frame = tag_get_artist(tag); // Get the full artist frame
+// We need to parse the frame content to make readable
+ID3v2_frame_text_content* artist_content = parse_text_frame_content(artist_frame); 
+printf("ARTIST: %s\n", artist_content->data); // Show the artist info
 	
-	ID3v2_frame* title_frame = tag_get_title(tag);
-	ID3v2_frame_text_content* title_content = parse_text_frame_content(title_frame);
-	printf("TITLE: %s\n", title_content->data);
+ID3v2_frame* title_frame = tag_get_title(tag);
+ID3v2_frame_text_content* title_content = parse_text_frame_content(title_frame);
+printf("TITLE: %s\n", title_content->data);
 ```
 	
 #### Edit tags
 
-	ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
-	if(tag == NULL)
-	{
-		tag = new_tag();
-	}
-	
-	// Set the new info
-	tag_set_title("Title", 0, tag);
-	tag_set_artist("Artist", 0, tag);
-	
-	// Write the new tag to the file
-	set_tag("file.mp3", tag);
-	
+```C
+ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+if(tag == NULL)
+{
+	tag = new_tag();
+}
+
+// Set the new info
+tag_set_title("Title", 0, tag);
+tag_set_artist("Artist", 0, tag);
+
+// Write the new tag to the file
+set_tag("file.mp3", tag);
+```
+
 #### Delete tags
 
-	ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
-	if(tag == NULL)
-	{
-		tag = new_tag();
-	}
-	
-	// We can delete single frames
-	tag_delete_title(tag);
-	tag_delete_artist(tag);
-	
-	// Write the new tag to the file
-	set_tag("file.mp3", tag);
-	
-	// Or we can delete the full tag
-	remove_tag("file.mp3")
+```C
+ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+if(tag == NULL)
+{
+	tag = new_tag();
+}
+
+// We can delete single frames
+tag_delete_title(tag);
+tag_delete_artist(tag);
+
+// Write the new tag to the file
+set_tag("file.mp3", tag);
+
+// Or we can delete the full tag
+remove_tag("file.mp3")
+```
 	
 ## Extending functionality
 
@@ -136,36 +140,40 @@ Delete individual fields in the tag, they have the following name pattern:
 
 Suppose we want to read the frame that stores the copyright message (TCOP). We have to do the following:
 
-	ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
-	if(tag == NULL)
-	{
-		tag = new_tag();
-	}
-	
-	ID3v2_frame* copyright_frame = tag_get_frame(tag, "TCOP"); // Get the copyright message frame
-	// We need to parse the frame content to make it readable, as the copyright message is a text frame,
-	// we use the parse_text_frame_content function.
-	ID3v2_frame_text_content* copyright_content = parse_text_frame_content(copyright_frame); 
-	printf("COPYRIGHT: %s\n", copyright_content->data); // Show the copyright info
+```C
+ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+if(tag == NULL)
+{
+	tag = new_tag();
+}
+
+ID3v2_frame* copyright_frame = tag_get_frame(tag, "TCOP"); // Get the copyright message frame
+// We need to parse the frame content to make it readable, as the copyright message is a text frame,
+// we use the parse_text_frame_content function.
+ID3v2_frame_text_content* copyright_content = parse_text_frame_content(copyright_frame); 
+printf("COPYRIGHT: %s\n", copyright_content->data); // Show the copyright info
+```
 	
 #### Edit new frames
 
 Suppose that now, we want to edit the copyright frame. We have to do the following:
 
-	ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
-	if(tag == NULL)
-	{
-		tag = new_tag();
-	}
+```C
+ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+if(tag == NULL)
+{
+	tag = new_tag();
+}
 
-	ID3v2_frame* copyright_frame = NULL;
-	if( ! (copyright_frame = tag_get_frame(tag, "TCOP")))
-	{
-	    copyright_frame = new_frame();
-	    add_to_list(tag->frames, copyright_frame);
-	}
-	
-	set_text_frame("A copyright message", 0, "TCOP", copyright_frame);
+ID3v2_frame* copyright_frame = NULL;
+if( ! (copyright_frame = tag_get_frame(tag, "TCOP")))
+{
+    copyright_frame = new_frame();
+    add_to_list(tag->frames, copyright_frame);
+}
+
+set_text_frame("A copyright message", 0, "TCOP", copyright_frame);
+```
 	
 ## Copyright
 
