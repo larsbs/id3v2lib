@@ -1,10 +1,11 @@
-//
-//  id3v2lib.c
-//  id3v2lib
-//
-//  Created by Lorenzo Ruiz Moreno on 02/04/13.
-//  Copyright (c) 2013 Lorenzo Ruiz Moreno. All rights reserved.
-//
+/*
+ * This file is part of the id3v2lib library
+ *
+ * Copyright (c) 2013, Lorenzo Ruiz
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
