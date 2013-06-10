@@ -42,6 +42,10 @@ You only have to include the main header of the library:
 	{
 		// Etc..
 	}
+	
+And when compiling, link against the static library:
+
+	$ gcc -o example example.c -lid3v2
 
 ## Main functions
 
