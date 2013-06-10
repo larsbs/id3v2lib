@@ -35,14 +35,14 @@ Mostly of the time, you need to run the `make install` command with *su* privile
 ## Usage
 
 You only have to include the main header of the library:
-
-	#include <id3v2lib.h>
+```C
+#include <id3v2lib.h>
 	
-	int main(int argc, char* argv[])
-	{
-		// Etc..
-	}
-	
+int main(int argc, char* argv[])
+{
+	// Etc..
+}
+```
 And when compiling, link against the static library:
 
 	$ gcc -o example example.c -lid3v2
