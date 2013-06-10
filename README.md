@@ -30,7 +30,7 @@ The id3v2lib library is built using CMake 2.6+ on all platforms. On most systems
 	$ cmake .. 
 	$ make && make install
 	
-Mostly of the time, you need to run the `make install` command with *su* privileges.
+Most of the times, you need to run the `make install` command with *su* privileges.
 
 ## Usage
 
