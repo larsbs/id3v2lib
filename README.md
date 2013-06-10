@@ -79,6 +79,7 @@ Delete individual fields in the tag, they have the following name pattern:
 
 #### Load tags
 
+```C
 	ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
 	if(tag == NULL)
 	{
@@ -94,6 +95,7 @@ Delete individual fields in the tag, they have the following name pattern:
 	ID3v2_frame* title_frame = tag_get_title(tag);
 	ID3v2_frame_text_content* title_content = parse_text_frame_content(title_frame);
 	printf("TITLE: %s\n", title_content->data);
+```
 	
 #### Edit tags
 
