@@ -26,9 +26,10 @@ ID3v2_tag* load_tag(const char* file_name)
     tag = new_tag();
     tag_header = get_tag_header(file_name);
     
-    if(tag_header == NULL)
+    if(tag_header == NULL || 
+       get_tag_version(tag_header) == NO_COMPATIBLE_TAG)
     {
-        // No ID3 tag in the file, or we got some problem opening the file
+        // No compatible ID3 tag in the file, or we got some problem opening the file
         free_tag(tag);
         return NULL;
     }
