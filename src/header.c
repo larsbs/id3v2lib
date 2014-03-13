@@ -42,6 +42,8 @@ ID3v2_header* get_tag_header(const char* file_name)
     if(file == NULL)
     {
         perror("Error opening file");
+        free(tag_header);
+        return NULL;
     }
     
     fread(buffer, ID3_HEADER, 1, file);
@@ -49,6 +51,7 @@ ID3v2_header* get_tag_header(const char* file_name)
     
     if( ! _has_id3v2tag(buffer))
     {
+        free(tag_header);
         return NULL;
     }
     

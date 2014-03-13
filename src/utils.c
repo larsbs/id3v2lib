@@ -110,7 +110,7 @@ void free_tag(ID3v2_tag* tag)
     ID3v2_frame_list* list = tag->frames;
     while(list != NULL)
     {
-        free(list->frame->data);
+        if (list->frame) free(list->frame->data);
         free(list->frame);
         list = list->next;
     }

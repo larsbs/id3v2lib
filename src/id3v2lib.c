@@ -24,12 +24,12 @@ ID3v2_tag* load_tag(const char* file_name)
     
     // Initialization
     tag = new_tag();
-    frame_list = new_frame_list();
     tag_header = get_tag_header(file_name);
     
     if(tag_header == NULL)
     {
-        // No ID3 tag in the file
+        // No ID3 tag in the file, or we got some problem opening the file
+        free_tag(tag);
         return NULL;
     }
     
@@ -39,6 +39,8 @@ ID3v2_tag* load_tag(const char* file_name)
     if(file == NULL)
     {
         perror("Error opening file");
+        free_tag(tag);
+        return NULL;
     }
     
     tag->raw = (char*) malloc(tag->tag_header->tag_size * sizeof(char));
@@ -46,7 +48,6 @@ ID3v2_tag* load_tag(const char* file_name)
     fread(tag->raw, tag->tag_header->tag_size, 1, file);
     fclose(file);
     
-    tag->frames = frame_list;
     int offset = 0;
     while(offset < tag->tag_header->tag_size)
     {
@@ -56,7 +57,7 @@ ID3v2_tag* load_tag(const char* file_name)
         if(frame != NULL)
         {
             offset += frame->size + 10;
-            add_to_list(frame_list, frame);
+            add_to_list(tag->frames, frame);
         }
         else
         {
