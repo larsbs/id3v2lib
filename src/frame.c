@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <wchar.h>
 
 #include "frame.h"
 #include "utils.h"
@@ -115,12 +116,23 @@ ID3v2_frame_apic_content* parse_apic_frame_content(ID3v2_frame* frame)
     
     int i = 1; // Skip ID3_FRAME_ENCODING
     content->mime_type = parse_mime_type(frame->data, &i);
-    content->picture_type = frame->data[i];
-    content->description = "\0";
-    
-    content->picture_size = frame->size - i - 3; // 3 = mime_type trailing \0 + picture_type + description
+    content->picture_type = frame->data[++i];
+    content->description = &frame->data[++i];
+
+    if (content->encoding == 0x01 || content->encoding == 0x02) {
+            /* skip UTF-16 description */
+            for ( ; * (uint16_t *) (frame->data + i); i += 2);
+            i += 2;
+    }
+    else {
+            /* skip UTF-8 or Latin-1 description */
+            for ( ; frame->data[i] != '\0'; i++);
+            i += 1;
+    }
+  
+    content->picture_size = frame->size - i;
     content->data = (char*) malloc(content->picture_size);
-    memcpy(content->data, frame->data + i + 3, content->picture_size);
+    memcpy(content->data, frame->data + i, content->picture_size);
     
     return content;
 }
