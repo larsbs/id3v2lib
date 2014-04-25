@@ -19,7 +19,6 @@ ID3v2_tag* load_tag(const char* file_name)
     // Declaration
     FILE* file;
     ID3v2_tag* tag;
-    ID3v2_frame_list* frame_list;
     ID3v2_header* tag_header;
     
     // Initialization
