@@ -50,6 +50,9 @@ ID3v2_header* get_tag_header(const char* file_name)
 }
 ID3v2_header* get_tag_header_with_buffer(char *buffer, int length)
 {
+    int position = 0;
+    ID3v2_header *tag_header;
+
     if(length < ID3_HEADER) {
         return NULL;
     }
@@ -57,9 +60,8 @@ ID3v2_header* get_tag_header_with_buffer(char *buffer, int length)
     {
         return NULL;
     }
-    ID3v2_header* tag_header = new_header();
+    tag_header = new_header();
 
-    int position = 0;
     memcpy(tag_header->tag, buffer, ID3_HEADER_TAG);
     tag_header->major_version = buffer[position += ID3_HEADER_TAG];
     tag_header->minor_version = buffer[position += ID3_HEADER_VERSION];

@@ -16,24 +16,27 @@
 
 ID3v2_tag* load_tag(const char* file_name)
 {
+    char *buffer;
+    FILE *file;
+    int header_size;
+    ID3v2_tag *tag;
 
     // get header size
     ID3v2_header *tag_header = get_tag_header(file_name);
     if(tag_header == NULL) {
         return NULL;
     }
-    int header_size = tag_header->tag_size;
+    header_size = tag_header->tag_size;
     free(tag_header);
 
     // allocate buffer and fetch header
-    FILE* file;
     file = fopen(file_name, "rb");
     if(file == NULL)
     {
         perror("Error opening file");
         return NULL;
     }
-    char *buffer = (char*) malloc((10+header_size) * sizeof(char));
+    buffer = (char*) malloc((10+header_size) * sizeof(char));
     if(buffer == NULL) {
         perror("Could not allocate buffer");
         fclose(file);
@@ -45,7 +48,7 @@ ID3v2_tag* load_tag(const char* file_name)
 
 
     //parse free and return
-    ID3v2_tag *tag = load_tag_with_buffer(buffer, header_size);
+    tag = load_tag_with_buffer(buffer, header_size);
     free(buffer);
 
     return tag;
@@ -54,6 +57,8 @@ ID3v2_tag* load_tag(const char* file_name)
 ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
 {
     // Declaration
+    ID3v2_frame *frame;
+    int offset = 0;
     ID3v2_tag* tag;
     ID3v2_header* tag_header;
 
@@ -80,10 +85,8 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
     tag->raw = (char*) malloc(tag->tag_header->tag_size * sizeof(char));
     memcpy(tag->raw, bytes, length);
 
-    int offset = 0;
     while(offset < tag->tag_header->tag_size)
     {
-        ID3v2_frame* frame;
         frame = parse_frame(tag->raw, offset, get_tag_version(tag_header));
 
         if(frame != NULL)
@@ -102,6 +105,7 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
 
 void remove_tag(const char* file_name)
 {
+    int c;
     FILE* file;
     FILE* temp_file;
     ID3v2_header* tag_header;
@@ -116,7 +120,6 @@ void remove_tag(const char* file_name)
     }
 
     fseek(file, tag_header->tag_size + 10, SEEK_SET);
-    int c;
     while((c = getc(file)) != EOF)
     {
         putc(c, temp_file);
@@ -170,13 +173,20 @@ int get_tag_size(ID3v2_tag* tag)
 
 void set_tag(const char* file_name, ID3v2_tag* tag)
 {
+    int c;
+    FILE *file;
+    ID3v2_frame_list *frame_list;
+    int i;
+    int padding = 2048;
+    int old_size;
+    FILE* temp_file;
+
     if(tag == NULL)
     {
         return;
     }
 
-    int padding = 2048;
-    int old_size = tag->tag_header->tag_size;
+    old_size = tag->tag_header->tag_size;
 
     // Set the new tag header
     tag->tag_header = new_header();
@@ -187,14 +197,12 @@ void set_tag(const char* file_name, ID3v2_tag* tag)
     tag->tag_header->tag_size = get_tag_size(tag) + padding;
 
     // Create temp file and prepare to write
-    FILE* file;
-    FILE* temp_file;
     file = fopen(file_name, "r+b");
     temp_file = tmpfile();
 
     // Write to file
     write_header(tag->tag_header, temp_file);
-    ID3v2_frame_list* frame_list = tag->frames->start;
+    frame_list = tag->frames->start;
     while(frame_list != NULL)
     {
         write_frame(frame_list->frame, temp_file);
@@ -202,13 +210,12 @@ void set_tag(const char* file_name, ID3v2_tag* tag)
     }
 
     // Write padding
-    for(int i = 0; i < padding; i++)
+    for(i = 0; i < padding; i++)
     {
         putc('\x00', temp_file);
     }
 
     fseek(file, old_size + 10, SEEK_SET);
-    int c;
     while((c = getc(file)) != EOF)
     {
         putc(c, temp_file);
@@ -344,13 +351,14 @@ ID3v2_frame* tag_get_album_cover(ID3v2_tag* tag)
  */
 void set_text_frame(char* data, char encoding, char* frame_id, ID3v2_frame* frame)
 {
+    char *frame_data;
     // Set frame id and size
     memcpy(frame->frame_id, frame_id, 4);
     frame->size = 1 + (int) strlen(data);
 
     // Set frame data
     // TODO: Make the encoding param relevant.
-    char* frame_data = (char*) malloc(frame->size * sizeof(char));
+    frame_data = (char*) malloc(frame->size * sizeof(char));
     frame->data = (char*) malloc(frame->size * sizeof(char));
 
     sprintf(frame_data, "%c%s", encoding, data);
@@ -361,10 +369,12 @@ void set_text_frame(char* data, char encoding, char* frame_id, ID3v2_frame* fram
 
 void set_comment_frame(char* data, char encoding, ID3v2_frame* frame)
 {
+    char *frame_data;
+
     memcpy(frame->frame_id, COMMENT_FRAME_ID, 4);
     frame->size = 1 + 3 + 1 + (int) strlen(data); // encoding + language + description + comment
 
-    char* frame_data = (char*) malloc(frame->size * sizeof(char));
+    frame_data = (char*) malloc(frame->size * sizeof(char));
     frame->data = (char*) malloc(frame->size * sizeof(char));
 
     sprintf(frame_data, "%c%s%c%s", encoding, "eng", '\x00', data);
@@ -375,13 +385,16 @@ void set_comment_frame(char* data, char encoding, ID3v2_frame* frame)
 
 void set_album_cover_frame(char* album_cover_bytes, char* mimetype, int picture_size, ID3v2_frame* frame)
 {
+    char *frame_data;
+    int offset;
+
     memcpy(frame->frame_id, ALBUM_COVER_FRAME_ID, 4);
     frame->size = 1 + (int) strlen(mimetype) + 1 + 1 + 1 + picture_size; // encoding + mimetype + 00 + type + description + picture
 
-    char* frame_data = (char*) malloc(frame->size * sizeof(char));
+    frame_data = (char*) malloc(frame->size * sizeof(char));
     frame->data = (char*) malloc(frame->size * sizeof(char));
 
-    int offset = 1 + (int) strlen(mimetype) + 1 + 1 + 1;
+    offset = 1 + (int) strlen(mimetype) + 1 + 1 + 1;
     sprintf(frame_data, "%c%s%c%c%c", '\x00', mimetype, '\x00', FRONT_COVER, '\x00');
     memcpy(frame->data, frame_data, offset);
     memcpy(frame->data + offset, album_cover_bytes, picture_size);
@@ -512,17 +525,20 @@ void tag_set_composer(char* composer, char encoding, ID3v2_tag* tag)
 void tag_set_album_cover(const char* filename, ID3v2_tag* tag)
 {
     FILE* album_cover = fopen(filename, "rb");
+    char *album_cover_bytes;
+    int image_size;
+    char *mimetype;
 
     fseek(album_cover, 0, SEEK_END);
-    int image_size = (int) ftell(album_cover);
+    image_size = (int) ftell(album_cover);
     fseek(album_cover, 0, SEEK_SET);
 
-    char* album_cover_bytes = (char*) malloc(image_size * sizeof(char));
+    album_cover_bytes = (char*) malloc(image_size * sizeof(char));
     fread(album_cover_bytes, 1, image_size, album_cover);
 
     fclose(album_cover);
 
-    char* mimetype = get_mime_type_from_filename(filename);
+    mimetype = get_mime_type_from_filename(filename);
     tag_set_album_cover_from_bytes(album_cover_bytes, mimetype, image_size, tag);
 
     free(album_cover_bytes);

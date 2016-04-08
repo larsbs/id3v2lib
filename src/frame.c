@@ -59,12 +59,13 @@ int get_frame_type(char* frame_id)
 
 ID3v2_frame_text_content* parse_text_frame_content(ID3v2_frame* frame)
 {
+    ID3v2_frame_text_content* content;
     if(frame == NULL)
     {
         return NULL;
     }
     
-    ID3v2_frame_text_content* content = new_text_content(frame->size);
+    content = new_text_content(frame->size);
     content->encoding = frame->data[0];
     content->size = frame->size - ID3_FRAME_ENCODING;
     memcpy(content->data, frame->data + ID3_FRAME_ENCODING, content->size);
@@ -73,12 +74,13 @@ ID3v2_frame_text_content* parse_text_frame_content(ID3v2_frame* frame)
 
 ID3v2_frame_comment_content* parse_comment_frame_content(ID3v2_frame* frame)
 {
+    ID3v2_frame_comment_content *content;
     if(frame == NULL)
     {
         return NULL;
     }
     
-    ID3v2_frame_comment_content* content = new_comment_content(frame->size);
+    content = new_comment_content(frame->size);
     
     content->text->encoding = frame->data[0];
     content->text->size = frame->size - ID3_FRAME_ENCODING - ID3_FRAME_LANGUAGE - ID3_FRAME_SHORT_DESCRIPTION;
@@ -104,16 +106,18 @@ char* parse_mime_type(char* data, int* i)
 
 ID3v2_frame_apic_content* parse_apic_frame_content(ID3v2_frame* frame)
 {
+    ID3v2_frame_apic_content *content;
+    int i = 1; // Skip ID3_FRAME_ENCODING
+
     if(frame == NULL)
     {
         return NULL;
     }
     
-    ID3v2_frame_apic_content* content = new_apic_content();
+    content = new_apic_content();
     
     content->encoding = frame->data[0];
     
-    int i = 1; // Skip ID3_FRAME_ENCODING
     content->mime_type = parse_mime_type(frame->data, &i);
     content->picture_type = frame->data[++i];
     content->description = &frame->data[++i];
