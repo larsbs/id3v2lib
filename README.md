@@ -35,13 +35,10 @@ Most of the times, you need to run the `make install` command with *su* privileg
 ### Building using Microsoft Visual Studio
 
 Microsoft Visual Studio needs a slightly different way of building.
-First you need to download the newest version of some missing include files from here:
-https://code.google.com/archive/p/msinttypes/downloads
-Extract the inttypes.h and, if not already existing, stdint.h files into your Microsoft Visual Studio folder \VC\include.
-Then open the Visual Studio Developers Console, ch into the id3v2lib folder and execute the following:
+Open the Visual Studio Developers Console, ch into the id3v2lib folder and execute the following:
 
-mkdir build && cd build
-cmake ..
+$ mkdir build && cd build
+$ cmake ..
 
 This should leave you with several MSVS projects in the \build directory. Open ALL_BUILD.vcxproj with Visual Studio and build it as usual.
 The resulting lib file can be found in \build\src\Debug\id3v2.lib
