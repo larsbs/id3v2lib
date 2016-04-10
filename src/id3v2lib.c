@@ -65,13 +65,17 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
     // Initialization
     tag_header = get_tag_header_with_buffer(bytes, length);
 
-    if(tag_header == NULL ||
-       get_tag_version(tag_header) == NO_COMPATIBLE_TAG)
+    if(tag_header == NULL) // no valid header found
+      return NULL;
+
+    if(get_tag_version(tag_header) == NO_COMPATIBLE_TAG)
     {
-        // No compatible ID3 tag in the file, or we got some problem opening the file
+        // no supported id3 tag found
+        free(tag_header);
         return NULL;
     }
-    if(tag->tag_header->tag_size < length)
+
+    if(tag_header->tag_size < length)
     {
         // Not enough bytes provided to parse completely. TODO: how to communicate to the user the lack of bytes?
         return NULL;
