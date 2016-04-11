@@ -28,12 +28,13 @@ unsigned int btoi(char* bytes, int size, int offset)
 
 char* itob(int integer)
 {
+    int i;
     int size = 4;
     char* result = (char*) malloc(sizeof(char) * size);
     
     // We need to reverse the bytes because Intel uses little endian.
     char* aux = (char*) &integer;
-    for(int i = size - 1; i >= 0; i--)
+    for(i = size - 1; i >= 0; i--)
     {
         result[size - 1 - i] = aux[i];
     }
@@ -74,6 +75,8 @@ int syncint_decode(int value)
 
 void add_to_list(ID3v2_frame_list* main, ID3v2_frame* frame)
 {
+    ID3v2_frame_list *current;
+
     // if empty list
     if(main->start == NULL)
     {
@@ -83,7 +86,7 @@ void add_to_list(ID3v2_frame_list* main, ID3v2_frame* frame)
     }
     else
     {
-        ID3v2_frame_list* current = new_frame_list();
+        current = new_frame_list();
         current->frame = frame;
         current->start = main->start;
         main->last->next = current;
@@ -105,9 +108,11 @@ ID3v2_frame* get_from_list(ID3v2_frame_list* list, char* frame_id)
 
 void free_tag(ID3v2_tag* tag)
 {
+    ID3v2_frame_list *list;
+
     free(tag->raw);
     free(tag->tag_header);
-    ID3v2_frame_list* list = tag->frames;
+    list = tag->frames;
     while(list != NULL)
     {
         if (list->frame) free(list->frame->data);

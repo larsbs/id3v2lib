@@ -10,7 +10,13 @@
 #ifndef id3v2lib_utils_h
 #define id3v2lib_utils_h
 
-#include <inttypes.h>
+// this piece of code makes this header usable under MSVC
+// without downloading msinttypes
+#ifndef _MSC_VER
+  #include <inttypes.h>
+#else
+  typedef unsigned short uint16_t;
+#endif
 
 #include "types.h"
 

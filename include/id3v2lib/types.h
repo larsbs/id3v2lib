@@ -20,6 +20,7 @@ typedef struct
     char minor_version;
     char flags;
     int tag_size;
+    int extended_header_size;
 } ID3v2_header;
 
 typedef struct
