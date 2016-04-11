@@ -87,10 +87,17 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
     // Associations
     tag->tag_header = tag_header;
 
+    // move the bytes pointer to the correct position
+    bytes+=10; // skip header
+    if(tag_header->extended_header_size)
+      // an extended header exists, so we skip it too
+      bytes+=tag_header->extended_header_size+4; // don't forget to skip the extended header size bytes too
+    
     tag->raw = (char*) malloc(tag->tag_header->tag_size * sizeof(char));
-    memcpy(tag->raw, bytes, length);
+    memcpy(tag->raw, bytes, tag_header->tag_size);
+    // we use tag_size here to prevent copying too much if the user provides more bytes than needed to this function
 
-    while(offset < tag->tag_header->tag_size)
+    while(offset < tag_header->tag_size)
     {
         frame = parse_frame(tag->raw, offset, get_tag_version(tag_header));
 

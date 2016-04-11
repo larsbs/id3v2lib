@@ -24,6 +24,7 @@ ID3v2_frame* parse_frame(char* bytes, int offset, int version)
     // Check if we are into padding
     if(memcmp(frame->frame_id, "\0\0\0\0", 4) == 0)
     {
+        free(frame);
         return NULL;
     }
 
@@ -36,7 +37,7 @@ ID3v2_frame* parse_frame(char* bytes, int offset, int version)
     memcpy(frame->flags, bytes + (offset += ID3_FRAME_SIZE), 2);
     
     // Load frame data
-    frame->data = (char*) malloc(frame->size * sizeof(char*));
+    frame->data = (char*) malloc(frame->size * sizeof(char));
     memcpy(frame->data, bytes + (offset += ID3_FRAME_FLAGS), frame->size);
     
     return frame;
