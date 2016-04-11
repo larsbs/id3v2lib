@@ -75,7 +75,7 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
         return NULL;
     }
 
-    if(tag_header->tag_size < length)
+    if(length < tag_header->tag_size+10)
     {
         // Not enough bytes provided to parse completely. TODO: how to communicate to the user the lack of bytes?
         free(tag_header);
