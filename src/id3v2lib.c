@@ -26,7 +26,7 @@ ID3v2_tag* load_tag(const char* file_name)
     if(tag_header == NULL) {
         return NULL;
     }
-    header_size = tag_header->tag_size;
+    header_size = tag_header->tag_size + 10;
     free(tag_header);
 
     // allocate buffer and fetch header
