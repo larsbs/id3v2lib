@@ -37,8 +37,8 @@ Most of the times, you need to run the `make install` command with *su* privileg
 Microsoft Visual Studio needs a slightly different way of building.
 Open the Visual Studio Developers Console, ch into the id3v2lib folder and execute the following:
 
-$ mkdir build && cd build
-$ cmake ..
+	$ mkdir build && cd build
+	$ cmake ..
 
 This should leave you with several MSVS projects in the \build directory. Open ALL_BUILD.vcxproj with Visual Studio and build it as usual.
 The resulting lib file can be found in \build\src\Debug\id3v2.lib
