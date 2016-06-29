@@ -10,6 +10,10 @@
 #ifndef id3v2lib_id3v2lib_h
 #define id3v2lib_id3v2lib_h
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "id3v2lib/types.h"
 #include "id3v2lib/constants.h"
 #include "id3v2lib/header.h"
@@ -47,5 +51,9 @@ void tag_set_disc_number(char* disc_number, char encoding, ID3v2_tag* tag);
 void tag_set_composer(char* composer, char encoding, ID3v2_tag* tag);
 void tag_set_album_cover(const char* filename, ID3v2_tag* tag);
 void tag_set_album_cover_from_bytes(char* album_cover_bytes, char* mimetype, int picture_size, ID3v2_tag* tag);
+
+#ifdef _cplusplus
+} // end of extern C
+#endif
 
 #endif
