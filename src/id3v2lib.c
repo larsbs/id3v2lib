@@ -92,7 +92,7 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
     if(tag_header->extended_header_size)
       // an extended header exists, so we skip it too
       bytes+=tag_header->extended_header_size+4; // don't forget to skip the extended header size bytes too
-    
+
     tag->raw = (char*) malloc(tag->tag_header->tag_size * sizeof(char));
     memcpy(tag->raw, bytes, tag_header->tag_size);
     // we use tag_size here to prevent copying too much if the user provides more bytes than needed to this function
@@ -256,6 +256,16 @@ ID3v2_frame* tag_get_title(ID3v2_tag* tag)
     }
 
     return get_from_list(tag->frames, "TIT2");
+}
+ID3v2_frame* tag_get_frame(ID3v2_tag* tag,char *tag_name)
+{
+
+	if(tag==NULL)
+	{
+		return NULL;
+	}
+
+	return get_from_list(tag->frames,tag_name);
 }
 
 ID3v2_frame* tag_get_artist(ID3v2_tag* tag)
