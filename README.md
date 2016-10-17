@@ -191,6 +191,10 @@ if( ! (copyright_frame = tag_get_frame(tag, "TCOP")))
 
 set_text_frame("A copyright message", 0, "TCOP", copyright_frame);
 ```
+
+## Projects
+
+If your project is using this library, let me know it and I will put it here.
 	
 ## Copyright
 
