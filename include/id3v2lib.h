@@ -52,7 +52,7 @@ void tag_set_composer(char* composer, char encoding, ID3v2_tag* tag);
 void tag_set_album_cover(const char* filename, ID3v2_tag* tag);
 void tag_set_album_cover_from_bytes(char* album_cover_bytes, char* mimetype, int picture_size, ID3v2_tag* tag);
 
-#ifdef _cplusplus
+#ifdef __cplusplus
 } // end of extern C
 #endif
 
