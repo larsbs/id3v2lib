@@ -366,7 +366,7 @@ void set_text_frame(char* data, char encoding, char* frame_id, ID3v2_frame* fram
     char *frame_data;
     // Set frame id and size
     memcpy(frame->frame_id, frame_id, 4);
-    frame->size = 1 + (int) strlen(data);
+    frame->size = 1 + (int) strlen(data) + 1; // encoding + text + null-terminator
 
     // Set frame data
     // TODO: Make the encoding param relevant.
@@ -384,7 +384,7 @@ void set_comment_frame(char* data, char encoding, ID3v2_frame* frame)
     char *frame_data;
 
     memcpy(frame->frame_id, COMMENT_FRAME_ID, 4);
-    frame->size = 1 + 3 + 1 + (int) strlen(data); // encoding + language + description + comment
+    frame->size = 1 + 3 + 1 + (int) strlen(data) + 1; // encoding + language + description + comment + null-terminator
 
     frame_data = (char*) malloc(frame->size * sizeof(char));
     frame->data = (char*) malloc(frame->size * sizeof(char));
@@ -401,7 +401,7 @@ void set_album_cover_frame(char* album_cover_bytes, char* mimetype, int picture_
     int offset;
 
     memcpy(frame->frame_id, ALBUM_COVER_FRAME_ID, 4);
-    frame->size = 1 + (int) strlen(mimetype) + 1 + 1 + 1 + picture_size; // encoding + mimetype + 00 + type + description + picture
+    frame->size = 1 + (int) strlen(mimetype) + 1 + 1 + 1 + picture_size + 1; // encoding + mimetype + 00 + type + description + picture + null-terminator
 
     frame_data = (char*) malloc(frame->size * sizeof(char));
     frame->data = (char*) malloc(frame->size * sizeof(char));
