@@ -166,7 +166,7 @@ void write_frame(ID3v2_frame* frame, FILE* file)
 int get_tag_size(ID3v2_tag* tag)
 {
     int size = 0;
-    ID3v2_frame_list* frame_list = new_frame_list();
+    ID3v2_frame_list* frame_list = NULL;
 
     if(tag->frames == NULL)
     {
