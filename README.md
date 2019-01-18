@@ -15,9 +15,10 @@ id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. It can read an
 * Artist
 * Album Artist
 * Comment
+* Genre
 * Year
 * Track
-* Album Number
+* Disc Number
 * Album Cover
 
 However, it can be extended, in a very easy manner, to read other id3 tags. 
