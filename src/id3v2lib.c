@@ -84,6 +84,9 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
 
     tag = new_tag();
 
+	//del first
+	free(tag->tag_header);
+
     // Associations
     tag->tag_header = tag_header;
 
@@ -401,7 +404,7 @@ void set_album_cover_frame(char* album_cover_bytes, char* mimetype, int picture_
     int offset;
 
     memcpy(frame->frame_id, ALBUM_COVER_FRAME_ID, 4);
-    frame->size = 1 + (int) strlen(mimetype) + 1 + 1 + 1 + picture_size + 1; // encoding + mimetype + 00 + type + description + picture + null-terminator
+    frame->size = 1 + (int) strlen(mimetype) + 1 + 1 + 1 + picture_size; // encoding + mimetype + 00 + type + description + picture
 
     frame_data = (char*) malloc(frame->size * sizeof(char));
     frame->data = (char*) malloc(frame->size * sizeof(char));
