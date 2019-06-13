@@ -94,4 +94,15 @@
 #define PUBLISHER_LOGOTYPE 0x14
 // END APIC FRAME CONSTANTS
 
+// Genres:
+#define NUM_BLUES 0
+#define NUM_HIP_HOP 7
+#define NUM_R_AND_B 14
+#define NUM_ROCK 17
+
+#define BLUES "Blues"
+#define HIP_HOP "Hip-Hop"
+#define R_AND_B "R&B"
+#define ROCK "Rock"
+
 #endif

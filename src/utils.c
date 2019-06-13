@@ -135,6 +135,69 @@ char* get_mime_type_from_filename(const char* filename)
     }
 }
 
+void genre_num_string(char* genre_data, char* dest)
+{
+    if (genre_data == NULL)
+    {
+	printf("genre data is null\n");
+        return;
+    }
+
+    int length = strlen(genre_data);
+    int genre_number_index = 0;
+    char genre_number[3];
+    int first_parenthesis_found = 1;
+    int second_parenthese_found = 1;
+    
+    for (int i = 0; i < length; ++i)
+    {
+	printf("Searching the char is %c\n", genre_data[i]);
+        if (genre_data[i] == '(' && first_parenthesis_found == 1)
+	{
+            //printf("First parenthese found\n");
+	    first_parenthesis_found = 0;
+	    continue;
+	}
+	if (genre_data[i] == ')' && second_parenthese_found == 1 )//&&
+	        //first_parenthesis_found == 0)
+	{
+	    //printf("Second parenthesis found\n");
+	    second_parenthese_found = 0;
+	    break;
+	}
+	if (first_parenthesis_found == 0)
+	{
+	    genre_number[genre_number_index++] = genre_data[i];
+	    printf("%s", genre_number);
+	}
+    }
+
+    if (first_parenthesis_found == 1 || second_parenthese_found == 1) {
+        printf("Genre already set or does not exist\n");
+	return;
+    }
+
+    printf("%s %d", genre_number, atoi(genre_number));
+    char* dest_tmp = convert_genre_number(atoi(genre_number));
+    strcpy(dest, dest_tmp);
+}
+
+char* convert_genre_number(int number)
+{
+    char *genre = "dd";
+    switch (number)
+    {
+	case NUM_HIP_HOP:
+	    genre = HIP_HOP;
+	    break;
+        case NUM_R_AND_B:
+	    genre = R_AND_B;
+	    break;
+    }
+
+    return genre;
+}
+
 // String functions
 int has_bom(uint16_t* string)
 {
