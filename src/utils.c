@@ -139,7 +139,6 @@ void genre_num_string(char* genre_data, char* dest)
 {
     if (genre_data == NULL)
     {
-	printf("genre data is null\n");
         return;
     }
 
@@ -151,47 +150,412 @@ void genre_num_string(char* genre_data, char* dest)
     
     for (int i = 0; i < length; ++i)
     {
-	printf("Searching the char is %c\n", genre_data[i]);
         if (genre_data[i] == '(' && first_parenthesis_found == 1)
 	{
-            //printf("First parenthese found\n");
 	    first_parenthesis_found = 0;
 	    continue;
 	}
-	if (genre_data[i] == ')' && second_parenthese_found == 1 )//&&
-	        //first_parenthesis_found == 0)
+	if (genre_data[i] == ')' && second_parenthese_found == 1 )
 	{
-	    //printf("Second parenthesis found\n");
 	    second_parenthese_found = 0;
 	    break;
 	}
 	if (first_parenthesis_found == 0)
 	{
 	    genre_number[genre_number_index++] = genre_data[i];
-	    printf("%s", genre_number);
 	}
     }
 
     if (first_parenthesis_found == 1 || second_parenthese_found == 1) {
-        printf("Genre already set or does not exist\n");
 	return;
     }
 
-    printf("%s %d", genre_number, atoi(genre_number));
     char* dest_tmp = convert_genre_number(atoi(genre_number));
     strcpy(dest, dest_tmp);
 }
 
 char* convert_genre_number(int number)
 {
-    char *genre = "dd";
+    char *genre;
     switch (number)
     {
-	case NUM_HIP_HOP:
+	case ID_BLUES:
+	    genre = BLUES;
+	    break;
+	case ID_CLASSIC_ROCK:
+	    genre = CLASSIC_ROCK;
+	    break;
+	case ID_COUNTRY:
+	    genre = COUNTRY;
+	    break;
+	case ID_DANCE:
+	    genre = DANCE;
+	    break;
+	case ID_DISCO:
+	    genre = DISCO;
+	    break;
+	case ID_FUNK:
+	    genre = FUNK;
+	    break;
+	case ID_GRUNGE:
+	    genre = GRUNGE;
+	    break;
+	case ID_HIP_HOP:
 	    genre = HIP_HOP;
 	    break;
-        case NUM_R_AND_B:
+	case ID_JAZZ:
+	    genre = JAZZ;
+	    break;
+	case ID_METAL:
+	    genre = METAL;
+	    break;
+	case ID_NEW_AGE:
+	    genre = NEW_AGE;
+	    break;
+	case ID_OLDIES:
+	    genre = OLDIES;
+	    break;
+	case ID_OTHER_GENRE:
+	    genre = OTHER_GENRE;
+	    break;
+	case ID_POP:
+	    genre = POP;
+	    break;
+        case ID_R_AND_B:
 	    genre = R_AND_B;
+	    break;
+	case ID_RAP:
+	    genre = RAP;
+	    break;
+	case ID_REGGAE:
+	    genre = REGGAE;
+	    break;
+	case ID_ROCK:
+	    genre = ROCK;
+	    break;
+	case ID_TECHNO:
+	    genre = TECHNO;
+	    break;
+	case ID_INDUSTRIAL:
+	    genre = INDUSTRIAL;
+	    break;
+	case ID_ALTERNATIVE:
+	    genre = ALTERNATIVE;
+	    break;
+	case ID_SKA:
+	    genre = SKA;
+	    break;
+	case ID_DEATH_METAL:
+	    genre = DEATH_METAL;
+	    break;
+	case ID_PRANKS:
+	    genre = PRANKS;
+	    break;
+	case ID_SOUNDTRACK:
+	    genre = SOUNDTRACK;
+	    break;
+	case ID_EURO_TECHNO:
+	    genre = EURO_TECHNO;
+	    break;
+	case ID_AMBIENT:
+	    genre = AMBIENT;
+	    break;
+	case ID_TRIP_HOP:
+	    genre = TRIP_HOP;
+	    break;
+	case ID_VOCAL:
+	    genre = VOCAL;
+	    break;
+	case ID_JAZZ_FUNK:
+	    genre = JAZZ_FUNK;
+	    break;
+	case ID_FUSION:
+	    genre = FUSION;
+	    break;
+	case ID_TRANCE:
+	    genre = TRANCE;
+	    break;
+	case ID_CLASSICAL:
+	    genre = CLASSICAL;
+	    break;
+	case ID_INSTRUMENTAL:
+	    genre = INSTRUMENTAL;
+	    break;
+	case ID_ACID:
+	    genre = ACID;
+	    break;
+	case ID_HOUSE:
+	    genre = HOUSE;
+	    break;
+	case ID_GAME:
+	    genre = GAME;
+	    break;
+	case ID_SOUND_CLIP:
+	    genre = SOUND_CLIP;
+	    break;
+	case ID_GOSPEL:
+	    genre = GOSPEL;
+	    break;
+	case ID_NOISE:
+	    genre = NOISE;
+	    break;
+	case ID_ALTERNATIVE_ROCK:
+	    genre = ALTERNATIVE_ROCK;
+	    break;
+	case ID_BASS:
+	    genre = BASS;
+	    break;
+	case ID_SOUL:
+	    genre = SOUL;
+	    break;
+	case ID_PUNK:
+	    genre = PUNK;
+	    break;
+	case ID_SPACE:
+	    genre = SPACE;
+	    break;
+	case ID_MEDITATIVE:
+	    genre = MEDITATIVE;
+	    break;
+	case ID_INSTRUMENTAL_POP:
+	    genre = INSTRUMENTAL_POP;
+	    break;
+	case ID_INSTRUMENTAL_ROCK:
+	    genre = INSTRUMENTAL_ROCK;
+	    break;
+	case ID_ETHIC:
+	    genre = ETHIC;
+	    break;
+	case ID_GOTHIC:
+	    genre = GOTHIC;
+	    break;
+	case ID_DARKWAVE:
+	    genre = DARKWAVE;
+	    break;
+	case ID_TECHNO_INDUSTRIAL:
+	    genre = TECHNO_INDUSTRIAL;
+	    break;
+	case ID_ELECTRONIC:
+	    genre = ELECTRONIC;
+	    break;
+	case ID_POP_FOLK:
+	    genre = POP_FOLK;
+	    break;
+	case ID_EURODANCE:
+	    genre = EURODANCE;
+	    break;
+	case ID_DREAM:
+	    genre = DREAM;
+	    break;
+	case ID_SOUTHERN_ROCK:
+	    genre = SOUTHERN_ROCK;
+	    break;
+	case ID_COMEDY:
+	    genre = COMEDY;
+	    break;
+	case ID_CULT:
+	    genre = CULT;
+	    break;
+	case ID_GANGSTA:
+	    genre = GANGSTA;
+	    break;
+	case ID_TOP_FOURTY:
+	    genre = TOP_FOURTY;
+	    break;
+	case ID_CHRISTIAN_RAP:
+	    genre = CHRISTIAN_RAP;
+	    break;
+	case ID_POP_FUNK:
+	    genre = POP_FUNK;
+	    break;
+	case ID_JUNGLE:
+	    genre = JUNGLE;
+	    break;
+	case ID_NATIVE_AMERICAN:
+	    genre = NATIVE_AMERICAN;
+	    break;
+	case ID_CABARET:
+	    genre = CABARET;
+	    break;
+	case ID_NEW_WAVE:
+	    genre = NEW_WAVE;
+	    break;
+	case ID_PSYCHADELIC:
+	    genre = PSYCHADELIC;
+	    break;
+	case ID_RAVE:
+	    genre = RAVE;
+	    break;
+	case ID_SHOWTUNES:
+	    genre = SHOWTUNES;
+	    break;
+	case ID_TRAILER:
+	    genre = TRAILER;
+	    break;
+	case ID_LO_FI:
+	    genre = LO_FI;
+	    break;
+	case ID_TRIBAL:
+	    genre = TRIBAL;
+	    break;
+	case ID_ACID_PUNK:
+	    genre = ACID_PUNK;
+	    break;
+	case ID_ACID_JAZZ:
+	    genre = ACID_JAZZ;
+	    break;
+	case ID_POLKA:
+	    genre = POLKA;
+	    break;
+	case ID_RETRO:
+	    genre = RETRO;
+	    break;
+	case ID_MUSICAL:
+	    genre = MUSICAL;
+	    break;
+	case ID_ROCK_AND_ROLL:
+	    genre = ROCK_AND_ROLL;
+	    break;
+	case ID_HARD_ROCK:
+	    genre = HARD_ROCK;
+	    break;
+	case ID_FOLK:
+	    genre = FOLK;
+	    break;
+	case ID_FOLK_ROCK:
+	    genre = FOLK_ROCK;
+	    break;
+	case ID_NATIONAL_FOLK:
+	    genre = NATIONAL_FOLK;
+	    break;
+	case ID_SWING:
+	    genre = SWING;
+	    break;
+	case ID_FAST_FUSION:
+	    genre = FAST_FUSION;
+	    break;
+	case ID_BEBOB:
+	    genre = BEBOB;
+	    break;
+	case ID_LATIN:
+	    genre = LATIN;
+	    break;
+	case ID_REVIVAL:
+	    genre = REVIVAL;
+	    break;
+	case ID_CELTIC:
+	    genre = CELTIC;
+	    break;
+	case ID_BLUEGRASS:
+	    genre = BLUEGRASS;
+	    break;
+	case ID_AVANTGARDE:
+	    genre = AVANTGARDE;
+	    break;
+	case ID_GOTHIC_ROCK:
+	    genre = GOTHIC_ROCK;
+	    break;
+	case ID_PROGRESSIVE_ROCK:
+	    genre = PROGRESSIVE_ROCK;
+	    break;
+	case ID_PSYCHADELIC_ROCK:
+	    genre = PSYCHADELIC_ROCK;
+	    break;
+	case ID_SYMPHONIC_ROCK:
+	    genre = SYMPHONIC_ROCK;
+	    break;
+	case ID_SLOW_ROCK:
+	    genre = SLOW_ROCK;
+	    break;
+	case ID_BIG_BAND:
+	    genre = BIG_BAND;
+	    break;
+	case ID_CHORUS:
+	    genre = CHORUS;
+	    break;
+	case ID_EASY_LISTENING:
+	    genre = EASY_LISTENING;
+	    break;
+	case ID_ACOUSTIC:
+	    genre = ACOUSTIC;
+	    break;
+	case ID_HUMOUR:
+	    genre = HUMOUR;
+	    break;
+	case ID_SPEECH:
+	    genre = SPEECH;
+	    break;
+	case ID_CHANSON:
+	    genre = CHANSON;
+	    break;
+	case ID_OPERA:
+	    genre = OPERA;
+	    break;
+	case ID_CHAMBER_MUSIC:
+	    genre = CHAMBER_MUSIC;
+	    break;
+	case ID_SONATA:
+	    genre = SONATA;
+	    break;
+	case ID_SYMPHONY:
+	    genre = SYMPHONY;
+	    break;
+	case ID_BOOTY_BASS:
+	    genre = BOOTY_BASS;
+	    break;
+	case ID_PRIMUS:
+	    genre = PRIMUS;
+	    break;
+	case ID_PORN_GROOVE:
+	    genre = PORN_GROOVE;
+	    break;
+	case ID_SATIRE:
+	    genre = SATIRE;
+	    break;
+	case ID_SLOW_JAM:
+	    genre = SLOW_JAM;
+	    break;
+	case ID_CLUB:
+	    genre = CLUB;
+	    break;
+	case ID_TANGO:
+	    genre = TANGO;
+	    break;
+	case ID_SAMBA:
+	    genre = SAMBA;
+	    break;
+	case ID_FOLKLORE:
+	    genre = FOLKLORE;
+	    break;
+	case ID_BALLAD:
+	    genre = BALLAD;
+	    break;
+	case ID_POWER_BALLAD:
+	    genre = POWER_BALLAD;
+	    break;
+	case ID_RHYTHMIC_SOUL:
+	    genre = RHYTHMIC_SOUL;
+	    break;
+	case ID_FREESTYLE:
+	    genre = FREESTYLE;
+	    break;
+	case ID_DUET:
+	    genre = DUET;
+	    break;
+	case ID_PUNK_ROCK:
+	    genre = PUNK_ROCK;
+	    break;
+	case ID_DRUM_SOLO:
+	    genre = DRUM_SOLO;
+	    break;
+	case ID_A_CAPELLA:
+	    genre = A_CAPELLA;
+	    break;
+	case ID_EURO_HOUSE:
+	    genre = EURO_HOUSE;
+	    break;
+	case ID_DANCE_HALL:
+	    genre = DANCE_HALL;
 	    break;
     }
 
