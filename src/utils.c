@@ -135,10 +135,9 @@ char* get_mime_type_from_filename(const char* filename)
     }
 }
 
-void genre_num_string(char* genre_data, char* dest)
+void genre_num_string(char* dest, char *genre_data)
 {
-    if (genre_data == NULL)
-    {
+    if (genre_data == NULL) {
         return;
     }
 
@@ -148,37 +147,36 @@ void genre_num_string(char* genre_data, char* dest)
     int first_parenthesis_found = 1;
     int second_parenthese_found = 1;
     
-    for (int i = 0; i < length; ++i)
-    {
-        if (genre_data[i] == '(' && first_parenthesis_found == 1)
-	{
+    for (int i = 0; i < length; ++i) {
+        if (genre_data[i] == '(' && first_parenthesis_found == 1) {
 	    first_parenthesis_found = 0;
 	    continue;
 	}
-	if (genre_data[i] == ')' && second_parenthese_found == 1 )
-	{
+	if (genre_data[i] == ')' && second_parenthese_found == 1 ) {
 	    second_parenthese_found = 0;
 	    break;
 	}
-	if (first_parenthesis_found == 0)
-	{
+	if (first_parenthesis_found == 0) {
 	    genre_number[genre_number_index++] = genre_data[i];
 	}
     }
 
     if (first_parenthesis_found == 1 || second_parenthese_found == 1) {
+	printf("nothing found\n");
+	strcpy(dest, genre_data);
 	return;
     }
 
-    char* dest_tmp = convert_genre_number(atoi(genre_number));
-    strcpy(dest, dest_tmp);
+    int genre_id = atoi(genre_number);
+    char *genre = convert_genre_number(genre_id);
+    strcpy(dest, genre);
 }
 
 char* convert_genre_number(int number)
 {
     char *genre;
-    switch (number)
-    {
+
+    switch (number) {
 	case ID_BLUES:
 	    genre = BLUES;
 	    break;

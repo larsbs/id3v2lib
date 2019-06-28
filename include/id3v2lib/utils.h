@@ -29,7 +29,7 @@ ID3v2_frame* get_from_list(ID3v2_frame_list* list, char* frame_id);
 void free_tag(ID3v2_tag* tag);
 char* get_mime_type_from_filename(const char* filename);
 
-void genre_num_string(char* genre_data, char* dest);
+void genre_num_string(char* dest, char *genre_data);
 char* convert_genre_number(int number);
 
 // String functions
