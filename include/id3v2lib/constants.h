@@ -221,6 +221,72 @@
 #define ID_A_CAPELLA 123
 #define ID_EURO_HOUSE 124
 #define ID_DANCE_HALL 125
+#define ID_GOA 126
+#define ID_DRUM_AND_BASS 127
+#define ID_CLUB_HOUSE 128
+#define ID_HARCORE_TECHNO 129
+#define ID_TERROR 130
+#define ID_INDIE 131
+#define ID_BRITPOP 132
+#define ID_NEGERPUNK 133
+#define ID_POLSK_PUNK 134
+#define ID_BEAT 135
+#define ID_CHRISTIAN_GANGSTA_RAP 136
+#define ID_HEAVY_METAL 137
+#define ID_BLACK_METAL 138
+#define ID_CROSSOVER 139
+#define ID_CONTEMPORARY_CHRISTIAN 140
+#define ID_CHRISTIAN_ROCK 141
+#define ID_MERENGUE 142
+#define ID_SALSA 143
+#define ID_THRASH_METAL 144
+#define ID_ANIME 145
+#define ID_JPOP 146
+#define ID_SYNTHPOP 147
+#define ID_ABSTRACT 148
+#define ID_ART_ROCK 149
+#define ID_BAROQUE 150
+#define ID_BHANGRA 151
+#define ID_BIG_BEAT 152
+#define ID_BREAKBEAT 153
+#define ID_CHILLOUT 154
+#define ID_DOWNTEMPO 155
+#define ID_DUB 156
+#define ID_EBM 157
+#define ID_ECLECTIC 158
+#define ID_ELECTRO 159
+#define ID_ELECTROCLASH 160
+#define ID_EMO 161
+#define ID_EXPERIMENTAL 162
+#define ID_GARAGE 163
+#define ID_GLOBAL 164
+#define ID_IDM 165
+#define ID_ILLBIENT 166
+#define ID_INDUSTRO_GOTH 167
+#define ID_JAM_BAND 168
+#define ID_KRAUTROCK 169
+#define ID_LEFTFIELD 170
+#define ID_LOUNGE 171
+#define ID_MATH_ROCK 172
+#define ID_NEW_ROMANTIC 173
+#define ID_NU_BREAKZ 174
+#define ID_POST_PUNK 175
+#define ID_POST_ROCK 176
+#define ID_PSYTRANCE 177
+#define ID_SHOEGAZE 178
+#define ID_SPACE_ROCK 179
+#define ID_TROP_ROCK 180
+#define ID_WORLD_MUSIC 181
+#define ID_NEOCLASSICAL 182
+#define ID_AUDIOBOOK 183
+#define ID_AUDIO_THEATRE 184
+#define ID_NEUE_DEUTSCHE_WELLE 185
+#define ID_PODCAST 186
+#define ID_INDIE_ROCK 187
+#define ID_G_FUNK 188
+#define ID_DUBSTEP 189
+#define ID_GARAGE_ROCK 190
+#define ID_PSYBIENT 191
 
 #define BLUES "Blues"
 #define CLASSIC_ROCK "Classic Rock"
@@ -348,5 +414,71 @@
 #define A_CAPELLA "A Capella"
 #define EURO_HOUSE "Euro-House"
 #define DANCE_HALL "Dance Hall"
+#define GOA "Goa"
+#define DRUM_AND_BASS "Drum & Bass"
+#define CLUB_HOUSE "Club-House"
+#define HARCORE_TECHNO "Harcore Techno"
+#define TERROR "Terror"
+#define INDIE "Indie"
+#define BRITPOP "BritPop"
+#define NEGERPUNK "Negerpunk"
+#define POLSK_PUNK "Polsk Punk"
+#define BEAT "Beat"
+#define CHRISTIAN_GANGSTA_RAP "Christian Gangsta Rap"
+#define HEAVY_METAL "Heaby Metal"
+#define BLACK_METAL "Black Metal"
+#define CROSSOVER "Crossover"
+#define CONTEMPORARY_CHRISTIAN "Contemporary Christian"
+#define CHRISTIAN_ROCK "Christian rock"
+#define MERENGUE "Merengue"
+#define SALSA "Salsa"
+#define THRASH_METAL "Thrash Metal"
+#define ANIME "Anime"
+#define JPOP "Jpop"
+#define SYNTHPOP "Synthpop"
+#define ABSTRACT "Abstract"
+#define ART_ROCK "Art Rock"
+#define BAROQUE "Baroque"
+#define BHANGRA "Bhangra"
+#define BIG_BEAT "Big beat"
+#define BREAKBEAT "Breakbeat"
+#define CHILLOUT "Chillout"
+#define DOWNTEMPO "Downtempo"
+#define DUB "Dub"
+#define EBM "EBM"
+#define ECLECTIC "Eclectic"
+#define ELECTRO "Electro"
+#define ELECTROCLASH "Electroclash"
+#define EMO "Emo"
+#define EXPERIMENTAL "Experimental"
+#define GARAGE "Garage"
+#define GLOBAL "Global"
+#define IDM "IDM"
+#define ILLBIENT "Illbient"
+#define INDUSTRO_GOTH "Industro-Goth"
+#define JAM_BAND "Jam Band"
+#define KRAUTROCK "Krautrock"
+#define LEFTFIELD "Leftfield"
+#define LOUNGE "Lounge"
+#define MATH_ROCK "Math Rock"
+#define NEW_ROMANTIC "New Romantic"
+#define NU_BREAKZ "Nu-Breakz"
+#define POST_PUNK "Post-Punk"
+#define POST_ROCK "Post-Rock"
+#define PSYTRANCE "Psytrance"
+#define SHOEGAZE "Shoegaze"
+#define SPACE_ROCK "Space Rock"
+#define TROP_ROCK "Trop Rock"
+#define WORLD_MUSIC "World Music"
+#define NEOCLASSICAL "Neoclassical"
+#define AUDIOBOOK "Audiobook"
+#define AUDIO_THEATRE "Audio theatre"
+#define NEUE_DEUTSCHE_WELLE "Neue Deutsche Welle"
+#define PODCAST "Podcast"
+#define INDIE_ROCK "Indie-Rock"
+#define G_FUNK "G-Funk"
+#define DUBSTEP "Dubstep"
+#define GARAGE_ROCK "Garage Rock"
+#define PSYBIENT "Psybient"
 
 #endif
