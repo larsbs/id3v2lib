@@ -224,7 +224,7 @@
 #define ID_GOA 126
 #define ID_DRUM_AND_BASS 127
 #define ID_CLUB_HOUSE 128
-#define ID_HARCORE_TECHNO 129
+#define ID_HARDCORE_TECHNO 129
 #define ID_TERROR 130
 #define ID_INDIE 131
 #define ID_BRITPOP 132
@@ -417,7 +417,7 @@
 #define GOA "Goa"
 #define DRUM_AND_BASS "Drum & Bass"
 #define CLUB_HOUSE "Club-House"
-#define HARCORE_TECHNO "Harcore Techno"
+#define HARDCORE_TECHNO "Hardcore Techno"
 #define TERROR "Terror"
 #define INDIE "Indie"
 #define BRITPOP "BritPop"
@@ -425,7 +425,7 @@
 #define POLSK_PUNK "Polsk Punk"
 #define BEAT "Beat"
 #define CHRISTIAN_GANGSTA_RAP "Christian Gangsta Rap"
-#define HEAVY_METAL "Heaby Metal"
+#define HEAVY_METAL "Heavy Metal"
 #define BLACK_METAL "Black Metal"
 #define CROSSOVER "Crossover"
 #define CONTEMPORARY_CHRISTIAN "Contemporary Christian"

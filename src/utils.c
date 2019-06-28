@@ -557,6 +557,204 @@ char* convert_genre_number(int number)
 	case ID_DANCE_HALL:
 	    genre = DANCE_HALL;
 	    break;
+        case ID_GOA:
+	    genre = GOA;
+	    break;
+	case ID_DRUM_AND_BASS:
+	    genre = DRUM_AND_BASS;
+	    break;
+	case ID_CLUB_HOUSE:
+	    genre = CLUB_HOUSE;
+	    break;
+	case ID_HARDCORE_TECHNO:
+	    genre = HARDCORE_TECHNO;
+	    break;
+	case ID_TERROR:
+	    genre = TERROR;
+	    break;
+	case ID_INDIE:
+	    genre = INDIE;
+	    break;
+	case ID_BRITPOP:
+	    genre = BRITPOP;
+	    break;
+	case ID_NEGERPUNK:
+	    genre = NEGERPUNK;
+	    break;
+	case ID_POLSK_PUNK:
+	    genre = POLSK_PUNK;
+	    break;
+	case ID_BEAT:
+	    genre = BEAT;
+	    break;
+	case ID_CHRISTIAN_GANGSTA_RAP:
+	    genre = CHRISTIAN_GANGSTA_RAP;
+	    break;
+	case ID_HEAVY_METAL:
+	    genre = HEAVY_METAL;
+	    break;
+	case ID_BLACK_METAL:
+	    genre = BLACK_METAL;
+	    break;
+	case ID_CROSSOVER:
+	    genre = CROSSOVER;
+	    break;
+	case ID_CONTEMPORARY_CHRISTIAN:
+	    genre = CONTEMPORARY_CHRISTIAN;
+	    break;
+	case ID_CHRISTIAN_ROCK:
+	    genre = CHRISTIAN_ROCK;
+	    break;
+	case ID_MERENGUE:
+	    genre = MERENGUE;
+	    break;
+	case ID_SALSA:
+	    genre = SALSA;
+	    break;
+	case ID_THRASH_METAL:
+	    genre = THRASH_METAL;
+	    break;
+	case ID_ANIME:
+	    genre = ANIME;
+	    break;
+	case ID_JPOP:
+	    genre = JPOP;
+	    break;
+	case ID_SYNTHPOP:
+	    genre = SYNTHPOP;
+	    break;
+	case ID_ABSTRACT:
+	    genre = ABSTRACT;
+	    break;
+	case ID_ART_ROCK:
+	    genre = ART_ROCK;
+	    break;
+	case ID_BAROQUE:
+	    genre = BAROQUE;
+	    break;
+	case ID_BHANGRA:
+	    genre = BHANGRA;
+	    break;
+	case ID_BIG_BEAT:
+	    genre = BIG_BEAT;
+	    break;
+	case ID_BREAKBEAT:
+	    genre = BREAKBEAT;
+	    break;
+	case ID_CHILLOUT:
+	    genre = CHILLOUT;
+	    break;
+	case ID_DOWNTEMPO:
+	    genre = DOWNTEMPO;
+	    break;
+	case ID_DUB:
+	    genre = DUB;
+	    break;
+	case ID_EBM:
+	    genre = EBM;
+	    break;
+	case ID_ECLECTIC:
+	    genre = ECLECTIC;
+	    break;
+	case ID_ELECTRO:
+	    genre = ELECTRO;
+	    break;
+	case ID_ELECTROCLASH:
+	    genre = ELECTROCLASH;
+	    break;
+	case ID_EMO:
+	    genre = EMO;
+	    break;
+	case ID_EXPERIMENTAL:
+	    genre = EXPERIMENTAL;
+	    break;
+	case ID_GARAGE:
+	    genre = GARAGE;
+	    break;
+	case ID_GLOBAL:
+	    genre = GLOBAL;
+	    break;
+	case ID_IDM:
+	    genre = IDM;
+	    break;
+	case ID_ILLBIENT:
+	    genre = ILLBIENT;
+	    break;
+	case ID_INDUSTRO_GOTH:
+	    genre = INDUSTRO_GOTH;
+	    break;
+	case ID_JAM_BAND:
+	    genre = JAM_BAND;
+	    break;
+	case ID_KRAUTROCK:
+	    genre = KRAUTROCK;
+	    break;
+	case ID_LEFTFIELD:
+	    genre = LEFTFIELD;
+	    break;
+	case ID_LOUNGE:
+	    genre = LOUNGE;
+	    break;
+	case ID_MATH_ROCK:
+	    genre = MATH_ROCK;
+	    break;
+	case ID_NEW_ROMANTIC:
+	    genre = NEW_ROMANTIC;
+	    break;
+	case ID_NU_BREAKZ:
+	    genre = NU_BREAKZ;
+	    break;
+	case ID_POST_PUNK:
+	    genre = POST_PUNK;
+	    break;
+	case ID_POST_ROCK:
+	    genre = POST_ROCK;
+	    break;
+	case ID_PSYTRANCE:
+	    genre = PSYTRANCE;
+	    break;
+	case ID_SHOEGAZE:
+	    genre = SHOEGAZE;
+	    break;
+	case ID_SPACE_ROCK:
+	    genre = SPACE_ROCK;
+	    break;
+	case ID_TROP_ROCK:
+	    genre = TROP_ROCK;
+	    break;
+	case ID_WORLD_MUSIC:
+	    genre = WORLD_MUSIC;
+	    break;
+	case ID_NEOCLASSICAL:
+	    genre = NEOCLASSICAL;
+	    break;
+	case ID_AUDIOBOOK:
+	    genre = AUDIOBOOK;
+	    break;
+	case ID_AUDIO_THEATRE:
+	    genre = AUDIO_THEATRE;
+	    break;
+	case ID_NEUE_DEUTSCHE_WELLE:
+	    genre = NEUE_DEUTSCHE_WELLE;
+	    break;
+	case ID_PODCAST:
+	    genre = PODCAST;
+	    break;
+	case ID_INDIE_ROCK:
+	    genre = INDIE_ROCK;
+	    break;
+	case ID_G_FUNK:
+	    genre = G_FUNK;
+	    break;
+	case ID_DUBSTEP:
+	    genre = DUBSTEP;
+	    break;
+	case ID_GARAGE_ROCK:
+	    genre = GARAGE_ROCK;
+	    break;
+	case ID_PSYBIENT:
+	    genre = PSYBIENT;
+	    break;
     }
 
     return genre;
