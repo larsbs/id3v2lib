@@ -68,7 +68,7 @@ ID3v2_frame_text_content* parse_text_frame_content(ID3v2_frame* frame)
 
     content = new_text_content(frame->size);
     content->encoding = frame->data[0];
-    content->size = frame->size;
+    content->size = frame->size - ID3_FRAME_ENCODING;
     memcpy(content->data, frame->data + ID3_FRAME_ENCODING, content->size);
 
     return content;
