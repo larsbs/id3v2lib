@@ -97,11 +97,12 @@ char* parse_mime_type(char* data, int* i)
 {
     char* mime_type = (char*) malloc(30 * sizeof(char));
     
-    while(data[*i] != '\0')
+    while(data[*i] != '\0' && *i < 30)
     {
         mime_type[*i - 1] = data[*i];
         (*i)++;
     }
+    mime_type[*i - 1] = '\0';
     
     return mime_type;
 }
