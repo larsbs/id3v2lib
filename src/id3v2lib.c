@@ -358,6 +358,16 @@ ID3v2_frame* tag_get_album_cover(ID3v2_tag* tag)
     return get_from_list(tag->frames, "APIC");
 }
 
+ID3v2_frame* tag_get_private_data(ID3v2_tag* tag)
+{
+    if (tag == NULL)
+    {
+        return NULL;
+    }
+
+    return get_from_list(tag->frames, "PRIV");
+}
+
 /**
  * Setter functions
  */
@@ -390,6 +400,24 @@ void set_comment_frame(char* data, char encoding, ID3v2_frame* frame)
     frame->data = (char*) malloc(frame->size * sizeof(char));
 
     sprintf(frame_data, "%c%s%c%s", encoding, "eng", '\x00', data);
+    memcpy(frame->data, frame_data, frame->size);
+
+    free(frame_data);
+}
+
+void set_private_frame(char* data, char* owner_identifier, ID3v2_frame* frame)
+{
+    char *frame_data = NULL;
+
+    // Set frame id and size
+    memcpy(frame->frame_id, PRIVATE_FRAME_ID, 4);
+    frame->size = (int)strlen(owner_identifier) + 1 + (int)strlen(data) + 1; // owner_identifier + description + text + null-terminator
+
+    // Set frame data
+    frame_data = (char*)malloc(frame->size * sizeof(char));
+    frame->data = (char*)malloc(frame->size * sizeof(char));
+
+    sprintf(frame_data, "%s%c%s", owner_identifier, '\x00', data);
     memcpy(frame->data, frame_data, frame->size);
 
     free(frame_data);
@@ -566,4 +594,16 @@ void tag_set_album_cover_from_bytes(char* album_cover_bytes, char* mimetype, int
     }
 
     set_album_cover_frame(album_cover_bytes, mimetype, picture_size, album_cover_frame);
+}
+
+void tag_set_private_data(char* private_data, char* owner_identifier, ID3v2_tag* tag)
+{
+    ID3v2_frame* private_frame = NULL;
+    if (!(private_frame = tag_get_private_data(tag)))
+    {
+        private_frame = new_frame();
+        add_to_list(tag->frames, private_frame);
+    }
+
+    set_private_frame(private_data, owner_identifier, private_frame);
 }
