@@ -37,6 +37,7 @@ int _has_id3v2tag(char* raw_header)
 ID3v2_header* get_tag_header(const char* file_name)
 {
     char buffer[ID3_HEADER];
+    int res;
     FILE* file = fopen(file_name, "rb");
     if(file == NULL)
     {
@@ -44,8 +45,9 @@ ID3v2_header* get_tag_header(const char* file_name)
         return NULL;
     }
 
-    fread(buffer, ID3_HEADER, 1, file);
+    res = fread(buffer, ID3_HEADER, 1, file);
     fclose(file);
+    if (!res) return NULL; // less than ID3_HEADER bytes in file
     return get_tag_header_with_buffer(buffer, ID3_HEADER);
 }
 ID3v2_header* get_tag_header_with_buffer(char *buffer, int length)
