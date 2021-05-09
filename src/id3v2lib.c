@@ -1,7 +1,7 @@
 /*
  * This file is part of the id3v2lib library
  *
- * Copyright (c) 2013, Lorenzo Ruiz
+ * Copyright (c) 2013, Lars Ruiz
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -92,7 +92,7 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
     if(tag_header->extended_header_size)
       // an extended header exists, so we skip it too
       bytes+=tag_header->extended_header_size+4; // don't forget to skip the extended header size bytes too
-    
+
     tag->raw = (char*) malloc(tag->tag_header->tag_size * sizeof(char));
     memcpy(tag->raw, bytes, tag_header->tag_size);
     // we use tag_size here to prevent copying too much if the user provides more bytes than needed to this function
