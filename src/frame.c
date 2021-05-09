@@ -1,7 +1,7 @@
 /*
  * This file is part of the id3v2lib library
  *
- * Copyright (c) 2013, Lorenzo Ruiz
+ * Copyright (c) 2013, Lars Ruiz
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
