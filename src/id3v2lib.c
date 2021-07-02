@@ -84,6 +84,9 @@ ID3v2_tag* load_tag_with_buffer(char *bytes, int length)
 
     tag = new_tag();
 
+	//del first
+	free(tag->tag_header);
+
     // Associations
     tag->tag_header = tag_header;
 
@@ -166,7 +169,7 @@ void write_frame(ID3v2_frame* frame, FILE* file)
 int get_tag_size(ID3v2_tag* tag)
 {
     int size = 0;
-    ID3v2_frame_list* frame_list = new_frame_list();
+    ID3v2_frame_list* frame_list = NULL;
 
     if(tag->frames == NULL)
     {
@@ -366,7 +369,7 @@ void set_text_frame(char* data, char encoding, char* frame_id, ID3v2_frame* fram
     char *frame_data;
     // Set frame id and size
     memcpy(frame->frame_id, frame_id, 4);
-    frame->size = 1 + (int) strlen(data);
+    frame->size = 1 + (int) strlen(data) + 1; // encoding + text + null-terminator
 
     // Set frame data
     // TODO: Make the encoding param relevant.
@@ -384,7 +387,7 @@ void set_comment_frame(char* data, char encoding, ID3v2_frame* frame)
     char *frame_data;
 
     memcpy(frame->frame_id, COMMENT_FRAME_ID, 4);
-    frame->size = 1 + 3 + 1 + (int) strlen(data); // encoding + language + description + comment
+    frame->size = 1 + 3 + 1 + (int) strlen(data) + 1; // encoding + language + description + comment + null-terminator
 
     frame_data = (char*) malloc(frame->size * sizeof(char));
     frame->data = (char*) malloc(frame->size * sizeof(char));
