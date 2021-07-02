@@ -39,6 +39,7 @@ ID3v2_header* new_header()
 ID3v2_frame* new_frame()
 {
     ID3v2_frame* frame = (ID3v2_frame*) malloc(sizeof(ID3v2_frame));
+    memset(frame->flags, 0, ID3_FRAME_FLAGS);
     return frame;
 }
 
