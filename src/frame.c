@@ -22,7 +22,7 @@ ID3v2_frame* parse_frame(char* bytes, int offset, int version)
     // Parse frame header
     memcpy(frame->frame_id, bytes + offset, ID3_FRAME_ID);
     // Check if we are into padding
-    if(memcmp(frame->frame_id, "\0\0\0\0", 4) == 0)
+    if(memcmp(frame->frame_id, "\0\0\0\0", 4) == 0 || strlen(frame->frame_id) == 0)
     {
         free(frame);
         return NULL;
