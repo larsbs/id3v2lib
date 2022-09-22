@@ -1,10 +1,27 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(id3v2lib)
+cmake_minimum_required(VERSION 3.5)
+project(id3v2lib VERSION 1.0.0)
 
-ADD_DEFINITIONS(-std=c99)
-ADD_DEFINITIONS(-fPIC)
+option(BUILD_SHARED_LIBS "Build shared library" ON)
 
-SET(VERSION_MAJOR 1)
-SET(VERSION_MINOR 0)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_C_STANDARD 99)
 
-ADD_SUBDIRECTORY(src)
+set(ID3V2_PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib.h)
+
+add_library(id3v2
+    ${ID3V2_PUBLIC_HEADER}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/frame.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/header.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/id3v2lib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/types.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.c
+)
+
+set_target_properties(id3v2 PROPERTIES PUBLIC_HEADER "${ID3V2_PUBLIC_HEADER}")
+
+target_include_directories(id3v2
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib
+)
+
+install(TARGETS id3v2)
