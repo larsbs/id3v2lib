@@ -6,10 +6,17 @@ option(BUILD_SHARED_LIBS "Build shared library" ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_C_STANDARD 99)
 
-set(ID3V2_PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib.h)
+set(ID3V2_PUBLIC_HEADERS 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib/types.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib/constants.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib/header.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib/frame.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/id3v2lib/utils.h
+)
 
 add_library(id3v2
-    ${ID3V2_PUBLIC_HEADER}
+    ${ID3V2_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frame.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/header.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/id3v2lib.c
@@ -17,7 +24,7 @@ add_library(id3v2
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.c
 )
 
-set_target_properties(id3v2 PROPERTIES PUBLIC_HEADER "${ID3V2_PUBLIC_HEADER}")
+set_target_properties(id3v2 PROPERTIES PUBLIC_HEADER "${ID3V2_PUBLIC_HEADERS}")
 
 target_include_directories(id3v2
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
