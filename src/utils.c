@@ -94,7 +94,7 @@ void add_to_list(ID3v2_frame_list* main, ID3v2_frame* frame)
     }
 }
 
-ID3v2_frame* get_from_list(ID3v2_frame_list* list, char* frame_id)
+ID3v2_frame* get_from_list(ID3v2_frame_list* list, const char* frame_id)
 {
     while(list != NULL && list->frame != NULL)
     {
