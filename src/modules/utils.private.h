@@ -17,7 +17,7 @@
   typedef unsigned short uint16_t;
 #endif
 
-unsigned int btoi(char* bytes, int size);
+unsigned int btoi(const char* bytes, int size);
 char* itob(int integer);
 int syncint_encode(int value);
 unsigned int syncint_decode(int value);

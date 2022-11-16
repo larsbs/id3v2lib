@@ -14,6 +14,7 @@
 
 #include "tag.private.h"
 #include "frame_list.private.h"
+#include "utils.private.h"
 
 ID3v2_tag_header* tag_header_new()
 {
@@ -78,10 +79,10 @@ ID3v2_tag_header* tag_header_parse_from_buffer(const char* buffer)
     }
 
     tag_header->flags = buffer[cursor += ID3v2_TAG_HEADER_MINOR_VERSION_LENGTH];
-    tag_header->tag_size = syncint_decode(btoi(buffer, ID3v2_TAG_HEADER_TAG_SIZE_LENGTH, cursor += ID3v2_TAG_HEADER_FLAGS_LENGTH));
+    tag_header->tag_size = syncint_decode(btoi(buffer + (cursor += ID3v2_TAG_HEADER_FLAGS_LENGTH), ID3v2_TAG_HEADER_TAG_SIZE_LENGTH));
     tag_header->extended_header_size = 0;
 
-    if (tag_header->flags & (1 << 6) == (1 << 6))
+    if ((tag_header->flags & (1 << 6)) == (1 << 6))
     {
         // An extended header exists, retrieve its size and update the tag_header
         tag_header->extended_header_size = syncint_decode(btoi(buffer + (cursor += ID3v2_TAG_HEADER_TAG_SIZE_LENGTH), ID3v2_EXTENDED_HEADED_SIZE_LENGTH));
@@ -97,4 +98,9 @@ ID3v2_tag* tag_new()
     tag->frames = frame_list_new();
 
     return tag;
+}
+
+char* ID3v2_tag_get_artist(ID3v2_tag* tag)
+{
+    return "Ethereal Drunkness";
 }

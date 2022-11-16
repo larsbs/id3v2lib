@@ -23,7 +23,7 @@
 
 typedef struct _ID3v2_tag_header
 {
-    const char identifier[ID3v2_TAG_HEADER_IDENTIFIER_LENGTH];
+    char identifier[ID3v2_TAG_HEADER_IDENTIFIER_LENGTH];
     short major_version;
     short minor_version;
     short flags;
@@ -37,5 +37,7 @@ typedef struct _ID3v2_tag
     ID3v2_tag_header* header;
     ID3v2_frame_list* frames;
 } ID3v2_tag;
+
+char* ID3v2_tag_get_artist(ID3v2_tag* tag);
 
 #endif

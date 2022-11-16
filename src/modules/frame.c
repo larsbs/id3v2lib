@@ -8,6 +8,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "frame.private.h"
 #include "utils.private.h"
@@ -24,7 +25,7 @@ ID3v2_frame* frame_new()
     return frame;
 }
 
-ID3v2_frame* frame_parse(char* buffer, int id3_major_version)
+ID3v2_frame* frame_parse(const char* buffer, int id3_major_version)
 {
     ID3v2_frame_header* frame_header = frame_header_new();
 

@@ -12,6 +12,6 @@
 
 #include "modules/frame.h"
 
-ID3v2_frame* frame_parse(char* buffer, int id3_major_version);
+ID3v2_frame* frame_parse(const char* buffer, int id3_major_version);
 
 #endif

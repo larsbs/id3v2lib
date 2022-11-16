@@ -13,7 +13,7 @@
 
 #include "utils.private.h"
 
-unsigned int btoi(char* bytes, int size)
+unsigned int btoi(const char* bytes, int size)
 {
     unsigned int result = 0x00;
 
