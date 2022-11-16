@@ -1,6 +1,6 @@
 # Directories
 lib/
-test/
+bin/
 
 # Object files
 *.o
@@ -12,3 +12,5 @@ test/
 .cproject
 .project
 .DS_Store
+.idea/
+.vscode/
