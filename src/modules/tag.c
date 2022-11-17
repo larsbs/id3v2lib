@@ -15,6 +15,7 @@
 #include "tag.private.h"
 #include "frame_list.private.h"
 #include "utils.private.h"
+#include "id3v2lib.h"
 
 ID3v2_tag_header* tag_header_new()
 {
@@ -102,5 +103,17 @@ ID3v2_tag* tag_new()
 
 char* ID3v2_tag_get_artist(ID3v2_tag* tag)
 {
-    return "Ethereal Drunkness";
+    if (tag == NULL)
+    {
+        return NULL;
+    }
+
+    ID3v2_text_frame* artist_frame = (ID3v2_text_frame*) frame_list_get_frame_by_id(tag->frames, ARTIST_FRAME_ID);
+
+    if (artist_frame == NULL)
+    {
+        return NULL;
+    }
+
+    return artist_frame->data->text;
 }

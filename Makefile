@@ -6,6 +6,9 @@ TARGET = lib/libid3v2
 SRCS = $(shell find src -type f -name '*.c')
 OBJS = $(SRCS:.c=.o)
 
+TEST_SRCS = $(shell find test -type f -name '*.c')
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
 all: build_test
 
 test: build_test
@@ -21,10 +24,8 @@ $(TARGET).a: $(OBJS)
 
 build_test: build_static test/main_test
 
-test/main_test: test/main_test.o
-	$(CC) $(CFLAGS) test/main_test.o $(CPPFLAGS) -L./lib -lid3v2 -o test/main_test
-
-test/main_test.o: test/main_test.c
+test/main_test: $(TEST_OBJS)
+	$(CC) $(CFLAGS) $(TEST_OBJS) $(CPPFLAGS) -L./lib -lid3v2 -o test/main_test
 
 clean:
 	rm -rf lib

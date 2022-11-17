@@ -37,10 +37,54 @@ typedef struct _ID3v2_frame_header
     char flags[ID3v2_FRAME_HEADER_FLAGS_LENGTH];
 } ID3v2_frame_header;
 
+typedef struct _ID3v2_text_frame_data
+{
+    int size;
+    char encoding;
+    char* text;
+} ID3v2_text_frame_data;
+
+typedef struct _ID3v2_comment_frame_data
+{
+    int size;
+    char encoding;
+    char* comment;
+    char* language;
+    char* short_description;
+} ID3v2_comment_frame_data;
+
+typedef struct _ID3v2_apic_frame_data
+{
+    char encoding;
+    char* data;
+    char* mime_type;
+    char picture_type;
+    char* description;
+    int picture_size;
+} ID3v2_apic_frame_data;
+
 typedef struct _ID3v2_frame
 {
     ID3v2_frame_header* header;
-    char* data;
+    void* data;
 } ID3v2_frame;
+
+typedef struct _ID3v2_text_frame
+{
+    ID3v2_frame_header* header;
+    ID3v2_text_frame_data* data;
+} ID3v2_text_frame;
+
+typedef struct _ID3v2_comment_frame
+{
+    ID3v2_frame_header* header;
+    ID3v2_comment_frame_data* data;
+} ID3v2_comment_frame;
+
+typedef struct _ID3v2_apic_frame
+{
+    ID3v2_frame_header* header;
+    ID3v2_apic_frame_data* data;
+} ID3v2_apic_frame;
 
 #endif
