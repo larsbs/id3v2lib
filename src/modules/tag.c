@@ -117,47 +117,47 @@ ID3v2_text_frame* tag_get_text_frame(ID3v2_tag* tag, char* frame_id)
     return (ID3v2_text_frame*) frame_list_get_frame_by_id(tag->frames, frame_id);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_artist(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_artist_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, ARTIST_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_album(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_album_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, ALBUM_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_title(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_title_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, TITLE_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_track(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_track_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, TRACK_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_album_artist(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_album_artist_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, ALBUM_ARTIST_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_genre(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_genre_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, GENRE_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_year(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_year_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, YEAR_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_disc_number(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_disc_number_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, DISC_NUMBER_FRAME_ID);
 }
 
-ID3v2_text_frame* ID3v2_tag_get_composer(ID3v2_tag* tag)
+ID3v2_text_frame* ID3v2_tag_get_composer_frame(ID3v2_tag* tag)
 {
     return tag_get_text_frame(tag, COMPOSER_FRAME_ID);
 }
@@ -165,9 +165,9 @@ ID3v2_text_frame* ID3v2_tag_get_composer(ID3v2_tag* tag)
 /**
  * Since the ID3v2 spec allows defining multiple COMM frames in a
  * single tag, this gets the first COMM frame found. To retrieve every
- * COMM frame found use ID3v2_tag_get_comments(tag) instead.
+ * COMM frame found use ID3v2_tag_get_comment_frames(tag) instead.
 */
-ID3v2_comment_frame* ID3v2_tag_get_comment(ID3v2_tag* tag)
+ID3v2_comment_frame* ID3v2_tag_get_comment_frame(ID3v2_tag* tag)
 {
     if (tag == NULL)
     {
@@ -180,9 +180,9 @@ ID3v2_comment_frame* ID3v2_tag_get_comment(ID3v2_tag* tag)
 /**
  * Since the ID3v2 spec allows defining multiple COMM frames in a
  * single tag, this gets every COMM frame found. To retrieve only the
- * first COMM frame found use ID3v2_tag_get_comment(tag) instead.
+ * first COMM frame found use ID3v2_tag_get_comment_frame(tag) instead.
 */
-ID3v2_frame_list* ID3v2_tag_get_comments(ID3v2_tag* tag)
+ID3v2_frame_list* ID3v2_tag_get_comment_frames(ID3v2_tag* tag)
 {
     if (tag == NULL)
     {
@@ -192,7 +192,7 @@ ID3v2_frame_list* ID3v2_tag_get_comments(ID3v2_tag* tag)
     return (ID3v2_frame_list*) frame_list_get_frames_by_id(tag->frames, COMMENT_FRAME_ID);
 }
 
-ID3v2_apic_frame* ID3v2_tag_get_album_cover(ID3v2_tag* tag)
+ID3v2_apic_frame* ID3v2_tag_get_album_cover_frame(ID3v2_tag* tag)
 {
     if (tag == NULL)
     {

@@ -74,7 +74,7 @@ unsigned int syncint_decode(int value)
     return result;
 }
 
-bool string_has_bom(char* string)
+bool string_has_bom(const char* string)
 {
     if (string == NULL)
     {
@@ -89,7 +89,7 @@ bool string_has_bom(char* string)
     return false;
 }
 
-int string_length(char* string)
+int string_length(const char* string)
 {
     if (string_has_bom(string))
     {

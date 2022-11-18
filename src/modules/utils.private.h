@@ -20,7 +20,7 @@ int syncint_encode(int value);
 unsigned int syncint_decode(int value);
 
 // Takes into account encoding
-bool string_has_bom(char* string);
-int string_length(char* string);
+bool string_has_bom(const char* string);
+int string_length(const char* string);
 
 #endif
