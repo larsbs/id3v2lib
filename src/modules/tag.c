@@ -101,19 +101,83 @@ ID3v2_tag* tag_new()
     return tag;
 }
 
-char* ID3v2_tag_get_artist(ID3v2_tag* tag)
+ID3v2_text_frame* tag_get_text_frame(ID3v2_tag* tag, char* frame_id)
+{
+    if (frame_id[0] != 'T')
+    {
+        fprintf(stderr, "%d : '%s' is not a valid text frame id.\n", __LINE__, frame_id);
+        return NULL;
+    }
+
+    if (tag == NULL)
+    {
+        return NULL;
+    }
+
+    return (ID3v2_text_frame*) frame_list_get_frame_by_id(tag->frames, frame_id);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_artist(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, ARTIST_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_album(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, ALBUM_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_title(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, TITLE_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_track(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, TRACK_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_album_artist(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, ALBUM_ARTIST_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_genre(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, GENRE_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_year(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, YEAR_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_disc_number(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, DISC_NUMBER_FRAME_ID);
+}
+
+ID3v2_text_frame* ID3v2_tag_get_composer(ID3v2_tag* tag)
+{
+    return tag_get_text_frame(tag, COMPOSER_FRAME_ID);
+}
+
+ID3v2_comment_frame* ID3v2_tag_get_comment(ID3v2_tag* tag)
 {
     if (tag == NULL)
     {
         return NULL;
     }
 
-    ID3v2_text_frame* artist_frame = (ID3v2_text_frame*) frame_list_get_frame_by_id(tag->frames, ARTIST_FRAME_ID);
+    return (ID3v2_comment_frame*) frame_list_get_frame_by_id(tag->frames, COMMENT_FRAME_ID);
+}
 
-    if (artist_frame == NULL)
+ID3v2_apic_frame* ID3v2_tag_get_album_cover(ID3v2_tag* tag)
+{
+    if (tag == NULL)
     {
         return NULL;
     }
 
-    return artist_frame->data->text;
+    return (ID3v2_apic_frame*) frame_list_get_frame_by_id(tag->frames, ALBUM_COVER_FRAME_ID);
 }

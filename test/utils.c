@@ -16,6 +16,11 @@
 
 bool has_bom(char* string)
 {
+    if (string == NULL)
+    {
+        return false;
+    }
+
     if(memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
     {
         return true;
@@ -71,9 +76,24 @@ void println_utf16(uint16_t* string, int size)
     printf("\n");
 }
 
-void print_tag_text(char* text, int size)
+void print_text_frame(ID3v2_text_frame* frame)
 {
-    if (has_bom(text))
+    if (frame == NULL)
+    {
+        printf("None\n");
+        return;
+    }
+
+    print_text_frame_text(frame->data->text, frame->data->size);
+}
+
+void print_text_frame_text(char* text, int size)
+{
+    if (text == NULL)
+    {
+        printf("None\n");
+    }
+    else if (has_bom(text))
     {
         uint16_t* text_utf = char_to_utf16(text, size);
         println_utf16(text_utf, size);
@@ -82,4 +102,37 @@ void print_tag_text(char* text, int size)
     {
         printf("%s\n", text);
     }
+}
+
+void print_comment_frame(ID3v2_comment_frame* frame)
+{
+    if (frame == NULL)
+    {
+        printf("None\n");
+        return;
+    }
+
+    print_text_frame_text(frame->data->comment, frame->data->size);
+}
+
+void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path)
+{
+    if (frame == NULL)
+    {
+        printf("None\n");
+        return;
+    }
+
+    char* extension = strcmp(frame->data->mime_type, PNG_MIME_TYPE) == 0 ? ".png" : ".jpeg";
+    int file_name_size = strlen(dir_path) + strlen("/album_cover") + strlen(extension);
+    char* file_name = (char*) malloc((strlen(dir_path) + strlen("/album_cover") + strlen(extension)) * sizeof(char));
+    strcpy(file_name, dir_path);
+    strcat(file_name, "/album_cover");
+    strcat(file_name, extension);
+
+    FILE* file = fopen(file_name, "wb");
+    fwrite(frame->data->data, 1, frame->data->picture_size, file);
+    fclose(file);
+
+    printf("Saved in %s", file_name);
 }
