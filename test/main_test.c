@@ -1,13 +1,45 @@
 #include <stdio.h>
+#include <assert.h>
+#include <string.h>
 
 #include "id3v2lib.h"
 #include "utils.h"
+
+typedef struct _Text_frame_assertions
+{
+    char id[ID3v2_FRAME_HEADER_ID_LENGTH];
+    int frame_size;
+    char flags[ID3v2_FRAME_HEADER_FLAGS_LENGTH];
+    int data_size;
+    char encoding;
+    char* text;
+} Text_frame_assertions;
+
+void assert_text_frame(ID3v2_text_frame* frame, Text_frame_assertions compareTo)
+{
+    // Header
+    assert(memcmp(frame->header->id, compareTo.id, ID3v2_FRAME_HEADER_ID_LENGTH) == 0);
+    assert(frame->header->size == compareTo.frame_size);
+    assert(memcmp(frame->header->flags, compareTo.flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH) == 0);
+    // Data
+    assert(frame->data->size == compareTo.data_size);
+    assert(frame->data->encoding == compareTo.encoding);
+    assert(memcmp(frame->data->text, char_to_utf16(compareTo.text, -1), frame->data->size));
+}
 
 int main(int argc, char* argv[])
 {
     ID3v2_tag* tag = ID3v2_read_tag("./extra/file.mp3");
 
     ID3v2_text_frame* artist = ID3v2_tag_get_artist_frame(tag);
+    assert_text_frame(artist, (Text_frame_assertions) {
+        .id = ARTIST_FRAME_ID,
+        .frame_size = 39,
+        .flags = "\0\0",
+        .data_size = 38,
+        .encoding = 0x01,
+        .text = "Ethereal Darkness",
+    });
     printf("ARTIST: ");
     print_text_frame(artist);
 
