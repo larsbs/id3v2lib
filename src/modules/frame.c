@@ -100,12 +100,73 @@ ID3v2_text_frame_data* text_frame_data_parse(const char* buffer, int frame_size)
     return text_data;
 }
 
-ID3v2_comment_frame_data* comment_frame_data_parse(const char* buffer, int data_size)
+ID3v2_comment_frame_data* comment_frame_data_parse(const char* buffer, int frame_size)
 {
+    if (buffer == NULL)
+    {
+        return NULL;
+    }
 
+    ID3v2_comment_frame_data* comment_data = (ID3v2_comment_frame_data*) malloc(sizeof(ID3v2_comment_frame_data));
+    comment_data->encoding = buffer[0];
+    comment_data->size = frame_size - ID3v2_FRAME_ENCODING_LENGTH - ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH - ID3v2_COMMENT_FRAME_SHORT_DESCRIPTION_LENGTH;
+    comment_data->language = (char*) malloc(ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH * sizeof(char));
+    memcpy(comment_data->language, buffer + ID3v2_FRAME_ENCODING_LENGTH, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
+    comment_data->short_description = comment_data->encoding == ISO_ENCODING ? "\0" : "\0\0"; // Ignore short description for now.
+    int short_description_offset = ISO_ENCODING ? 1 : 2;
+    comment_data->comment = (char*) malloc(comment_data->size * sizeof(char));
+    memcpy(comment_data->comment, buffer + ID3v2_FRAME_ENCODING_LENGTH + ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH + short_description_offset, comment_data->size);
+
+    return comment_data;
 }
 
-ID3v2_apic_frame_data* apic_frame_data_parse(const char* buffer, int data_size)
+ID3v2_apic_frame_data* apic_frame_data_parse(const char* buffer, int frame_size)
 {
+    if (buffer == NULL)
+    {
+        return NULL;
+    }
 
+    int cursor = 0;
+    ID3v2_apic_frame_data* apic_data = (ID3v2_apic_frame_data*) malloc(sizeof(ID3v2_apic_frame_data));
+
+    apic_data->encoding = buffer[cursor];
+
+    int mime_type_size = strlen(buffer + (cursor += ID3v2_FRAME_ENCODING_LENGTH)) + 1; // Add one to take into account the termination character
+    apic_data->mime_type = (char*) malloc(mime_type_size * sizeof(char));
+    memcpy(apic_data->mime_type, buffer + cursor, mime_type_size);
+
+    apic_data->picture_type = buffer[cursor += mime_type_size];
+    cursor += ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH;
+
+    apic_data->description = apic_data->encoding == ISO_ENCODING ? "\0" : "\0\0";
+
+    // Move forward cursor to skip description.
+    if (apic_data->encoding == ISO_ENCODING)
+    {
+        cursor += strlen(buffer + cursor);
+        cursor++; // Add termination string character
+    }
+    else
+    {
+        char prev = buffer[cursor++];
+        while (1)
+        {
+            char curr = buffer[cursor++];
+
+            if (prev == 0x00 && curr == 0x00)
+            {
+                cursor++;
+                break;
+            }
+
+            prev = curr;
+        }
+    }
+
+    apic_data->picture_size = frame_size - cursor;
+    apic_data->data = (char*) malloc(apic_data->picture_size * sizeof(char));
+    memcpy(apic_data->data, buffer + cursor, apic_data->picture_size);
+
+    return apic_data;
 }
