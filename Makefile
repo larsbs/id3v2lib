@@ -31,5 +31,6 @@ clean:
 	rm -rf lib
 	rm -rf $(shell find . -type f -name '*.o')
 	rm -rf test/main_test
+	rm -rf test/album_cover.png
 
 .PHONY: all clean test build_test build_static
