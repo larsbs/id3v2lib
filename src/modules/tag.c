@@ -162,6 +162,11 @@ ID3v2_text_frame* ID3v2_tag_get_composer(ID3v2_tag* tag)
     return tag_get_text_frame(tag, COMPOSER_FRAME_ID);
 }
 
+/**
+ * Since the ID3v2 spec allows defining multiple COMM frames in a
+ * single tag, this gets the first COMM frame found. To retrieve every
+ * COMM frame found use ID3v2_tag_get_comments(tag) instead.
+*/
 ID3v2_comment_frame* ID3v2_tag_get_comment(ID3v2_tag* tag)
 {
     if (tag == NULL)
@@ -170,6 +175,21 @@ ID3v2_comment_frame* ID3v2_tag_get_comment(ID3v2_tag* tag)
     }
 
     return (ID3v2_comment_frame*) frame_list_get_frame_by_id(tag->frames, COMMENT_FRAME_ID);
+}
+
+/**
+ * Since the ID3v2 spec allows defining multiple COMM frames in a
+ * single tag, this gets every COMM frame found. To retrieve only the
+ * first COMM frame found use ID3v2_tag_get_comment(tag) instead.
+*/
+ID3v2_frame_list* ID3v2_tag_get_comments(ID3v2_tag* tag)
+{
+    if (tag == NULL)
+    {
+        return NULL;
+    }
+
+    return (ID3v2_frame_list*) frame_list_get_frames_by_id(tag->frames, COMMENT_FRAME_ID);
 }
 
 ID3v2_apic_frame* ID3v2_tag_get_album_cover(ID3v2_tag* tag)

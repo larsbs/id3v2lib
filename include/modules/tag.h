@@ -48,6 +48,7 @@ ID3v2_text_frame* ID3v2_tag_get_year(ID3v2_tag* tag);
 ID3v2_text_frame* ID3v2_tag_get_disc_number(ID3v2_tag* tag);
 ID3v2_text_frame* ID3v2_tag_get_composer(ID3v2_tag* tag);
 ID3v2_comment_frame* ID3v2_tag_get_comment(ID3v2_tag* tag);
+ID3v2_frame_list* ID3v2_tag_get_comments(ID3v2_tag* tag);
 ID3v2_apic_frame* ID3v2_tag_get_album_cover(ID3v2_tag* tag);
 
 #endif

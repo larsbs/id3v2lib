@@ -8,7 +8,6 @@
  */
 
 #include <stdio.h>
-#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -115,6 +114,22 @@ void print_comment_frame(ID3v2_comment_frame* frame)
     print_text_frame_text(frame->data->comment, frame->data->size);
 }
 
+void print_comment_frames(ID3v2_frame_list* frames)
+{
+    if (frames == NULL)
+    {
+        printf("None\n");
+        return;
+    }
+
+    while (frames != NULL)
+    {
+        ID3v2_comment_frame* comment = (ID3v2_comment_frame*) frames->frame;
+        print_comment_frame(comment);
+        frames = frames->next;
+    }
+}
+
 void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path)
 {
     if (frame == NULL)
@@ -125,7 +140,7 @@ void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path)
 
     char* extension = strcmp(frame->data->mime_type, PNG_MIME_TYPE) == 0 ? ".png" : ".jpeg";
     int file_name_size = strlen(dir_path) + strlen("/album_cover") + strlen(extension);
-    char* file_name = (char*) malloc((strlen(dir_path) + strlen("/album_cover") + strlen(extension)) * sizeof(char));
+    char* file_name = (char*) malloc((file_name_size) * sizeof(char));
     strcpy(file_name, dir_path);
     strcat(file_name, "/album_cover");
     strcat(file_name, extension);

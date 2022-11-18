@@ -43,9 +43,13 @@ int main(int argc, char* argv[])
     printf("COMPOSER: ");
     print_text_frame(composer);
 
-    // ID3v2_comment_frame* comment = ID3v2_tag_get_comment(tag);
-    // printf("COMMENT: ");
-    // print_comment_frame(comment);
+    ID3v2_comment_frame* comment = ID3v2_tag_get_comment(tag);
+    printf("COMMENT: ");
+    print_comment_frame(comment);
+
+    ID3v2_frame_list* comments = ID3v2_tag_get_comments(tag);
+    printf("COMMENTS:\n");
+    print_comment_frames(comments);
 
     ID3v2_apic_frame* album_cover = ID3v2_tag_get_album_cover(tag);
     printf("ALBUM COVER: ");

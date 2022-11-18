@@ -10,6 +10,8 @@
 #ifndef id3v2lib_test_utils_h
 #define id3v2lib_test_utils_h
 
+#include <stdbool.h>
+
 #include "id3v2lib.h"
 
 // This makes MSVC happy without having to download msinttypes
@@ -19,9 +21,11 @@
   typedef unsigned short uint16_t;
 #endif
 
+bool has_bom(char* string);
 void print_text_frame_text(char* text, int size);
 void print_text_frame(ID3v2_text_frame* frame);
 void print_comment_frame(ID3v2_comment_frame* frame);
-void save_album_cover(ID3v2_apic_frame* frame, char* dir_path);
+void print_comment_frames(ID3v2_frame_list* frames);
+void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path);
 
 #endif

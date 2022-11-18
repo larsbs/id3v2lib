@@ -107,15 +107,22 @@ ID3v2_comment_frame_data* comment_frame_data_parse(const char* buffer, int frame
         return NULL;
     }
 
+    int cursor = 0;
     ID3v2_comment_frame_data* comment_data = (ID3v2_comment_frame_data*) malloc(sizeof(ID3v2_comment_frame_data));
-    comment_data->encoding = buffer[0];
-    comment_data->size = frame_size - ID3v2_FRAME_ENCODING_LENGTH - ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH - ID3v2_COMMENT_FRAME_SHORT_DESCRIPTION_LENGTH;
+
+    comment_data->encoding = buffer[cursor];
+
     comment_data->language = (char*) malloc(ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH * sizeof(char));
-    memcpy(comment_data->language, buffer + ID3v2_FRAME_ENCODING_LENGTH, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
-    comment_data->short_description = comment_data->encoding == ISO_ENCODING ? "\0" : "\0\0"; // Ignore short description for now.
-    int short_description_offset = ISO_ENCODING ? 1 : 2;
+    memcpy(comment_data->language, buffer + (cursor += ID3v2_FRAME_ENCODING_LENGTH), ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
+
+    int short_description_length = string_length(buffer + (cursor += ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH));
+    comment_data->short_description = (char*) malloc(short_description_length * sizeof(char));
+    memcpy(comment_data->short_description, buffer + cursor, short_description_length);
+
+    comment_data->size = frame_size - ID3v2_FRAME_ENCODING_LENGTH - ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH - short_description_length;
+
     comment_data->comment = (char*) malloc(comment_data->size * sizeof(char));
-    memcpy(comment_data->comment, buffer + ID3v2_FRAME_ENCODING_LENGTH + ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH + short_description_offset, comment_data->size);
+    memcpy(comment_data->comment, buffer + (cursor += short_description_length), comment_data->size);
 
     return comment_data;
 }

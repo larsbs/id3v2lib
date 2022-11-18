@@ -73,3 +73,43 @@ unsigned int syncint_decode(int value)
 
     return result;
 }
+
+bool string_has_bom(char* string)
+{
+    if (string == NULL)
+    {
+        return false;
+    }
+
+    if(memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+int string_length(char* string)
+{
+    if (string_has_bom(string))
+    {
+        int size = 0;
+        char prev = string[0];
+
+        while (1)
+        {
+            char curr = string[++size];
+
+            if (prev == 0x00 && curr == 0x00) // String termination found
+            {
+                return size + 1;
+            }
+
+            prev = curr;
+        }
+    }
+    else
+    {
+        return strlen(string) + 1; // Take into account the string termination marker
+    }
+}
