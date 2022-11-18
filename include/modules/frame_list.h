@@ -20,4 +20,6 @@ typedef struct _ID3v2_frame_list
     struct _ID3v2_frame_list* next;
 } ID3v2_frame_list;
 
+void ID3v2_frame_list_free(ID3v2_frame_list* list);
+
 #endif

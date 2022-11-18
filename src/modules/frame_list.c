@@ -45,6 +45,9 @@ void frame_list_add_frame(ID3v2_frame_list* list, ID3v2_frame* frame)
     }
 }
 
+/**
+ * Returns the first frame matching frame_id
+*/
 ID3v2_frame* frame_list_get_frame_by_id(ID3v2_frame_list* list, char* frame_id)
 {
     while(list != NULL && list->frame != NULL)
@@ -58,4 +61,33 @@ ID3v2_frame* frame_list_get_frame_by_id(ID3v2_frame_list* list, char* frame_id)
     }
 
     return NULL;
+}
+
+/**
+ * Returns all the frames matching frame_id in a sublist
+*/
+ID3v2_frame_list* frame_list_get_frames_by_id(ID3v2_frame_list* list, char* frame_id)
+{
+    ID3v2_frame_list* sublist = frame_list_new();
+
+    while(list != NULL && list->frame != NULL)
+    {
+        if(strncmp(list->frame->header->id, frame_id, 4) == 0)
+        {
+            frame_list_add_frame(sublist, list->frame);
+        }
+
+        list = list->next;
+    }
+
+    return sublist;
+}
+
+void ID3v2_frame_list_free(ID3v2_frame_list* list)
+{
+    while(list->next != NULL)
+    {
+        free(list->frame);
+        list = list->next;
+    }
 }
