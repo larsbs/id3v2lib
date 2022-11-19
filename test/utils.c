@@ -54,6 +54,31 @@ uint16_t* char_to_utf16(char* string, int size)
     return result;
 }
 
+char* to_unicode(char* string)
+{
+    if (has_bom(string))
+    {
+        return string;
+    }
+
+    int size = (strlen(string) * 2) + 4; // +4 to take the BOM and the termination into account;
+    char* result = (char*) malloc(size * sizeof(char));
+
+    result[0] = 0xFF;
+    result[1] = 0xFE;
+
+    for (int i = 1; i <= strlen(string); i++)
+    {
+        result[i * 2] = string[i - 1];
+        result[(i * 2) + 1] = 0x00;
+    }
+
+    result[size - 2] = 0x00;
+    result[size - 1] = 0x00;
+
+    return result;
+}
+
 void println_utf16(uint16_t* string, int size)
 {
     int i = 1; // Skip the BOM

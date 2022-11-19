@@ -29,5 +29,6 @@ void print_comment_frames(ID3v2_frame_list* frames);
 void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path);
 uint16_t* char_to_utf16(char* string, int size);
 void println_utf16(uint16_t* string, int size);
+char* to_unicode(char* string);
 
 #endif
