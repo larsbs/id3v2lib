@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include <string.h>
 
 #include "id3v2lib.h"
 #include "utils.h"
 #include "assertion_utils.h"
 
-int main(int argc, char* argv[])
+int main()
 {
     ID3v2_tag* tag = ID3v2_read_tag("./extra/file.mp3");
 
@@ -121,9 +120,17 @@ int main(int argc, char* argv[])
     printf("COMMENTS:\n");
     print_comment_frames(comments);
 
-    ID3v2_apic_frame* album_cover = ID3v2_tag_get_album_cover_frame(tag);
-    printf("ALBUM COVER: ");
-    save_apic_frame(album_cover, "./extra");
+     ID3v2_apic_frame* album_cover = ID3v2_tag_get_album_cover_frame(tag);
+     assert_apic_frame(album_cover, (Apic_frame_assertion) {
+         .flags = "\0\0",
+         .encoding = 0x00,
+         .mime_type = PNG_MIME_TYPE,
+         .description = "",
+         .picture_type = 0x03,
+         .album_cover_file_path = "extra/album_cover.png",
+     });
+     printf("ALBUM COVER: ");
+     save_apic_frame(album_cover, "./extra");
 
     // ID3v2_tag_free(tag);
 
