@@ -132,7 +132,7 @@ int main()
      printf("ALBUM COVER: ");
      save_apic_frame(album_cover, "./extra");
 
-    // ID3v2_tag_free(tag);
+    ID3v2_tag_free(tag);
 
     return 0;
 }

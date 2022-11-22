@@ -15,7 +15,8 @@
 #include "frame.private.h"
 #include "frame_list.private.h"
 
-ID3v2_tag* ID3v2_read_tag(const char* file_name) {
+ID3v2_tag* ID3v2_read_tag(const char* file_name)
+{
     ID3v2_tag_header* tag_header = tag_header_load(file_name);
 
     if (tag_header == NULL)

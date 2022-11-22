@@ -201,3 +201,10 @@ ID3v2_apic_frame* ID3v2_tag_get_album_cover_frame(ID3v2_tag* tag)
 
     return (ID3v2_apic_frame*) frame_list_get_frame_by_id(tag->frames, ALBUM_COVER_FRAME_ID);
 }
+
+void ID3v2_tag_free(ID3v2_tag* tag)
+{
+    free(tag->header);
+    ID3v2_frame_list_free(tag->frames);
+    free(tag);
+}
