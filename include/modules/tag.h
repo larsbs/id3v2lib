@@ -33,7 +33,6 @@ typedef struct _ID3v2_tag_header
 
 typedef struct _ID3v2_tag
 {
-    char* raw;
     ID3v2_tag_header* header;
     ID3v2_frame_list* frames;
 } ID3v2_tag;
@@ -50,5 +49,7 @@ ID3v2_text_frame* ID3v2_tag_get_composer_frame(ID3v2_tag* tag);
 ID3v2_comment_frame* ID3v2_tag_get_comment_frame(ID3v2_tag* tag);
 ID3v2_frame_list* ID3v2_tag_get_comment_frames(ID3v2_tag* tag);
 ID3v2_apic_frame* ID3v2_tag_get_album_cover_frame(ID3v2_tag* tag);
+
+void ID3v2_tag_free(ID3v2_tag* tag);
 
 #endif
