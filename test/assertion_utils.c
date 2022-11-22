@@ -105,4 +105,6 @@ void assert_apic_frame(ID3v2_apic_frame* frame, Apic_frame_assertion comparison)
     assert(memcmp(frame->data->data, picture_data, picture_size) == 0);
     assert(memcmp(frame->data->mime_type, comparison.mime_type, strlen(comparison.mime_type)) == 0);
     assert(memcmp(frame->data->description, comparison.encoding == ISO_ENCODING ? comparison.description : to_unicode(comparison.description), description_size) == 0);
+
+    free(picture_data);
 }
