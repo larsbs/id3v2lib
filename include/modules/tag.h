@@ -68,6 +68,7 @@ ID3v2_text_frame* ID3v2_tag_get_composer_frame(ID3v2_tag* tag);
 ID3v2_comment_frame* ID3v2_tag_get_comment_frame(ID3v2_tag* tag);
 ID3v2_frame_list* ID3v2_tag_get_comment_frames(ID3v2_tag* tag);
 ID3v2_apic_frame* ID3v2_tag_get_album_cover_frame(ID3v2_tag* tag);
+ID3v2_frame_list* ID3v2_tag_get_apic_frames(ID3v2_tag* tag);
 
 /**
  * Setter functions
@@ -110,10 +111,13 @@ typedef struct _ID3v2_apic_frame_input
     char* mime_type;
     char* description;
     char picture_type;
+    int picture_size;
     char* data;
 } ID3v2_apic_frame_input;
 
 void ID3v2_tag_add_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input);
-void ID3v2_tag_set_album_cover(ID3v2_tag* tag, char* data, char* mime_type, char* size);
+void ID3v2_tag_set_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input);
+
+void ID3v2_tag_set_album_cover(ID3v2_tag* tag, const char* mime_type, const int size, const char* data);
 
 #endif

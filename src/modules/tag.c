@@ -17,6 +17,7 @@
 #include "utils.private.h"
 #include "frame.private.h"
 #include "modules/frame_ids.h"
+#include "modules/picture_types.h"
 
 ID3v2_tag_header* tag_header_new()
 {
@@ -202,6 +203,11 @@ ID3v2_apic_frame* ID3v2_tag_get_album_cover_frame(ID3v2_tag* tag)
     return (ID3v2_apic_frame*) ID3v2_tag_get_frame(tag, ID3v2_ALBUM_COVER_FRAME_ID);
 }
 
+ID3v2_frame_list* ID3v2_tag_get_apic_frames(ID3v2_tag* tag)
+{
+    return ID3v2_tag_get_frames(tag, ID3v2_ALBUM_COVER_FRAME_ID);
+}
+
 /**
  * Setter functions
 */
@@ -321,6 +327,12 @@ void ID3v2_tag_set_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* inpu
     }
 }
 
+void ID3v2_tag_add_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* input)
+{
+    ID3v2_comment_frame* new_frame = comment_frame_new(input->flags, input->language, input->short_description, input->comment);
+    frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+}
+
 void ID3v2_tag_set_comment(ID3v2_tag* tag, const char* lang, const char* comment)
 {
     ID3v2_tag_set_comment_frame(tag, &(ID3v2_comment_frame_input) {
@@ -331,8 +343,42 @@ void ID3v2_tag_set_comment(ID3v2_tag* tag, const char* lang, const char* comment
     });
 }
 
-void ID3v2_tag_add_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* input)
+/**
+ * This only sets the first APIC frame found.
+*/
+void ID3v2_tag_set_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input)
 {
-    ID3v2_comment_frame* new_frame = comment_frame_new(input->flags, input->language, input->short_description, input->comment);
+    ID3v2_apic_frame* new_frame = apic_frame_new(input->flags, input->description, input->picture_type, input->mime_type, input->picture_size, input->data);
+    ID3v2_apic_frame* existing_frame = ID3v2_tag_get_album_cover_frame(tag);
+
+    if (existing_frame == NULL)
+    {
+        frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+    }
+    else
+    {
+        frame_list_replace_frame(tag->frames, (ID3v2_frame*) existing_frame, (ID3v2_frame*) new_frame);
+        frame_free((ID3v2_frame*) existing_frame);
+    }
+}
+
+void ID3v2_tag_add_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input)
+{
+    ID3v2_apic_frame* new_frame = apic_frame_new(input->flags, input->description, input->picture_type, input->mime_type, input->picture_size, input->data);
     frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+}
+
+/**
+ * This only sets the front album cover (picture_type = 0x03)
+*/
+void ID3v2_tag_set_album_cover(ID3v2_tag* tag, const char* mime_type, const int size, const char* data)
+{
+    ID3v2_tag_set_apic_frame(tag, &(ID3v2_apic_frame_input) {
+        .flags = "\0\0",
+        .mime_type = mime_type,
+        .description = ID3v2_to_unicode(""),
+        .picture_size = size,
+        .picture_type = ID3v2_PIC_TYPE_FRONT_COVER,
+        .data = data,
+    });
 }

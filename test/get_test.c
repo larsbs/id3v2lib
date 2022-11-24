@@ -119,13 +119,19 @@ void get_test_main()
     print_comment_frames(comments);
 
     ID3v2_apic_frame* album_cover = ID3v2_tag_get_album_cover_frame(tag);
-    assert_apic_frame(album_cover, (Apic_frame_assertion) {
+    FILE* album_cover_file = fopen("extra/album_cover.png", "rb");
+    fseek(album_cover_file, 0L, SEEK_END);
+    const int cover_file_size = ftell(album_cover_file);
+    fseek(album_cover_file, 0L, SEEK_SET);
+    const char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
+    fread(picture_data, 1, cover_file_size, album_cover_file);
+    assert_apic_frame(album_cover, &(ID3v2_apic_frame_input) {
         .flags = "\0\0",
-        .encoding = 0x00,
         .mime_type = ID3v2_MIME_TYPE_PNG,
         .description = "",
         .picture_type = 0x03,
-        .album_cover_file_path = "extra/album_cover.png",
+        .data = picture_data,
+        .picture_size = cover_file_size,
     });
     printf("ALBUM COVER: ");
     save_apic_frame(album_cover, "./extra");

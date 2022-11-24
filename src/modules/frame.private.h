@@ -17,12 +17,17 @@ void frame_free(ID3v2_frame* frame);
 
 ID3v2_text_frame* text_frame_new(const char* id, const char* flags, const char* text);
 void text_frame_free(ID3v2_text_frame* frame);
+ID3v2_text_frame_data* text_frame_data_new(const char* text);
 ID3v2_text_frame_data* text_frame_data_parse(const char* buffer, int frame_size);
 
 ID3v2_comment_frame* comment_frame_new(const char* flags, const char* lang, const char* short_desc, const char* comment);
 void comment_frame_free(ID3v2_comment_frame* frame);
+ID3v2_comment_frame_data* comment_frame_data_new(const char* lang, const char* short_desc, const char* comment);
 ID3v2_comment_frame_data* comment_frame_data_parse(const char* buffer, int frame_size);
 
+ID3v2_apic_frame* apic_frame_new(const char* flags, const char* description, const char picture_type, const char* mime_type, const int picture_size, const char* data);
+void apic_frame_free(ID3v2_apic_frame* frame);
+ID3v2_apic_frame_data* apic_frame_data_new(const char* description, const char picture_type, const char* mime_type, const int picture_size, const char* picture_data);
 ID3v2_apic_frame_data* apic_frame_data_parse(const char* buffer, int frame_size);
 
 #endif

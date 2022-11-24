@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "id3v2lib.h"
 #include "test_utils.h"
@@ -107,15 +108,39 @@ void edit_test()
         .comment = ID3v2_to_unicode("Comment"),
     });
 
-    // FILE* album_cover = fopen("extra/album_cover.png", "rb");
-    // ID3v2_tag_add_apic_frame(tag, (ID3v2_apic_frame_input) {
-    //     .flags = "\0\0",
-    //     .mime_type = ID3v2_MIME_TYPE_PNG,
-    //     .description = "Description",
-    //     .picture_type = ID3v2_PIC_TYPE_FRONT_COVER,
-    //     .data = picture_data
-    // })
-    // ID3v2_tag_set_album_cover(tag, picture_data, mime_type, picture_size);
+    FILE* album_cover = fopen("extra/album_cover.png", "rb");
+    fseek(album_cover, 0L, SEEK_END);
+    const int cover_file_size = ftell(album_cover);
+    fseek(album_cover, 0L, SEEK_SET);
+    const char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
+    fread(picture_data, 1, cover_file_size, album_cover);
+
+    ID3v2_tag_set_album_cover(tag, ID3v2_MIME_TYPE_PNG, cover_file_size, picture_data);
+    assert_apic_frame(ID3v2_tag_get_album_cover_frame(tag), &(ID3v2_apic_frame_input) {
+        .flags = "\0\0",
+        .mime_type = ID3v2_MIME_TYPE_PNG,
+        .description = ID3v2_to_unicode(""),
+        .picture_type = ID3v2_PIC_TYPE_FRONT_COVER,
+        .data = picture_data,
+        .picture_size = cover_file_size,
+    });
+
+    ID3v2_tag_add_apic_frame(tag, &(ID3v2_apic_frame_input) {
+        .flags = "\0\0",
+        .mime_type = ID3v2_MIME_TYPE_PNG,
+        .description = ID3v2_to_unicode("Description"),
+        .picture_type = ID3v2_PIC_TYPE_FRONT_COVER,
+        .data = picture_data,
+        .picture_size = cover_file_size,
+    });
+    assert_apic_frame(ID3v2_tag_get_apic_frames(tag)->next->frame, &(ID3v2_apic_frame_input) {
+        .flags = "\0\0",
+        .mime_type = ID3v2_MIME_TYPE_PNG,
+        .description = ID3v2_to_unicode("Description"),
+        .picture_type = ID3v2_PIC_TYPE_FRONT_COVER,
+        .data = picture_data,
+        .picture_size = cover_file_size,
+    });
 
     // ID3v2_tag_write("extra/file_cloned.mp3");
 

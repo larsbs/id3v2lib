@@ -60,50 +60,36 @@ void assert_comment_frame(ID3v2_comment_frame* frame, ID3v2_comment_frame_input*
     });
 
     // Data
-    assert(frame->data->size == (frame_size - ID3v2_FRAME_ENCODING_LENGTH - ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH - short_description_size));
+    assert(frame->data->size == comment_size);
     assert(frame->data->encoding == comment_encoding);
+    assert(memcmp(frame->data->language, comparison->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH) == 0);
     assert(memcmp(frame->data->short_description, comparison->short_description, short_description_size) == 0);
     assert(memcmp(frame->data->comment, comparison->comment, frame->data->size) == 0);
 }
 
-void assert_apic_frame(ID3v2_apic_frame* frame, Apic_frame_assertion comparison)
+void assert_apic_frame(ID3v2_apic_frame* frame, ID3v2_apic_frame_input* comparison)
 {
-    const int bom_length = comparison.encoding == ID3v2_ENCODING_ISO ? 0 : 2;
-    const int str_termination_length = comparison.encoding == ID3v2_ENCODING_ISO ? 1 : 2;
-    const int scale = comparison.encoding == ID3v2_ENCODING_ISO ? 1 : 2;
+    const encoding = has_bom(comparison->description) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
 
-    assert(comparison.description != NULL);
-    const int description_size = (strlen(comparison.description) * scale) + bom_length + str_termination_length;
+    assert(comparison->description != NULL);
+    const int description_size = ID3v2_strlent(comparison->description);
 
-    // Compute picture_size from test album cover
-    FILE* album_cover = fopen(comparison.album_cover_file_path, "rb");
-    fseek(album_cover, 0L, SEEK_END);
-    const int picture_size = ftell(album_cover);
-    rewind(album_cover);
+    assert(comparison->mime_type != NULL);
+    const int mime_type_size = ID3v2_strlent(comparison->mime_type);
 
-    // Read picture data
-    char* picture_data = (char*) malloc(picture_size * sizeof(char));
-    fread(picture_data, picture_size, 1, album_cover);
-    fclose(album_cover);
-
-    assert(comparison.mime_type != NULL);
-    const int mime_type_size = strlen(comparison.mime_type) + 1; // +1 = string termination
-
-    int frame_size = ID3v2_FRAME_ENCODING_LENGTH + mime_type_size + ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH + description_size + picture_size;
+    const int frame_size = ID3v2_FRAME_ENCODING_LENGTH + mime_type_size + ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH + description_size + comparison->picture_size;
 
     // Header
     assert_frame_header((ID3v2_frame*) frame, (Frame_header_assertion) {
         .id = ID3v2_ALBUM_COVER_FRAME_ID,
         .size = frame_size,
-        .flags = comparison.flags,
+        .flags = comparison->flags,
     });
 
     // Data
-    assert(frame->data->encoding == comparison.encoding);
-    assert(frame->data->picture_size == picture_size);
-    assert(memcmp(frame->data->data, picture_data, picture_size) == 0);
-    assert(memcmp(frame->data->mime_type, comparison.mime_type, strlen(comparison.mime_type)) == 0);
-    assert(memcmp(frame->data->description, comparison.encoding == ID3v2_ENCODING_ISO ? comparison.description : to_unicode(comparison.description), description_size) == 0);
-
-    free(picture_data);
+    assert(frame->data->encoding == encoding);
+    assert(frame->data->picture_size == comparison->picture_size);
+    assert(memcmp(frame->data->data, comparison->data, comparison->picture_size) == 0);
+    assert(memcmp(frame->data->mime_type, comparison->mime_type, mime_type_size) == 0);
+    assert(memcmp(frame->data->description, comparison->description, description_size) == 0);
 }
