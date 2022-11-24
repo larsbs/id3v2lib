@@ -24,4 +24,10 @@ char* ID3v2_to_unicode(char* string);
 */
 int ID3v2_strlen(const char* string);
 
+/**
+ * Like ID3v2_strlen but also takes into account the length
+ * of the string termination character (null character).
+*/
+int ID3v2_strlent(const char* string);
+
 #endif
