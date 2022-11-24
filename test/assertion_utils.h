@@ -19,23 +19,6 @@ typedef struct _Frame_header_assertion
     char* flags;
 } Frame_header_assertion;
 
-typedef struct _Text_frame_assertion
-{
-    char* id;
-    char* flags;
-    char encoding;
-    char* text;
-} Text_frame_assertion;
-
-typedef struct _Comment_frame_assertion
-{
-    char* flags;
-    char encoding;
-    char* comment;
-    char* language;
-    char* short_description;
-} Comment_frame_assertion;
-
 typedef struct _Apic_frame_assertion
 {
     char* flags;
@@ -47,8 +30,8 @@ typedef struct _Apic_frame_assertion
 } Apic_frame_assertion;
 
 void assert_frame_header(ID3v2_frame* frame, Frame_header_assertion comparison);
-void assert_text_frame(ID3v2_text_frame* frame, Text_frame_assertion comparison);
-void assert_comment_frame(ID3v2_comment_frame* frame, Comment_frame_assertion comparison);
+void assert_text_frame(ID3v2_text_frame* frame, ID3v2_text_frame_input* comparison);
+void assert_comment_frame(ID3v2_comment_frame* frame, ID3v2_comment_frame_input* comparison);
 void assert_apic_frame(ID3v2_apic_frame* frame, Apic_frame_assertion comparison);
 
 #endif

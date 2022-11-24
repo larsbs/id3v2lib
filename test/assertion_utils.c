@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "utils.h"
+#include "test_utils.h"
 #include "assertion_utils.h"
 
 void assert_frame_header(ID3v2_frame* frame, Frame_header_assertion comparison)
@@ -22,56 +22,55 @@ void assert_frame_header(ID3v2_frame* frame, Frame_header_assertion comparison)
     assert(memcmp(frame->header->flags, comparison.flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH) == 0);
 }
 
-void assert_text_frame(ID3v2_text_frame* frame, Text_frame_assertion comparison)
+void assert_text_frame(ID3v2_text_frame* frame, ID3v2_text_frame_input* comparison)
 {
-    const int bom_length = comparison.encoding == ISO_ENCODING ? 0 : 2;
-    const int str_termination_length = comparison.encoding == ISO_ENCODING ? 1 : 2;
-    const int scale = comparison.encoding == ISO_ENCODING ? 1 : 2;
-    const int text_size = (strlen(comparison.text) * scale) + bom_length + str_termination_length;
+    const char encoding = has_bom(comparison->text) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
+    const int str_termination_length = encoding == ID3v2_ENCODING_ISO ? 1 : 2;
+    const int text_size = ID3v2_strlen(comparison->text) + str_termination_length;
     const int frame_size = text_size + ID3v2_FRAME_ENCODING_LENGTH;
 
     // Header
     assert_frame_header((ID3v2_frame*) frame, (Frame_header_assertion) {
-        .id = comparison.id,
+        .id = comparison->id,
         .size = frame_size,
-        .flags = comparison.flags,
+        .flags = comparison->flags,
     });
 
     // Data
     assert(frame->data->size == (frame_size - ID3v2_FRAME_ENCODING_LENGTH));
-    assert(frame->data->encoding == comparison.encoding);
-    assert(memcmp(frame->data->text, comparison.encoding == ISO_ENCODING ? comparison.text : to_unicode(comparison.text), frame->data->size) == 0);
+    assert(frame->data->encoding == encoding);
+    assert(memcmp(frame->data->text, comparison->text, frame->data->size) == 0);
 }
 
-void assert_comment_frame(ID3v2_comment_frame* frame, Comment_frame_assertion comparison)
+void assert_comment_frame(ID3v2_comment_frame* frame, ID3v2_comment_frame_input* comparison)
 {
-    const int bom_length = comparison.encoding == ISO_ENCODING ? 0 : 2;
-    const int str_termination_length = comparison.encoding == ISO_ENCODING ? 1 : 2;
-    const int scale = comparison.encoding == ISO_ENCODING ? 1 : 2;
+    const char comment_encoding = has_bom(comparison->comment) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
+    const int short_desc_str_termination_length = has_bom(comparison->short_description) ? 2 : 1;
+    const int str_termination_length = comment_encoding == ID3v2_ENCODING_ISO ? 1 : 2;
 
-    const int comment_size = (strlen(comparison.comment) * scale) + bom_length + str_termination_length;
-    const int short_description_size = (strlen(comparison.short_description) * scale) + bom_length + str_termination_length;
+    const int comment_size = ID3v2_strlen(comparison->comment) + str_termination_length;
+    const int short_description_size = ID3v2_strlen(comparison->short_description) + short_desc_str_termination_length;
     const int frame_size = comment_size + short_description_size + ID3v2_FRAME_ENCODING_LENGTH + ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH;
 
     // Header
     assert_frame_header((ID3v2_frame*) frame, (Frame_header_assertion) {
-        .id = COMMENT_FRAME_ID,
+        .id = ID3v2_COMMENT_FRAME_ID,
         .size = frame_size,
-        .flags = comparison.flags,
+        .flags = comparison->flags,
     });
 
     // Data
     assert(frame->data->size == (frame_size - ID3v2_FRAME_ENCODING_LENGTH - ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH - short_description_size));
-    assert(frame->data->encoding == comparison.encoding);
-    assert(memcmp(frame->data->short_description, comparison.encoding == ISO_ENCODING ? comparison.short_description : to_unicode(comparison.short_description), short_description_size) == 0);
-    assert(memcmp(frame->data->comment, comparison.encoding == ISO_ENCODING ? comparison.comment : to_unicode(comparison.comment), frame->data->size) == 0);
+    assert(frame->data->encoding == comment_encoding);
+    assert(memcmp(frame->data->short_description, comparison->short_description, short_description_size) == 0);
+    assert(memcmp(frame->data->comment, comparison->comment, frame->data->size) == 0);
 }
 
 void assert_apic_frame(ID3v2_apic_frame* frame, Apic_frame_assertion comparison)
 {
-    const int bom_length = comparison.encoding == ISO_ENCODING ? 0 : 2;
-    const int str_termination_length = comparison.encoding == ISO_ENCODING ? 1 : 2;
-    const int scale = comparison.encoding == ISO_ENCODING ? 1 : 2;
+    const int bom_length = comparison.encoding == ID3v2_ENCODING_ISO ? 0 : 2;
+    const int str_termination_length = comparison.encoding == ID3v2_ENCODING_ISO ? 1 : 2;
+    const int scale = comparison.encoding == ID3v2_ENCODING_ISO ? 1 : 2;
 
     assert(comparison.description != NULL);
     const int description_size = (strlen(comparison.description) * scale) + bom_length + str_termination_length;
@@ -94,7 +93,7 @@ void assert_apic_frame(ID3v2_apic_frame* frame, Apic_frame_assertion comparison)
 
     // Header
     assert_frame_header((ID3v2_frame*) frame, (Frame_header_assertion) {
-        .id = ALBUM_COVER_FRAME_ID,
+        .id = ID3v2_ALBUM_COVER_FRAME_ID,
         .size = frame_size,
         .flags = comparison.flags,
     });
@@ -104,7 +103,7 @@ void assert_apic_frame(ID3v2_apic_frame* frame, Apic_frame_assertion comparison)
     assert(frame->data->picture_size == picture_size);
     assert(memcmp(frame->data->data, picture_data, picture_size) == 0);
     assert(memcmp(frame->data->mime_type, comparison.mime_type, strlen(comparison.mime_type)) == 0);
-    assert(memcmp(frame->data->description, comparison.encoding == ISO_ENCODING ? comparison.description : to_unicode(comparison.description), description_size) == 0);
+    assert(memcmp(frame->data->description, comparison.encoding == ID3v2_ENCODING_ISO ? comparison.description : to_unicode(comparison.description), description_size) == 0);
 
     free(picture_data);
 }

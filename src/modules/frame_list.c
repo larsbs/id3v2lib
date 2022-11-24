@@ -85,9 +85,32 @@ ID3v2_frame_list* frame_list_get_frames_by_id(ID3v2_frame_list* list, char* fram
 
 void ID3v2_frame_list_free(ID3v2_frame_list* list)
 {
-    while(list->next != NULL)
+    while(list != NULL)
     {
         free(list->frame);
+        list = list->next;
+    }
+}
+
+/**
+ * This does not free the replaced frame. That's responsibility
+ * of the calling routine.
+*/
+void frame_list_replace_frame(ID3v2_frame_list* list, ID3v2_frame* old_frame, ID3v2_frame* new_frame)
+{
+    if (list == NULL)
+    {
+        return;
+    }
+
+    while (list != NULL)
+    {
+        if (list->frame == old_frame)
+        {
+            list->frame = new_frame;
+            return;
+        }
+
         list = list->next;
     }
 }

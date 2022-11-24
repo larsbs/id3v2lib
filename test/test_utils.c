@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "utils.h"
+#include "test_utils.h"
 
 bool has_bom(char* string)
 {
@@ -163,7 +163,7 @@ void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path)
         return;
     }
 
-    char* extension = strcmp(frame->data->mime_type, PNG_MIME_TYPE) == 0 ? ".png" : ".jpeg";
+    char* extension = strcmp(frame->data->mime_type, ID3v2_MIME_TYPE_PNG) == 0 ? ".png" : ".jpeg";
     int file_name_size = strlen(dir_path) + strlen("/album_cover") + strlen(extension);
     char* file_name = (char*) malloc((file_name_size) * sizeof(char));
     strcpy(file_name, dir_path);

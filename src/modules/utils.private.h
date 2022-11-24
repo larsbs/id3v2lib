@@ -12,6 +12,8 @@
 
 #include <stdbool.h>
 
+#include "modules/utils.h"
+
 #define BOM_LENGTH 2
 
 unsigned int btoi(const char* bytes, int size);

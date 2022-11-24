@@ -18,11 +18,11 @@
 #define ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH 3
 #define ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH 1
 
-#define ISO_ENCODING 0
-#define UTF_16_ENCODING 1
+#define ID3v2_ENCODING_ISO 0
+#define ID3v2_ENCODING_UNICODE 1
 
-#define JPG_MIME_TYPE "image/jpeg"
-#define PNG_MIME_TYPE "image/png"
+#define ID3v2_MIME_TYPE_JPG "image/jpeg"
+#define ID3v2_MIME_TYPE_PNG "image/png"
 
 typedef struct _ID3v2_frame_header
 {
@@ -35,7 +35,7 @@ typedef struct _ID3v2_text_frame_data
 {
     int size;
     char encoding;
-    char* text;
+    const char* text;
 } ID3v2_text_frame_data;
 
 typedef struct _ID3v2_comment_frame_data

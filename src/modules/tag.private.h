@@ -17,7 +17,6 @@ ID3v2_tag_header* tag_header_new();
 ID3v2_tag_header* tag_header_load(const char* file_name);
 ID3v2_tag_header* tag_header_parse_from_buffer(const char* buffer);
 
-ID3v2_tag* tag_new();
 ID3v2_text_frame* tag_get_text_frame(ID3v2_tag* tag, char* frame_id);
 
 #endif

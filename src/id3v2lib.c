@@ -61,7 +61,7 @@ ID3v2_tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
         return NULL;
     }
 
-    ID3v2_tag* tag = tag_new();
+    ID3v2_tag* tag = ID3v2_tag_new();
     tag->header = tag_header;
 
     tag_buffer += ID3v2_TAG_HEADER_LENGTH; // Skip tag header

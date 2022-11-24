@@ -37,6 +37,25 @@ typedef struct _ID3v2_tag
     ID3v2_frame_list* frames;
 } ID3v2_tag;
 
+ID3v2_tag* ID3v2_tag_new();
+void ID3v2_tag_free(ID3v2_tag* tag);
+
+/**
+ * Getter functions
+*/
+
+/**
+ * Returns the first frame found with the provided id. If you need
+ * more than the first occurrence, then, use ID3v2_tag_get_frames(tag, frame_id);
+*/
+ID3v2_frame* ID3v2_tag_get_frame(ID3v2_tag* tag, char* frame_id);
+
+/**
+ * Returns all the frames matching frame_id in a sublist. If you only need
+ * the first occurrence, then, use ID3v2_tag_get_frame(tag, frame_id);
+*/
+ID3v2_frame_list* ID3v2_tag_get_frames(ID3v2_tag* tag, char* frame_id);
+
 ID3v2_text_frame* ID3v2_tag_get_artist_frame(ID3v2_tag* tag);
 ID3v2_text_frame* ID3v2_tag_get_album_frame(ID3v2_tag* tag);
 ID3v2_text_frame* ID3v2_tag_get_title_frame(ID3v2_tag* tag);
@@ -50,6 +69,51 @@ ID3v2_comment_frame* ID3v2_tag_get_comment_frame(ID3v2_tag* tag);
 ID3v2_frame_list* ID3v2_tag_get_comment_frames(ID3v2_tag* tag);
 ID3v2_apic_frame* ID3v2_tag_get_album_cover_frame(ID3v2_tag* tag);
 
-void ID3v2_tag_free(ID3v2_tag* tag);
+/**
+ * Setter functions
+*/
+typedef struct _ID3v2_text_frame_input
+{
+    char* id;
+    char* flags;
+    char* text;
+} ID3v2_text_frame_input;
+
+void ID3v2_tag_set_text_frame(ID3v2_tag* tag, ID3v2_text_frame_input* input);
+
+void ID3v2_tag_set_artist(ID3v2_tag* tag, const char* artist);
+void ID3v2_tag_set_album(ID3v2_tag* tag, const char* album);
+void ID3v2_tag_set_title(ID3v2_tag* tag, const char* title);
+void ID3v2_tag_set_track(ID3v2_tag* tag, const char* track);
+void ID3v2_tag_set_album_artist(ID3v2_tag* tag, const char* album_artist);
+void ID3v2_tag_set_genre(ID3v2_tag* tag, const char* genre);
+void ID3v2_tag_set_year(ID3v2_tag* tag, const char* year);
+void ID3v2_tag_set_disc_number(ID3v2_tag* tag, const char* disc_number);
+void ID3v2_tag_set_composer(ID3v2_tag* tag, const char* composer);
+
+typedef struct _ID3v2_comment_frame_input
+{
+    char* flags;
+    char* language;
+    char* short_description;
+    char* comment;
+} ID3v2_comment_frame_input;
+
+void ID3v2_tag_set_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* input);
+void ID3v2_tag_add_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* input);
+
+void ID3v2_tag_set_comment(ID3v2_tag* tag, const char* language, const char* comment);
+
+typedef struct _ID3v2_apic_frame_input
+{
+    char* flags;
+    char* mime_type;
+    char* description;
+    char picture_type;
+    char* data;
+} ID3v2_apic_frame_input;
+
+void ID3v2_tag_add_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input);
+void ID3v2_tag_set_album_cover(ID3v2_tag* tag, char* data, char* mime_type, char* size);
 
 #endif
