@@ -1,1 +1,9 @@
-PointerAlignment: left
+BasedOnStyle: Microsoft
+PointerAlignment: Left
+ColumnLimit: 100
+SpaceAfterCStyleCast: true
+AlignAfterOpenBracket: BlockIndent
+BinPackArguments: false
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
