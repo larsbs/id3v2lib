@@ -10,13 +10,6 @@
 #ifndef id3v2lib_utils_h
 #define id3v2lib_utils_h
 
-typedef struct _Char_stream
-{
-    int cursor;
-    int size;
-    char* stream;
-} Char_stream;
-
 /**
  * Turns an iso string (one byte per character) into an
  * utf-16 string (two byes per character). Takes care of

@@ -13,6 +13,8 @@
 
 #include "utils.private.h"
 
+#define BOM_LENGTH 2
+
 char* ID3v2_to_unicode(char* string)
 {
     if (string_has_bom(string))
@@ -155,25 +157,4 @@ bool string_has_bom(const char* string)
     }
 
     return false;
-}
-
-Char_stream* char_stream_new(int size)
-{
-    Char_stream* cs = (Char_stream*) malloc(sizeof(Char_stream));
-    cs->stream = (char*) calloc(size, sizeof(char));
-    cs->cursor = 0;
-    cs->size = size;
-    return cs;
-}
-
-void char_stream_free(Char_stream* cs)
-{
-    free(cs->stream);
-    free(cs);
-}
-
-void cswrite(const char* data, size_t size, Char_stream* cs)
-{
-    memcpy(cs->stream + cs->cursor, data, size);
-    cs->cursor += size;
 }

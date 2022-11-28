@@ -14,15 +14,13 @@
 #include "frame_list.private.h"
 #include "id3v2lib.h"
 #include "tag.private.h"
+#include "tag_header.private.h"
 
 ID3v2_tag* ID3v2_read_tag(const char* file_name)
 {
-    ID3v2_tag_header* tag_header = tag_header_load(file_name);
+    ID3v2_TagHeader* tag_header = ID3v2_TagHeader_read(file_name);
 
-    if (tag_header == NULL)
-    {
-        return NULL;
-    }
+    if (tag_header == NULL) return NULL;
 
     FILE* file = fopen(file_name, "rb");
     int buffer_length = tag_header->tag_size + ID3v2_TAG_HEADER_LENGTH;
@@ -47,7 +45,7 @@ ID3v2_tag* ID3v2_read_tag(const char* file_name)
 
 ID3v2_tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
 {
-    ID3v2_tag_header* tag_header = tag_header_parse_from_buffer(tag_buffer);
+    ID3v2_TagHeader* tag_header = TagHeader_parse(tag_buffer);
 
     if (tag_header == NULL)
     {

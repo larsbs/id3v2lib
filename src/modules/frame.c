@@ -25,14 +25,14 @@ ID3v2_frame_header* frame_header_new(const char* id, const char* flags, const in
     return frame_header;
 }
 
-Char_stream* frame_header_to_char_stream(ID3v2_frame_header* header)
+CharStream* frame_header_to_char_stream(ID3v2_frame_header* header)
 {
-    Char_stream* header_cs = char_stream_new(ID3v2_FRAME_HEADER_LENGTH);
+    CharStream* header_cs = CharStream_new(ID3v2_FRAME_HEADER_LENGTH);
 
     // Header
-    cswrite(header->id, ID3v2_FRAME_HEADER_ID_LENGTH, header_cs);
-    cswrite(itob(header->size), ID3v2_FRAME_HEADER_SIZE_LENGTH, header_cs);
-    cswrite(&header->flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH, header_cs);
+    CharStream_write(header_cs, header->id, ID3v2_FRAME_HEADER_ID_LENGTH);
+    CharStream_write(header_cs, itob(header->size), ID3v2_FRAME_HEADER_SIZE_LENGTH);
+    CharStream_write(header_cs, &header->flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH);
 
     return header_cs;
 }
@@ -118,7 +118,7 @@ void frame_free(ID3v2_frame* frame)
     }
 }
 
-Char_stream* frame_to_char_stream(ID3v2_frame* frame)
+CharStream* frame_to_char_stream(ID3v2_frame* frame)
 {
     switch (frame->header->id[0])
     {
@@ -153,23 +153,23 @@ void text_frame_free(ID3v2_text_frame* frame)
     free(frame);
 }
 
-Char_stream* text_frame_to_char_stream(ID3v2_text_frame* frame)
+CharStream* text_frame_to_char_stream(ID3v2_text_frame* frame)
 {
     if (frame == NULL)
     {
         return NULL;
     }
 
-    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
-    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
+    CharStream* frame_header_cs = frame_header_to_char_stream(frame->header);
+    CharStream* frame_cs = CharStream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
 
     // Header
-    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
-    char_stream_free(frame_header_cs);
+    CharStream_write(frame_cs, frame_header_cs->stream, frame_header_cs->size);
+    CharStream_free(frame_header_cs);
 
     // Data
-    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
-    cswrite(frame->data->text, frame->data->size, frame_cs);
+    CharStream_write(frame_cs, &frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH);
+    CharStream_write(frame_cs, frame->data->text, frame->data->size);
 
     return frame_cs;
 }
@@ -234,29 +234,29 @@ void comment_frame_free(ID3v2_comment_frame* frame)
     free(frame);
 }
 
-Char_stream* comment_frame_to_char_stream(ID3v2_comment_frame* frame)
+CharStream* comment_frame_to_char_stream(ID3v2_comment_frame* frame)
 {
     if (frame == NULL)
     {
         return NULL;
     }
 
-    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
-    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
+    CharStream* frame_header_cs = frame_header_to_char_stream(frame->header);
+    CharStream* frame_cs = CharStream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
 
     // Header
-    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
-    char_stream_free(frame_header_cs);
+    CharStream_write(frame_cs, frame_header_cs->stream, frame_header_cs->size);
+    CharStream_free(frame_header_cs);
 
     // Data
-    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
-    cswrite(frame->data->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH, frame_cs);
-    cswrite(
+    CharStream_write(frame_cs, &frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH);
+    CharStream_write(frame_cs, frame->data->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
+    CharStream_write(
+        frame_cs,
         frame->data->short_description,
-        ID3v2_strlent(frame->data->short_description),
-        frame_cs
+        ID3v2_strlent(frame->data->short_description)
     );
-    cswrite(frame->data->comment, frame->data->size, frame_cs);
+    CharStream_write(frame_cs, frame->data->comment, frame->data->size);
 
     return frame_cs;
 }
@@ -351,26 +351,26 @@ void apic_frame_free(ID3v2_apic_frame* frame)
     free(frame);
 }
 
-Char_stream* apic_frame_to_char_stream(ID3v2_apic_frame* frame)
+CharStream* apic_frame_to_char_stream(ID3v2_apic_frame* frame)
 {
     if (frame == NULL)
     {
         return NULL;
     }
 
-    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
-    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
+    CharStream* frame_header_cs = frame_header_to_char_stream(frame->header);
+    CharStream* frame_cs = CharStream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
 
     // Header
-    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
-    char_stream_free(frame_header_cs);
+    CharStream_write(frame_cs, frame_header_cs->stream, frame_header_cs->size);
+    CharStream_free(frame_header_cs);
 
     // Data
-    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
-    cswrite(frame->data->mime_type, ID3v2_strlent(frame->data->mime_type), frame_cs);
-    cswrite(&frame->data->picture_type, ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH, frame_cs);
-    cswrite(frame->data->description, ID3v2_strlent(frame->data->description), frame_cs);
-    cswrite(frame->data->data, frame->data->picture_size, frame_cs);
+    CharStream_write(frame_cs, &frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH);
+    CharStream_write(frame_cs, frame->data->mime_type, ID3v2_strlent(frame->data->mime_type));
+    CharStream_write(frame_cs, &frame->data->picture_type, ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH);
+    CharStream_write(frame_cs, frame->data->description, ID3v2_strlent(frame->data->description));
+    CharStream_write(frame_cs, frame->data->data, frame->data->picture_size);
 
     return frame_cs;
 }

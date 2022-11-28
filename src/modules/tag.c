@@ -17,112 +17,37 @@
 #include "modules/frame_ids.h"
 #include "modules/picture_types.h"
 #include "tag.private.h"
+#include "tag_header.private.h"
 #include "utils.private.h"
 
-ID3v2_tag_header* tag_header_new()
+CharStream* tag_to_char_stream(ID3v2_tag* tag)
 {
-    ID3v2_tag_header* tag_header = (ID3v2_tag_header*) malloc(sizeof(ID3v2_tag_header));
-
-    if (tag_header != NULL)
-    {
-        memcpy(tag_header->identifier, "ID3", 3);
-        tag_header->minor_version = 0;
-        tag_header->major_version = 0;
-        tag_header->flags = 0;
-        tag_header->tag_size = 0;
-        tag_header->extended_header_size = 0;
-    }
-
-    return tag_header;
-}
-
-ID3v2_tag_header* tag_header_load(const char* file_name)
-{
-    FILE* file = fopen(file_name, "rb");
-    char tag_header_buffer[ID3v2_TAG_HEADER_LENGTH];
-    size_t bytes_read = 0;
-
-    if (file == NULL)
-    {
-        perror("Error opening file.");
-        return NULL;
-    }
-
-    bytes_read = fread(tag_header_buffer, ID3v2_TAG_HEADER_LENGTH, 1, file);
-
-    if (bytes_read < 1)
-    {
-        // Less than ID3v2_TAG_HEADER_LENGTH bytes in file
-        return NULL;
-    }
-
-    return tag_header_parse_from_buffer(tag_header_buffer);
-}
-
-ID3v2_tag_header* tag_header_parse_from_buffer(const char* buffer)
-{
-    bool has_id3v2_tag = memcmp(buffer, "ID3", 3) == 0;
-
-    if (!has_id3v2_tag)
-    {
-        return NULL;
-    }
-
-    int cursor = 0;
-
-    ID3v2_tag_header* tag_header = tag_header_new();
-    tag_header->major_version = buffer[cursor += ID3v2_TAG_HEADER_IDENTIFIER_LENGTH];
-    tag_header->minor_version = buffer[cursor += ID3v2_TAG_HEADER_MAJOR_VERSION_LENGTH];
-
-    if (tag_header->major_version != 3 && tag_header->major_version != 4)
-    {
-        // No supported id3 tag found
-        free(tag_header);
-        return NULL;
-    }
-
-    tag_header->flags = buffer[cursor += ID3v2_TAG_HEADER_MINOR_VERSION_LENGTH];
-    tag_header->tag_size = syncint_decode(
-        btoi(buffer + (cursor += ID3v2_TAG_HEADER_FLAGS_LENGTH), ID3v2_TAG_HEADER_TAG_SIZE_LENGTH)
-    );
-    tag_header->extended_header_size = 0;
-
-    if ((tag_header->flags & (1 << 6)) == (1 << 6))
-    {
-        // An extended header exists, retrieve its size and update the tag_header
-        tag_header->extended_header_size = syncint_decode(btoi(
-            buffer + (cursor += ID3v2_TAG_HEADER_TAG_SIZE_LENGTH),
-            ID3v2_EXTENDED_HEADED_SIZE_LENGTH
-        ));
-    }
-
-    return tag_header;
-}
-
-Char_stream* tag_to_char_stream(ID3v2_tag* tag)
-{
-    Char_stream* tag_cs = char_stream_new(tag->header->tag_size + ID3v2_TAG_HEADER_LENGTH);
+    CharStream* tag_cs = CharStream_new(tag->header->tag_size + ID3v2_TAG_HEADER_LENGTH);
 
     // Write header
-    cswrite(tag->header->identifier, ID3v2_TAG_HEADER_IDENTIFIER_LENGTH, tag_cs);
-    cswrite(&tag->header->major_version, ID3v2_TAG_HEADER_MAJOR_VERSION_LENGTH, tag_cs);
-    cswrite(&tag->header->minor_version, ID3v2_TAG_HEADER_MINOR_VERSION_LENGTH, tag_cs);
-    cswrite(&tag->header->flags, ID3v2_TAG_HEADER_FLAGS_LENGTH, tag_cs);
-    cswrite(itob(syncint_encode(tag->header->tag_size)), ID3v2_TAG_HEADER_TAG_SIZE_LENGTH, tag_cs);
+    CharStream_write(tag_cs, tag->header->identifier, ID3v2_TAG_HEADER_IDENTIFIER_LENGTH);
+    CharStream_write(tag_cs, &tag->header->major_version, ID3v2_TAG_HEADER_MAJOR_VERSION_LENGTH);
+    CharStream_write(tag_cs, &tag->header->minor_version, ID3v2_TAG_HEADER_MINOR_VERSION_LENGTH);
+    CharStream_write(tag_cs, &tag->header->flags, ID3v2_TAG_HEADER_FLAGS_LENGTH);
+    CharStream_write(
+        tag_cs,
+        itob(syncint_encode(tag->header->tag_size)),
+        ID3v2_TAG_HEADER_TAG_SIZE_LENGTH
+    );
 
     // Write frames
     ID3v2_frame_list* frames = tag->frames;
     while (frames != NULL)
     {
-        Char_stream* frame_cs = frame_to_char_stream(frames->frame);
+        CharStream* frame_cs = frame_to_char_stream(frames->frame);
 
         if (frame_cs == NULL)
         {
             exit(1);
         }
 
-        cswrite(frame_cs->stream, frame_cs->size, tag_cs);
-        char_stream_free(frame_cs);
+        CharStream_write(tag_cs, frame_cs->stream, frame_cs->size);
+        CharStream_free(frame_cs);
 
         frames = frames->next;
     }
@@ -133,7 +58,7 @@ Char_stream* tag_to_char_stream(ID3v2_tag* tag)
 ID3v2_tag* ID3v2_tag_new()
 {
     ID3v2_tag* tag = (ID3v2_tag*) malloc(sizeof(ID3v2_tag));
-    tag->header = tag_header_new();
+    tag->header = TagHeader_new_empty();
     tag->frames = frame_list_new();
     tag->padding_size = 0;
 
@@ -154,7 +79,7 @@ void ID3v2_tag_write(ID3v2_tag* tag, const char* dest)
         return;
     }
 
-    ID3v2_tag_header* existing_tag_header = tag_header_load(dest);
+    ID3v2_TagHeader* existing_tag_header = ID3v2_TagHeader_read(dest);
     const int original_size =
         existing_tag_header != NULL ? existing_tag_header->tag_size + ID3v2_TAG_HEADER_LENGTH : 0;
     free(existing_tag_header);
@@ -164,7 +89,7 @@ void ID3v2_tag_write(ID3v2_tag* tag, const char* dest)
         0,
         ID3v2_TAG_DEFAULT_PADDING_LENGTH
     );
-    Char_stream* tag_cs = tag_to_char_stream(tag + extra_padding_length);
+    CharStream* tag_cs = tag_to_char_stream(tag + extra_padding_length);
 
     // Perform operations on a temp file in case things go wrong
     FILE* temp_fp = tmpfile();
@@ -197,7 +122,7 @@ void ID3v2_tag_write(ID3v2_tag* tag, const char* dest)
     fclose(temp_fp);
     fclose(dest_fp);
 
-    char_stream_free(tag_cs);
+    CharStream_free(tag_cs);
 }
 
 /**

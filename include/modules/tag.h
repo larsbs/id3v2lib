@@ -12,29 +12,13 @@
 
 #include "frame.h"
 #include "frame_list.h"
+#include "tag_header.h"
 
-#define ID3v2_TAG_HEADER_LENGTH 10
-#define ID3v2_TAG_HEADER_IDENTIFIER_LENGTH 3
-#define ID3v2_TAG_HEADER_MAJOR_VERSION_LENGTH 1
-#define ID3v2_TAG_HEADER_MINOR_VERSION_LENGTH 1
-#define ID3v2_TAG_HEADER_FLAGS_LENGTH 1
-#define ID3v2_TAG_HEADER_TAG_SIZE_LENGTH 4
-#define ID3v2_EXTENDED_HEADED_SIZE_LENGTH 4
 #define ID3v2_TAG_DEFAULT_PADDING_LENGTH 2048
-
-typedef struct _ID3v2_tag_header
-{
-    char identifier[ID3v2_TAG_HEADER_IDENTIFIER_LENGTH];
-    char major_version;
-    char minor_version;
-    char flags;
-    unsigned int tag_size;
-    unsigned int extended_header_size;
-} ID3v2_tag_header;
 
 typedef struct _ID3v2_tag
 {
-    ID3v2_tag_header* header;
+    ID3v2_TagHeader* header;
     ID3v2_frame_list* frames;
     int padding_size;
 } ID3v2_tag;

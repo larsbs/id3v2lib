@@ -10,14 +10,11 @@
 #ifndef id3v2lib_tag_private_h
 #define id3v2lib_tag_private_h
 
+#include "char_stream.private.h"
 #include "modules/frame.h"
 #include "modules/tag.h"
 #include "modules/utils.h"
 
-ID3v2_tag_header* tag_header_new();
-ID3v2_tag_header* tag_header_load(const char* file_name);
-ID3v2_tag_header* tag_header_parse_from_buffer(const char* buffer);
-
-Char_stream* tag_to_char_stream(ID3v2_tag* tag);
+CharStream* tag_to_char_stream(ID3v2_tag* tag);
 
 #endif
