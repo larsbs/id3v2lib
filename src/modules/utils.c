@@ -137,6 +137,11 @@ unsigned int syncint_decode(int value)
     return result;
 }
 
+int clamp_int(const int value, const int min, const int max)
+{
+    return value < min ? min : (value > max ? max : value);
+}
+
 bool string_has_bom(const char* string)
 {
     if (string == NULL)
@@ -152,27 +157,23 @@ bool string_has_bom(const char* string)
     return false;
 }
 
-int string_length(const char* string)
+Char_stream* char_stream_new(int size)
 {
-    if (string_has_bom(string))
-    {
-        int size = 0;
-        char prev = string[0];
+    Char_stream* cs = (Char_stream*) malloc(sizeof(Char_stream));
+    cs->stream = (char*) calloc(size, sizeof(char));
+    cs->cursor = 0;
+    cs->size = size;
+    return cs;
+}
 
-        while (1)
-        {
-            char curr = string[++size];
+void char_stream_free(Char_stream* cs)
+{
+    free(cs->stream);
+    free(cs);
+}
 
-            if (prev == 0x00 && curr == 0x00) // String termination found
-            {
-                return size + 1;
-            }
-
-            prev = curr;
-        }
-    }
-    else
-    {
-        return strlen(string) + 1; // Take into account the string termination marker
-    }
+void cswrite(const char* data, size_t size, Char_stream* cs)
+{
+    memcpy(cs->stream + cs->cursor, data, size);
+    cs->cursor += size;
 }
