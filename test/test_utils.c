@@ -176,3 +176,19 @@ void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path)
 
     printf("Saved in %s", file_name);
 }
+
+void clone_file(const char* src, const char* dest)
+{
+    FILE* src_fp = fopen(src, "rb");
+    FILE* dest_fp = fopen(dest, "wb");
+
+    int c = 0;
+
+    while ((c = getc(src_fp)) != EOF)
+    {
+        putc(c, dest_fp);
+    }
+
+    fclose(src_fp);
+    fclose(dest_fp);
+}

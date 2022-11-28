@@ -175,7 +175,8 @@ void ID3v2_tag_write(ID3v2_tag* tag, const char* dest)
     }
 
     // Finally copy the temp file back into the destination file
-    fseek(dest_fp, 0L, SEEK_SET);
+    fclose(dest_fp);
+    dest_fp = fopen(dest, "w+b");
     fseek(temp_fp, 0L, SEEK_SET);
 
     while ((c = getc(temp_fp)) != EOF)
