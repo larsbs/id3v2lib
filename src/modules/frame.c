@@ -25,6 +25,18 @@ ID3v2_frame_header* frame_header_new(const char* id, const char* flags, const in
     return frame_header;
 }
 
+Char_stream* frame_header_to_char_stream(ID3v2_frame_header* header)
+{
+    Char_stream* header_cs = char_stream_new(ID3v2_FRAME_HEADER_LENGTH);
+
+    // Header
+    cswrite(header->id, ID3v2_FRAME_HEADER_ID_LENGTH, header_cs);
+    cswrite(itob(header->size), ID3v2_FRAME_HEADER_SIZE_LENGTH, header_cs);
+    cswrite(&header->flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH, header_cs);
+
+    return header_cs;
+}
+
 ID3v2_frame* frame_parse(const char* buffer, int id3_major_version)
 {
     // Start parsing the frame header
@@ -101,6 +113,21 @@ void frame_free(ID3v2_frame* frame)
     }
 }
 
+Char_stream* frame_to_char_stream(ID3v2_frame* frame)
+{
+    switch (frame->header->id[0])
+    {
+        case 'T':
+            return text_frame_to_char_stream((ID3v2_text_frame*) frame);
+        case 'C':
+            return comment_frame_to_char_stream((ID3v2_comment_frame*) frame);
+        case 'A':
+            return apic_frame_to_char_stream((ID3v2_apic_frame*) frame);
+        default:
+            return NULL;
+    }
+}
+
 ID3v2_text_frame* text_frame_new(const char* id, const char* flags, const char* text)
 {
     ID3v2_text_frame* frame = (ID3v2_text_frame*) malloc(sizeof(ID3v2_text_frame));
@@ -119,6 +146,27 @@ void text_frame_free(ID3v2_text_frame* frame)
     free(frame->data->text);
     free(frame->data);
     free(frame);
+}
+
+Char_stream* text_frame_to_char_stream(ID3v2_text_frame* frame)
+{
+    if (frame == NULL)
+    {
+        return NULL;
+    }
+
+    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
+    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
+
+    // Header
+    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
+    char_stream_free(frame_header_cs);
+
+    // Data
+    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
+    cswrite(frame->data->text, frame->data->size, frame_cs);
+
+    return frame_cs;
 }
 
 ID3v2_text_frame_data* text_frame_data_new(const char* text)
@@ -173,6 +221,29 @@ void comment_frame_free(ID3v2_comment_frame* frame)
     free(frame->data->short_description);
     free(frame->data);
     free(frame);
+}
+
+Char_stream* comment_frame_to_char_stream(ID3v2_comment_frame* frame)
+{
+    if (frame == NULL)
+    {
+        return NULL;
+    }
+
+    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
+    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
+
+    // Header
+    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
+    char_stream_free(frame_header_cs);
+
+    // Data
+    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
+    cswrite(frame->data->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH, frame_cs);
+    cswrite(frame->data->short_description, ID3v2_strlent(frame->data->short_description), frame_cs);
+    cswrite(frame->data->comment, frame->data->size, frame_cs);
+
+    return frame_cs;
 }
 
 ID3v2_comment_frame_data* comment_frame_data_new(const char* lang, const char* short_desc, const char* comment)
@@ -245,6 +316,30 @@ void apic_frame_free(ID3v2_apic_frame* frame)
     free(frame->data->mime_type);
     free(frame->data);
     free(frame);
+}
+
+Char_stream* apic_frame_to_char_stream(ID3v2_apic_frame* frame)
+{
+    if (frame == NULL)
+    {
+        return NULL;
+    }
+
+    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
+    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
+
+    // Header
+    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
+    char_stream_free(frame_header_cs);
+
+    // Data
+    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
+    cswrite(frame->data->mime_type, ID3v2_strlent(frame->data->mime_type), frame_cs);
+    cswrite(&frame->data->picture_type, ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH, frame_cs);
+    cswrite(frame->data->description, ID3v2_strlent(frame->data->description), frame_cs);
+    cswrite(frame->data->data, frame->data->picture_size, frame_cs);
+
+    return frame_cs;
 }
 
 ID3v2_apic_frame_data* apic_frame_data_new(const char* description, const char picture_type, const char* mime_type, const int picture_size, const char* picture_data)
