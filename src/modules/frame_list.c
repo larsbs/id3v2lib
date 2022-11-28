@@ -12,9 +12,9 @@
 
 #include "frame_list.private.h"
 
-ID3v2_frame_list* frame_list_new()
+ID3v2_FrameList* FrameList_new()
 {
-    ID3v2_frame_list* list = (ID3v2_frame_list*) malloc(sizeof(ID3v2_frame_list));
+    ID3v2_FrameList* list = (ID3v2_FrameList*) malloc(sizeof(ID3v2_FrameList));
 
     if (list != NULL)
     {
@@ -26,7 +26,7 @@ ID3v2_frame_list* frame_list_new()
     return list;
 }
 
-void frame_list_add_frame(ID3v2_frame_list* list, ID3v2_frame* frame)
+void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_frame* frame)
 {
     // If the list is empty
     if (list->start == NULL)
@@ -37,7 +37,7 @@ void frame_list_add_frame(ID3v2_frame_list* list, ID3v2_frame* frame)
     }
     else
     {
-        ID3v2_frame_list* current = frame_list_new();
+        ID3v2_FrameList* current = FrameList_new();
         current->frame = frame;
         current->start = list->start;
         list->last->next = current;
@@ -48,7 +48,7 @@ void frame_list_add_frame(ID3v2_frame_list* list, ID3v2_frame* frame)
 /**
  * Returns the first frame matching frame_id
  */
-ID3v2_frame* frame_list_get_frame_by_id(ID3v2_frame_list* list, char* frame_id)
+ID3v2_frame* FrameList_get_frame_by_id(ID3v2_FrameList* list, char* frame_id)
 {
     while (list != NULL && list->frame != NULL)
     {
@@ -66,15 +66,15 @@ ID3v2_frame* frame_list_get_frame_by_id(ID3v2_frame_list* list, char* frame_id)
 /**
  * Returns all the frames matching frame_id in a sublist
  */
-ID3v2_frame_list* frame_list_get_frames_by_id(ID3v2_frame_list* list, char* frame_id)
+ID3v2_FrameList* FrameList_get_frames_by_id(ID3v2_FrameList* list, char* frame_id)
 {
-    ID3v2_frame_list* sublist = frame_list_new();
+    ID3v2_FrameList* sublist = FrameList_new();
 
     while (list != NULL && list->frame != NULL)
     {
         if (strncmp(list->frame->header->id, frame_id, 4) == 0)
         {
-            frame_list_add_frame(sublist, list->frame);
+            FrameList_add_frame(sublist, list->frame);
         }
 
         list = list->next;
@@ -83,7 +83,7 @@ ID3v2_frame_list* frame_list_get_frames_by_id(ID3v2_frame_list* list, char* fram
     return sublist;
 }
 
-void ID3v2_frame_list_free(ID3v2_frame_list* list)
+void ID3v2_FrameList_free(ID3v2_FrameList* list)
 {
     while (list != NULL)
     {
@@ -96,11 +96,7 @@ void ID3v2_frame_list_free(ID3v2_frame_list* list)
  * This does not free the replaced frame. That's responsibility
  * of the calling routine.
  */
-void frame_list_replace_frame(
-    ID3v2_frame_list* list,
-    ID3v2_frame* old_frame,
-    ID3v2_frame* new_frame
-)
+void FrameList_replace_frame(ID3v2_FrameList* list, ID3v2_frame* old_frame, ID3v2_frame* new_frame)
 {
     if (list == NULL)
     {

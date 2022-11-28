@@ -36,7 +36,7 @@ CharStream* tag_to_char_stream(ID3v2_tag* tag)
     );
 
     // Write frames
-    ID3v2_frame_list* frames = tag->frames;
+    ID3v2_FrameList* frames = tag->frames;
     while (frames != NULL)
     {
         CharStream* frame_cs = frame_to_char_stream(frames->frame);
@@ -59,7 +59,7 @@ ID3v2_tag* ID3v2_tag_new()
 {
     ID3v2_tag* tag = (ID3v2_tag*) malloc(sizeof(ID3v2_tag));
     tag->header = TagHeader_new_empty();
-    tag->frames = frame_list_new();
+    tag->frames = FrameList_new();
     tag->padding_size = 0;
 
     return tag;
@@ -68,7 +68,7 @@ ID3v2_tag* ID3v2_tag_new()
 void ID3v2_tag_free(ID3v2_tag* tag)
 {
     free(tag->header);
-    ID3v2_frame_list_free(tag->frames);
+    ID3v2_FrameList_free(tag->frames);
     free(tag);
 }
 
@@ -135,17 +135,17 @@ ID3v2_frame* ID3v2_tag_get_frame(ID3v2_tag* tag, char* frame_id)
         return NULL;
     }
 
-    return frame_list_get_frame_by_id(tag->frames, frame_id);
+    return FrameList_get_frame_by_id(tag->frames, frame_id);
 }
 
-ID3v2_frame_list* ID3v2_tag_get_frames(ID3v2_tag* tag, char* frame_id)
+ID3v2_FrameList* ID3v2_tag_get_frames(ID3v2_tag* tag, char* frame_id)
 {
     if (tag == NULL)
     {
         return NULL;
     }
 
-    return frame_list_get_frames_by_id(tag->frames, frame_id);
+    return FrameList_get_frames_by_id(tag->frames, frame_id);
 }
 
 ID3v2_text_frame* ID3v2_tag_get_artist_frame(ID3v2_tag* tag)
@@ -208,7 +208,7 @@ ID3v2_comment_frame* ID3v2_tag_get_comment_frame(ID3v2_tag* tag)
  * single tag, this gets every COMM frame found. To retrieve only the
  * first COMM frame found use ID3v2_tag_get_comment_frame(tag) instead.
  */
-ID3v2_frame_list* ID3v2_tag_get_comment_frames(ID3v2_tag* tag)
+ID3v2_FrameList* ID3v2_tag_get_comment_frames(ID3v2_tag* tag)
 {
     return ID3v2_tag_get_frames(tag, ID3v2_COMMENT_FRAME_ID);
 }
@@ -218,7 +218,7 @@ ID3v2_apic_frame* ID3v2_tag_get_album_cover_frame(ID3v2_tag* tag)
     return (ID3v2_apic_frame*) ID3v2_tag_get_frame(tag, ID3v2_ALBUM_COVER_FRAME_ID);
 }
 
-ID3v2_frame_list* ID3v2_tag_get_apic_frames(ID3v2_tag* tag)
+ID3v2_FrameList* ID3v2_tag_get_apic_frames(ID3v2_tag* tag)
 {
     return ID3v2_tag_get_frames(tag, ID3v2_ALBUM_COVER_FRAME_ID);
 }
@@ -230,16 +230,16 @@ void ID3v2_tag_set_text_frame(ID3v2_tag* tag, ID3v2_text_frame_input* input)
 {
     ID3v2_text_frame* new_frame = text_frame_new(input->id, input->flags, input->text);
     ID3v2_text_frame* existing_frame =
-        (ID3v2_text_frame*) frame_list_get_frame_by_id(tag->frames, input->id);
+        (ID3v2_text_frame*) FrameList_get_frame_by_id(tag->frames, input->id);
 
     if (existing_frame == NULL)
     {
-        frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+        FrameList_add_frame(tag->frames, (ID3v2_frame*) new_frame);
         tag->header->tag_size += new_frame->header->size;
     }
     else
     {
-        frame_list_replace_frame(
+        FrameList_replace_frame(
             tag->frames,
             (ID3v2_frame*) existing_frame,
             (ID3v2_frame*) new_frame
@@ -368,12 +368,12 @@ void ID3v2_tag_set_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* inpu
 
     if (existing_frame == NULL)
     {
-        frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+        FrameList_add_frame(tag->frames, (ID3v2_frame*) new_frame);
         tag->header->tag_size += new_frame->header->size;
     }
     else
     {
-        frame_list_replace_frame(
+        FrameList_replace_frame(
             tag->frames,
             (ID3v2_frame*) existing_frame,
             (ID3v2_frame*) new_frame
@@ -387,7 +387,7 @@ void ID3v2_tag_add_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* inpu
 {
     ID3v2_comment_frame* new_frame =
         comment_frame_new(input->flags, input->language, input->short_description, input->comment);
-    frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+    FrameList_add_frame(tag->frames, (ID3v2_frame*) new_frame);
     tag->header->tag_size += new_frame->header->size;
 }
 
@@ -421,12 +421,12 @@ void ID3v2_tag_set_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input)
 
     if (existing_frame == NULL)
     {
-        frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+        FrameList_add_frame(tag->frames, (ID3v2_frame*) new_frame);
         tag->header->tag_size += new_frame->header->size;
     }
     else
     {
-        frame_list_replace_frame(
+        FrameList_replace_frame(
             tag->frames,
             (ID3v2_frame*) existing_frame,
             (ID3v2_frame*) new_frame
@@ -446,7 +446,7 @@ void ID3v2_tag_add_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input)
         input->picture_size,
         input->data
     );
-    frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+    FrameList_add_frame(tag->frames, (ID3v2_frame*) new_frame);
     tag->header->tag_size += new_frame->header->size;
 }
 

@@ -12,14 +12,14 @@
 
 #include "frame.h"
 
-typedef struct _ID3v2_frame_list
+typedef struct _ID3v2_FrameList
 {
     ID3v2_frame* frame;
-    struct _ID3v2_frame_list* start;
-    struct _ID3v2_frame_list* last;
-    struct _ID3v2_frame_list* next;
-} ID3v2_frame_list;
+    struct _ID3v2_FrameList* start;
+    struct _ID3v2_FrameList* next;
+    struct _ID3v2_FrameList* last;
+} ID3v2_FrameList;
 
-void ID3v2_frame_list_free(ID3v2_frame_list* list);
+void ID3v2_FrameList_free(ID3v2_FrameList* list);
 
 #endif

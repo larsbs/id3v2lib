@@ -83,7 +83,7 @@ ID3v2_tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
         }
 
         cursor += ID3v2_FRAME_HEADER_LENGTH + current_frame->header->size;
-        frame_list_add_frame(tag->frames, current_frame);
+        FrameList_add_frame(tag->frames, current_frame);
     }
 
     tag->padding_size =

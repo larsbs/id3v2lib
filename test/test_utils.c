@@ -139,7 +139,7 @@ void print_comment_frame(ID3v2_comment_frame* frame)
     print_text_frame_text(frame->data->comment, frame->data->size);
 }
 
-void print_comment_frames(ID3v2_frame_list* frames)
+void print_comment_frames(ID3v2_FrameList* frames)
 {
     if (frames == NULL)
     {
