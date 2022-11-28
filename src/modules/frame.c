@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "modules/frame_ids.h"
 #include "frame.private.h"
+#include "modules/frame_ids.h"
 #include "utils.private.h"
 
 ID3v2_frame_header* frame_header_new(const char* id, const char* flags, const int size)
@@ -51,7 +51,8 @@ ID3v2_frame* frame_parse(const char* buffer, int id3_major_version)
 
     int cursor = 0;
 
-    int size = btoi(buffer + (cursor += ID3v2_FRAME_HEADER_ID_LENGTH), ID3v2_FRAME_HEADER_SIZE_LENGTH);
+    int size =
+        btoi(buffer + (cursor += ID3v2_FRAME_HEADER_ID_LENGTH), ID3v2_FRAME_HEADER_SIZE_LENGTH);
 
     if (id3_major_version == 4)
     {
@@ -59,7 +60,11 @@ ID3v2_frame* frame_parse(const char* buffer, int id3_major_version)
     }
 
     const char flags[ID3v2_FRAME_HEADER_FLAGS_LENGTH];
-    memcpy(flags, buffer + (cursor += ID3v2_FRAME_HEADER_SIZE_LENGTH), ID3v2_FRAME_HEADER_FLAGS_LENGTH);
+    memcpy(
+        flags,
+        buffer + (cursor += ID3v2_FRAME_HEADER_SIZE_LENGTH),
+        ID3v2_FRAME_HEADER_FLAGS_LENGTH
+    );
     cursor += ID3v2_FRAME_HEADER_FLAGS_LENGTH;
 
     ID3v2_frame* frame = (ID3v2_frame*) malloc(sizeof(ID3v2_frame));
@@ -199,14 +204,20 @@ ID3v2_text_frame_data* text_frame_data_parse(const char* buffer, int frame_size)
     return text_frame_data_new(text);
 }
 
-ID3v2_comment_frame* comment_frame_new(const char* flags, const char* lang, const char* short_desc, const char* comment)
+ID3v2_comment_frame* comment_frame_new(
+    const char* flags,
+    const char* lang,
+    const char* short_desc,
+    const char* comment
+)
 {
     ID3v2_comment_frame* frame = (ID3v2_comment_frame*) malloc(sizeof(ID3v2_comment_frame));
 
     frame->data = comment_frame_data_new(lang, short_desc, comment);
 
     const int short_desc_size = ID3v2_strlent(short_desc);
-    const int frame_size = frame->data->size + short_desc_size + ID3v2_FRAME_ENCODING_LENGTH + ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH;
+    const int frame_size = frame->data->size + short_desc_size + ID3v2_FRAME_ENCODING_LENGTH +
+                           ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH;
 
     frame->header = frame_header_new(ID3v2_COMMENT_FRAME_ID, flags, frame_size);
 
@@ -240,19 +251,28 @@ Char_stream* comment_frame_to_char_stream(ID3v2_comment_frame* frame)
     // Data
     cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
     cswrite(frame->data->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH, frame_cs);
-    cswrite(frame->data->short_description, ID3v2_strlent(frame->data->short_description), frame_cs);
+    cswrite(
+        frame->data->short_description,
+        ID3v2_strlent(frame->data->short_description),
+        frame_cs
+    );
     cswrite(frame->data->comment, frame->data->size, frame_cs);
 
     return frame_cs;
 }
 
-ID3v2_comment_frame_data* comment_frame_data_new(const char* lang, const char* short_desc, const char* comment)
+ID3v2_comment_frame_data* comment_frame_data_new(
+    const char* lang,
+    const char* short_desc,
+    const char* comment
+)
 {
     const char encoding = string_has_bom(comment) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
     const int comment_size = ID3v2_strlent(comment);
     const int short_desc_size = ID3v2_strlent(short_desc);
 
-    ID3v2_comment_frame_data* data = (ID3v2_comment_frame_data*) malloc(sizeof(ID3v2_comment_frame_data));
+    ID3v2_comment_frame_data* data =
+        (ID3v2_comment_frame_data*) malloc(sizeof(ID3v2_comment_frame_data));
 
     data->encoding = encoding;
 
@@ -280,7 +300,11 @@ ID3v2_comment_frame_data* comment_frame_data_parse(const char* buffer, int frame
     int cursor = 0;
 
     const char* language = (char*) malloc(ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH * sizeof(char));
-    memcpy(language, buffer + (cursor += ID3v2_FRAME_ENCODING_LENGTH), ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
+    memcpy(
+        language,
+        buffer + (cursor += ID3v2_FRAME_ENCODING_LENGTH),
+        ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH
+    );
 
     int short_desc_size = ID3v2_strlent(buffer + (cursor += ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH));
     const char* short_description = (char*) malloc(short_desc_size * sizeof(char));
@@ -293,7 +317,14 @@ ID3v2_comment_frame_data* comment_frame_data_parse(const char* buffer, int frame
     return comment_frame_data_new(language, short_description, comment);
 }
 
-ID3v2_apic_frame* apic_frame_new(const char* flags, const char* description, const char picture_type, const char* mime_type, const int picture_size, const char* data)
+ID3v2_apic_frame* apic_frame_new(
+    const char* flags,
+    const char* description,
+    const char picture_type,
+    const char* mime_type,
+    const int picture_size,
+    const char* data
+)
 {
     ID3v2_apic_frame* frame = (ID3v2_apic_frame*) malloc(sizeof(ID3v2_apic_frame));
 
@@ -301,7 +332,9 @@ ID3v2_apic_frame* apic_frame_new(const char* flags, const char* description, con
 
     const int description_size = ID3v2_strlent(description);
     const int mime_type_size = ID3v2_strlent(mime_type);
-    const int frame_size = ID3v2_FRAME_ENCODING_LENGTH + mime_type_size + ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH + description_size + frame->data->picture_size;
+    const int frame_size = ID3v2_FRAME_ENCODING_LENGTH + mime_type_size +
+                           ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH + description_size +
+                           frame->data->picture_size;
 
     frame->header = frame_header_new(ID3v2_ALBUM_COVER_FRAME_ID, flags, frame_size);
 
@@ -342,7 +375,13 @@ Char_stream* apic_frame_to_char_stream(ID3v2_apic_frame* frame)
     return frame_cs;
 }
 
-ID3v2_apic_frame_data* apic_frame_data_new(const char* description, const char picture_type, const char* mime_type, const int picture_size, const char* picture_data)
+ID3v2_apic_frame_data* apic_frame_data_new(
+    const char* description,
+    const char picture_type,
+    const char* mime_type,
+    const int picture_size,
+    const char* picture_data
+)
 {
     ID3v2_apic_frame_data* data = (ID3v2_apic_frame_data*) malloc(sizeof(ID3v2_apic_frame_data));
 
@@ -382,7 +421,8 @@ ID3v2_apic_frame_data* apic_frame_data_parse(const char* buffer, int frame_size)
 
     const char picture_type = buffer[cursor += mime_type_size];
 
-    const int description_size = ID3v2_strlent(buffer + (cursor += ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH));
+    const int description_size =
+        ID3v2_strlent(buffer + (cursor += ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH));
     const char* description = (char*) malloc(description_size * sizeof(char));
     memcpy(description, buffer + cursor, description_size);
 

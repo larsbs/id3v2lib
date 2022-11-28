@@ -7,3 +7,5 @@ BinPackArguments: false
 BinPackParameters: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowAllArgumentsOnNextLine: false
+IndentPPDirectives: BeforeHash
+IndentCaseLabels: true

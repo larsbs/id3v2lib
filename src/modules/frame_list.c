@@ -29,7 +29,7 @@ ID3v2_frame_list* frame_list_new()
 void frame_list_add_frame(ID3v2_frame_list* list, ID3v2_frame* frame)
 {
     // If the list is empty
-    if(list->start == NULL)
+    if (list->start == NULL)
     {
         list->start = list;
         list->last = list;
@@ -47,12 +47,12 @@ void frame_list_add_frame(ID3v2_frame_list* list, ID3v2_frame* frame)
 
 /**
  * Returns the first frame matching frame_id
-*/
+ */
 ID3v2_frame* frame_list_get_frame_by_id(ID3v2_frame_list* list, char* frame_id)
 {
-    while(list != NULL && list->frame != NULL)
+    while (list != NULL && list->frame != NULL)
     {
-        if(strncmp(list->frame->header->id, frame_id, 4) == 0)
+        if (strncmp(list->frame->header->id, frame_id, 4) == 0)
         {
             return list->frame;
         }
@@ -65,14 +65,14 @@ ID3v2_frame* frame_list_get_frame_by_id(ID3v2_frame_list* list, char* frame_id)
 
 /**
  * Returns all the frames matching frame_id in a sublist
-*/
+ */
 ID3v2_frame_list* frame_list_get_frames_by_id(ID3v2_frame_list* list, char* frame_id)
 {
     ID3v2_frame_list* sublist = frame_list_new();
 
-    while(list != NULL && list->frame != NULL)
+    while (list != NULL && list->frame != NULL)
     {
-        if(strncmp(list->frame->header->id, frame_id, 4) == 0)
+        if (strncmp(list->frame->header->id, frame_id, 4) == 0)
         {
             frame_list_add_frame(sublist, list->frame);
         }
@@ -85,7 +85,7 @@ ID3v2_frame_list* frame_list_get_frames_by_id(ID3v2_frame_list* list, char* fram
 
 void ID3v2_frame_list_free(ID3v2_frame_list* list)
 {
-    while(list != NULL)
+    while (list != NULL)
     {
         free(list->frame);
         list = list->next;
@@ -95,8 +95,12 @@ void ID3v2_frame_list_free(ID3v2_frame_list* list)
 /**
  * This does not free the replaced frame. That's responsibility
  * of the calling routine.
-*/
-void frame_list_replace_frame(ID3v2_frame_list* list, ID3v2_frame* old_frame, ID3v2_frame* new_frame)
+ */
+void frame_list_replace_frame(
+    ID3v2_frame_list* list,
+    ID3v2_frame* old_frame,
+    ID3v2_frame* new_frame
+)
 {
     if (list == NULL)
     {

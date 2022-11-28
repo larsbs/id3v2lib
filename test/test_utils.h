@@ -16,9 +16,9 @@
 
 // This makes MSVC happy without having to download msinttypes
 #ifndef _MSC_VER
-  #include <inttypes.h>
+    #include <inttypes.h>
 #else
-  typedef unsigned short uint16_t;
+typedef unsigned short uint16_t;
 #endif
 
 bool has_bom(char* string);

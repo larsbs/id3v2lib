@@ -7,13 +7,13 @@
  * file that was distributed with this source code.
  */
 
-#include <string.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "test_utils.h"
 #include "assertion_utils.h"
+#include "test_utils.h"
 
 void assert_frame_header(ID3v2_frame* frame, Frame_header_assertion comparison)
 {
@@ -30,11 +30,14 @@ void assert_text_frame(ID3v2_text_frame* frame, ID3v2_text_frame_input* comparis
     const int frame_size = text_size + ID3v2_FRAME_ENCODING_LENGTH;
 
     // Header
-    assert_frame_header((ID3v2_frame*) frame, (Frame_header_assertion) {
-        .id = comparison->id,
-        .size = frame_size,
-        .flags = comparison->flags,
-    });
+    assert_frame_header(
+        (ID3v2_frame*) frame,
+        (Frame_header_assertion){
+            .id = comparison->id,
+            .size = frame_size,
+            .flags = comparison->flags,
+        }
+    );
 
     // Data
     assert(frame->data->size == (frame_size - ID3v2_FRAME_ENCODING_LENGTH));
@@ -44,26 +47,41 @@ void assert_text_frame(ID3v2_text_frame* frame, ID3v2_text_frame_input* comparis
 
 void assert_comment_frame(ID3v2_comment_frame* frame, ID3v2_comment_frame_input* comparison)
 {
-    const char comment_encoding = has_bom(comparison->comment) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
+    const char comment_encoding =
+        has_bom(comparison->comment) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
     const int short_desc_str_termination_length = has_bom(comparison->short_description) ? 2 : 1;
     const int str_termination_length = comment_encoding == ID3v2_ENCODING_ISO ? 1 : 2;
 
     const int comment_size = ID3v2_strlen(comparison->comment) + str_termination_length;
-    const int short_description_size = ID3v2_strlen(comparison->short_description) + short_desc_str_termination_length;
-    const int frame_size = comment_size + short_description_size + ID3v2_FRAME_ENCODING_LENGTH + ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH;
+    const int short_description_size =
+        ID3v2_strlen(comparison->short_description) + short_desc_str_termination_length;
+    const int frame_size = comment_size + short_description_size + ID3v2_FRAME_ENCODING_LENGTH +
+                           ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH;
 
     // Header
-    assert_frame_header((ID3v2_frame*) frame, (Frame_header_assertion) {
-        .id = ID3v2_COMMENT_FRAME_ID,
-        .size = frame_size,
-        .flags = comparison->flags,
-    });
+    assert_frame_header(
+        (ID3v2_frame*) frame,
+        (Frame_header_assertion){
+            .id = ID3v2_COMMENT_FRAME_ID,
+            .size = frame_size,
+            .flags = comparison->flags,
+        }
+    );
 
     // Data
     assert(frame->data->size == comment_size);
     assert(frame->data->encoding == comment_encoding);
-    assert(memcmp(frame->data->language, comparison->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH) == 0);
-    assert(memcmp(frame->data->short_description, comparison->short_description, short_description_size) == 0);
+    assert(
+        memcmp(frame->data->language, comparison->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH) ==
+        0
+    );
+    assert(
+        memcmp(
+            frame->data->short_description,
+            comparison->short_description,
+            short_description_size
+        ) == 0
+    );
     assert(memcmp(frame->data->comment, comparison->comment, frame->data->size) == 0);
 }
 
@@ -77,14 +95,19 @@ void assert_apic_frame(ID3v2_apic_frame* frame, ID3v2_apic_frame_input* comparis
     assert(comparison->mime_type != NULL);
     const int mime_type_size = ID3v2_strlent(comparison->mime_type);
 
-    const int frame_size = ID3v2_FRAME_ENCODING_LENGTH + mime_type_size + ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH + description_size + comparison->picture_size;
+    const int frame_size = ID3v2_FRAME_ENCODING_LENGTH + mime_type_size +
+                           ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH + description_size +
+                           comparison->picture_size;
 
     // Header
-    assert_frame_header((ID3v2_frame*) frame, (Frame_header_assertion) {
-        .id = ID3v2_ALBUM_COVER_FRAME_ID,
-        .size = frame_size,
-        .flags = comparison->flags,
-    });
+    assert_frame_header(
+        (ID3v2_frame*) frame,
+        (Frame_header_assertion){
+            .id = ID3v2_ALBUM_COVER_FRAME_ID,
+            .size = frame_size,
+            .flags = comparison->flags,
+        }
+    );
 
     // Data
     assert(frame->data->encoding == encoding);

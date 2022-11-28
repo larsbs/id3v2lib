@@ -10,8 +10,8 @@
 #ifndef id3v2lib_tag_private_h
 #define id3v2lib_tag_private_h
 
-#include "modules/tag.h"
 #include "modules/frame.h"
+#include "modules/tag.h"
 #include "modules/utils.h"
 
 ID3v2_tag_header* tag_header_new();

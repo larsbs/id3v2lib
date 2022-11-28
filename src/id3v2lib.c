@@ -10,10 +10,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "id3v2lib.h"
-#include "tag.private.h"
 #include "frame.private.h"
 #include "frame_list.private.h"
+#include "id3v2lib.h"
+#include "tag.private.h"
 
 ID3v2_tag* ID3v2_read_tag(const char* file_name)
 {
@@ -88,7 +88,9 @@ ID3v2_tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
         frame_list_add_frame(tag->frames, current_frame);
     }
 
-    tag->padding_size = (ID3v2_TAG_HEADER_LENGTH + tag->header->extended_header_size + tag->header->tag_size) - cursor;
+    tag->padding_size =
+        (ID3v2_TAG_HEADER_LENGTH + tag->header->extended_header_size + tag->header->tag_size) -
+        cursor;
 
     return tag;
 }

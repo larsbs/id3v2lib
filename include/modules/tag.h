@@ -43,21 +43,20 @@ ID3v2_tag* ID3v2_tag_new();
 void ID3v2_tag_free(ID3v2_tag* tag);
 void ID3v2_tag_write(ID3v2_tag* tag, const char* dest);
 
-
 /**
  * Getter functions
-*/
+ */
 
 /**
  * Returns the first frame found with the provided id. If you need
  * more than the first occurrence, then, use ID3v2_tag_get_frames(tag, frame_id);
-*/
+ */
 ID3v2_frame* ID3v2_tag_get_frame(ID3v2_tag* tag, char* frame_id);
 
 /**
  * Returns all the frames matching frame_id in a sublist. If you only need
  * the first occurrence, then, use ID3v2_tag_get_frame(tag, frame_id);
-*/
+ */
 ID3v2_frame_list* ID3v2_tag_get_frames(ID3v2_tag* tag, char* frame_id);
 
 ID3v2_text_frame* ID3v2_tag_get_artist_frame(ID3v2_tag* tag);
@@ -76,7 +75,7 @@ ID3v2_frame_list* ID3v2_tag_get_apic_frames(ID3v2_tag* tag);
 
 /**
  * Setter functions
-*/
+ */
 typedef struct _ID3v2_text_frame_input
 {
     char* id;
@@ -122,6 +121,11 @@ typedef struct _ID3v2_apic_frame_input
 void ID3v2_tag_add_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input);
 void ID3v2_tag_set_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input);
 
-void ID3v2_tag_set_album_cover(ID3v2_tag* tag, const char* mime_type, const int size, const char* data);
+void ID3v2_tag_set_album_cover(
+    ID3v2_tag* tag,
+    const char* mime_type,
+    const int size,
+    const char* data
+);
 
 #endif

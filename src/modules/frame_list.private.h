@@ -10,8 +10,8 @@
 #ifndef id3v2lib_frame_list_private_h
 #define id3v2lib_frame_list_private_h
 
-#include "modules/frame_list.h"
 #include "modules/frame.h"
+#include "modules/frame_list.h"
 
 ID3v2_frame_list* frame_list_new();
 
@@ -20,6 +20,10 @@ void frame_list_add_frame(ID3v2_frame_list* list, ID3v2_frame* frame);
 ID3v2_frame* frame_list_get_frame_by_id(ID3v2_frame_list* list, char* frame_id);
 ID3v2_frame_list* frame_list_get_frames_by_id(ID3v2_frame_list* list, char* frame_id);
 
-void frame_list_replace_frame(ID3v2_frame_list* list, ID3v2_frame* old_frame, ID3v2_frame* new_frame);
+void frame_list_replace_frame(
+    ID3v2_frame_list* list,
+    ID3v2_frame* old_frame,
+    ID3v2_frame* new_frame
+);
 
 #endif

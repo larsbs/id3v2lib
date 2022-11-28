@@ -8,8 +8,8 @@
  */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "test_utils.h"
 
@@ -20,7 +20,7 @@ bool has_bom(char* string)
         return false;
     }
 
-    if(memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
+    if (memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
     {
         return true;
     }
@@ -85,10 +85,10 @@ void println_utf16(uint16_t* string, int size)
 
     // If size < 0, then keep iterating until we find the termination marker,
     // otherwise, use size as a safe limit.
-    while(i < size || size < 0)
+    while (i < size || size < 0)
     {
         // break if we reach the termination marker '0000'
-        if(string[i] == 0x0000)
+        if (string[i] == 0x0000)
         {
             break;
         }
