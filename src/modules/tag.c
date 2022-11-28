@@ -94,11 +94,43 @@ ID3v2_tag_header* tag_header_parse_from_buffer(const char* buffer)
     return tag_header;
 }
 
+Char_stream* tag_to_char_stream(ID3v2_tag* tag)
+{
+    Char_stream* tag_cs = char_stream_new(tag->header->tag_size + ID3v2_TAG_HEADER_LENGTH);
+
+    // Write header
+    cswrite(tag->header->identifier, ID3v2_TAG_HEADER_IDENTIFIER_LENGTH, tag_cs);
+    cswrite(&tag->header->major_version, ID3v2_TAG_HEADER_MAJOR_VERSION_LENGTH, tag_cs);
+    cswrite(&tag->header->minor_version, ID3v2_TAG_HEADER_MINOR_VERSION_LENGTH, tag_cs);
+    cswrite(&tag->header->flags, ID3v2_TAG_HEADER_FLAGS_LENGTH, tag_cs);
+    cswrite(itob(syncint_encode(tag->header->tag_size)), ID3v2_TAG_HEADER_TAG_SIZE_LENGTH, tag_cs);
+
+    // Write frames
+    ID3v2_frame_list* frames = tag->frames;
+    while (frames != NULL)
+    {
+        Char_stream* frame_cs = frame_to_char_stream(frames->frame);
+
+        if (frame_cs == NULL)
+        {
+            exit(1);
+        }
+
+        cswrite(frame_cs->stream, frame_cs->size, tag_cs);
+        char_stream_free(frame_cs);
+
+        frames = frames->next;
+    }
+
+    return tag_cs;
+}
+
 ID3v2_tag* ID3v2_tag_new()
 {
     ID3v2_tag* tag = (ID3v2_tag*) malloc(sizeof(ID3v2_tag));
     tag->header = tag_header_new();
     tag->frames = frame_list_new();
+    tag->padding_size = 0;
 
     return tag;
 }
@@ -108,6 +140,53 @@ void ID3v2_tag_free(ID3v2_tag* tag)
     free(tag->header);
     ID3v2_frame_list_free(tag->frames);
     free(tag);
+}
+
+void ID3v2_tag_write(ID3v2_tag* tag, const char* dest)
+{
+    if (tag == NULL)
+    {
+        return;
+    }
+
+    ID3v2_tag_header* existing_tag_header = tag_header_load(dest);
+    const int original_size = existing_tag_header != NULL ? existing_tag_header->tag_size + ID3v2_TAG_HEADER_LENGTH : 0;
+    free(existing_tag_header);
+
+    const int extra_padding_length = clamp_int(ID3v2_TAG_DEFAULT_PADDING_LENGTH - tag->padding_size, 0, ID3v2_TAG_DEFAULT_PADDING_LENGTH);
+    Char_stream* tag_cs = tag_to_char_stream(tag + extra_padding_length);
+
+    // Perform operations on a temp file in case things go wrong
+    FILE* temp_fp = tmpfile();
+
+    // First write the tag to the temp file
+    fwrite(tag_cs->stream, sizeof(char), tag_cs->size, temp_fp);
+
+    // And then, read the original audio data and copy it to
+    // the temp file so it's located after the tag
+    FILE* dest_fp = fopen(dest, "r+b");
+    fseek(dest_fp, original_size, SEEK_SET); // move to the end of the original tag
+
+    int c = 0;
+
+    while ((c = getc(dest_fp)) != EOF)
+    {
+        putc(c, temp_fp);
+    }
+
+    // Finally copy the temp file back into the destination file
+    fseek(dest_fp, 0L, SEEK_SET);
+    fseek(temp_fp, 0L, SEEK_SET);
+
+    while ((c = getc(temp_fp)) != EOF)
+    {
+        putc(c, dest_fp);
+    }
+
+    fclose(temp_fp);
+    fclose(dest_fp);
+
+    char_stream_free(tag_cs);
 }
 
 /**
@@ -219,10 +298,12 @@ void ID3v2_tag_set_text_frame(ID3v2_tag* tag, ID3v2_text_frame_input* input)
     if (existing_frame == NULL)
     {
         frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+        tag->header->tag_size += new_frame->header->size;
     }
     else
     {
         frame_list_replace_frame(tag->frames, (ID3v2_frame*) existing_frame, (ID3v2_frame*) new_frame);
+        tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
         frame_free((ID3v2_frame*) existing_frame);
     }
 }
@@ -319,10 +400,12 @@ void ID3v2_tag_set_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* inpu
     if (existing_frame == NULL)
     {
         frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+        tag->header->tag_size += new_frame->header->size;
     }
     else
     {
         frame_list_replace_frame(tag->frames, (ID3v2_frame*) existing_frame, (ID3v2_frame*) new_frame);
+        tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
         frame_free((ID3v2_frame*) existing_frame);
     }
 }
@@ -331,6 +414,7 @@ void ID3v2_tag_add_comment_frame(ID3v2_tag* tag, ID3v2_comment_frame_input* inpu
 {
     ID3v2_comment_frame* new_frame = comment_frame_new(input->flags, input->language, input->short_description, input->comment);
     frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+    tag->header->tag_size += new_frame->header->size;
 }
 
 void ID3v2_tag_set_comment(ID3v2_tag* tag, const char* lang, const char* comment)
@@ -354,10 +438,12 @@ void ID3v2_tag_set_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input)
     if (existing_frame == NULL)
     {
         frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+        tag->header->tag_size += new_frame->header->size;
     }
     else
     {
         frame_list_replace_frame(tag->frames, (ID3v2_frame*) existing_frame, (ID3v2_frame*) new_frame);
+        tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
         frame_free((ID3v2_frame*) existing_frame);
     }
 }
@@ -366,6 +452,7 @@ void ID3v2_tag_add_apic_frame(ID3v2_tag* tag, ID3v2_apic_frame_input* input)
 {
     ID3v2_apic_frame* new_frame = apic_frame_new(input->flags, input->description, input->picture_type, input->mime_type, input->picture_size, input->data);
     frame_list_add_frame(tag->frames, (ID3v2_frame*) new_frame);
+    tag->header->tag_size += new_frame->header->size;
 }
 
 /**

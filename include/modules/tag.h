@@ -20,13 +20,14 @@
 #define ID3v2_TAG_HEADER_FLAGS_LENGTH 1
 #define ID3v2_TAG_HEADER_TAG_SIZE_LENGTH 4
 #define ID3v2_EXTENDED_HEADED_SIZE_LENGTH 4
+#define ID3v2_TAG_DEFAULT_PADDING_LENGTH 2048
 
 typedef struct _ID3v2_tag_header
 {
     char identifier[ID3v2_TAG_HEADER_IDENTIFIER_LENGTH];
-    short major_version;
-    short minor_version;
-    short flags;
+    char major_version;
+    char minor_version;
+    char flags;
     unsigned int tag_size;
     unsigned int extended_header_size;
 } ID3v2_tag_header;
@@ -35,10 +36,13 @@ typedef struct _ID3v2_tag
 {
     ID3v2_tag_header* header;
     ID3v2_frame_list* frames;
+    int padding_size;
 } ID3v2_tag;
 
 ID3v2_tag* ID3v2_tag_new();
 void ID3v2_tag_free(ID3v2_tag* tag);
+void ID3v2_tag_write(ID3v2_tag* tag, const char* dest);
+
 
 /**
  * Getter functions

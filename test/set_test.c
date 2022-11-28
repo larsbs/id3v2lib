@@ -16,7 +16,6 @@
 
 void edit_test()
 {
-    // clone the file
     ID3v2_tag* tag = ID3v2_read_tag("extra/file.mp3");
 
     if (tag == NULL)
@@ -142,7 +141,7 @@ void edit_test()
         .picture_size = cover_file_size,
     });
 
-    // ID3v2_tag_write("extra/file_cloned.mp3");
+    ID3v2_tag_write(tag, "extra/file.mp3");
 
     // Verify the written data
 

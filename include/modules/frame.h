@@ -10,7 +10,7 @@
 #ifndef id3v2lib_frame_h
 #define id3v2lib_frame_h
 
-#define ID3v2_FRAME 10
+#define ID3v2_FRAME_HEADER_LENGTH 10
 #define ID3v2_FRAME_HEADER_ID_LENGTH 4
 #define ID3v2_FRAME_HEADER_SIZE_LENGTH 4
 #define ID3v2_FRAME_HEADER_FLAGS_LENGTH 2

@@ -64,15 +64,15 @@ ID3v2_tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
     ID3v2_tag* tag = ID3v2_tag_new();
     tag->header = tag_header;
 
-    tag_buffer += ID3v2_TAG_HEADER_LENGTH; // Skip tag header
+    int cursor = 0;
+    cursor += ID3v2_TAG_HEADER_LENGTH; // Skip tag header
 
     if (tag->header->extended_header_size > 0)
     {
         // An extended header exists, skip it too
-        tag_buffer += tag->header->extended_header_size + ID3v2_EXTENDED_HEADED_SIZE_LENGTH;
+        cursor += tag->header->extended_header_size + ID3v2_EXTENDED_HEADED_SIZE_LENGTH;
     }
 
-    int cursor = 0;
     ID3v2_frame* current_frame;
 
     while (cursor < tag->header->tag_size)
@@ -84,9 +84,11 @@ ID3v2_tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
             break;
         }
 
-        cursor += current_frame->header->size + ID3v2_TAG_HEADER_LENGTH;
+        cursor += ID3v2_FRAME_HEADER_LENGTH + current_frame->header->size;
         frame_list_add_frame(tag->frames, current_frame);
     }
+
+    tag->padding_size = (ID3v2_TAG_HEADER_LENGTH + tag->header->extended_header_size + tag->header->tag_size) - cursor;
 
     return tag;
 }
