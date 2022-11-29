@@ -10,9 +10,9 @@
 #ifndef id3v2lib_utils_private_h
 #define id3v2lib_utils_private_h
 
-#include <stdbool.h>
-
 #include "modules/utils.h"
+
+#define bool _Bool
 
 unsigned int btoi(const char* bytes, int size);
 char* itob(int integer);
