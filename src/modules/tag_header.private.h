@@ -10,6 +10,7 @@
 #ifndef id3v2lib_tag_header_private_h
 #define id3v2lib_tag_header_private_h
 
+#include "char_stream.private.h"
 #include "modules/tag_header.h"
 
 ID3v2_TagHeader* TagHeader_new(
@@ -20,6 +21,6 @@ ID3v2_TagHeader* TagHeader_new(
     const int extended_header_size
 );
 ID3v2_TagHeader* TagHeader_new_empty();
-ID3v2_TagHeader* TagHeader_parse(const char* buffer);
+ID3v2_TagHeader* TagHeader_parse(CharStream* stream);
 
 #endif

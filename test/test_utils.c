@@ -100,7 +100,7 @@ void println_utf16(uint16_t* string, int size)
     printf("\n");
 }
 
-void print_text_frame(ID3v2_text_frame* frame)
+void print_text_frame(ID3v2_TextFrame* frame)
 {
     if (frame == NULL)
     {
@@ -128,7 +128,7 @@ void print_text_frame_text(char* text, int size)
     }
 }
 
-void print_comment_frame(ID3v2_comment_frame* frame)
+void print_comment_frame(ID3v2_CommentFrame* frame)
 {
     if (frame == NULL)
     {
@@ -149,13 +149,13 @@ void print_comment_frames(ID3v2_FrameList* frames)
 
     while (frames != NULL)
     {
-        ID3v2_comment_frame* comment = (ID3v2_comment_frame*) frames->frame;
+        ID3v2_CommentFrame* comment = (ID3v2_CommentFrame*) frames->frame;
         print_comment_frame(comment);
         frames = frames->next;
     }
 }
 
-void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path)
+void save_apic_frame(ID3v2_ApicFrame* frame, char* dir_path)
 {
     if (frame == NULL)
     {

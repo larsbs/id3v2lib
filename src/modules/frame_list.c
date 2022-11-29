@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "frame.private.h"
+#include "frame_header.private.h"
+
 #include "frame_list.private.h"
 
 ID3v2_FrameList* FrameList_new()
@@ -26,7 +29,7 @@ ID3v2_FrameList* FrameList_new()
     return list;
 }
 
-void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_frame* frame)
+void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_Frame* frame)
 {
     // If the list is empty
     if (list->start == NULL)
@@ -48,7 +51,7 @@ void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_frame* frame)
 /**
  * Returns the first frame matching frame_id
  */
-ID3v2_frame* FrameList_get_frame_by_id(ID3v2_FrameList* list, char* frame_id)
+ID3v2_Frame* FrameList_get_frame_by_id(ID3v2_FrameList* list, char* frame_id)
 {
     while (list != NULL && list->frame != NULL)
     {
@@ -96,7 +99,7 @@ void ID3v2_FrameList_free(ID3v2_FrameList* list)
  * This does not free the replaced frame. That's responsibility
  * of the calling routine.
  */
-void FrameList_replace_frame(ID3v2_FrameList* list, ID3v2_frame* old_frame, ID3v2_frame* new_frame)
+void FrameList_replace_frame(ID3v2_FrameList* list, ID3v2_Frame* old_frame, ID3v2_Frame* new_frame)
 {
     if (list == NULL)
     {

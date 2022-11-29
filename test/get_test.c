@@ -16,11 +16,11 @@
 
 void get_test_existing()
 {
-    ID3v2_tag* tag = ID3v2_read_tag("./extra/file.mp3");
+    ID3v2_Tag* tag = ID3v2_read_tag("./extra/file.mp3");
 
     assert_text_frame(
         ID3v2_tag_get_artist_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_ARTIST_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Ethereal Darkness"),
@@ -29,7 +29,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_album_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Smoke And Shadows"),
@@ -38,7 +38,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_title_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_TITLE_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Rivers"),
@@ -47,7 +47,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_track_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_TRACK_FRAME_ID,
             .flags = "\0\0",
             .text = "1",
@@ -56,7 +56,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_album_artist_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_ARTIST_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Ethereal Darkness"),
@@ -65,7 +65,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_genre_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_GENRE_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Melodic Death Metal"),
@@ -74,7 +74,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_year_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_YEAR_FRAME_ID,
             .flags = "\0\0",
             .text = "2019",
@@ -83,7 +83,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_disc_number_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_DISC_NUMBER_FRAME_ID,
             .flags = "\0\0",
             .text = "1",
@@ -92,7 +92,7 @@ void get_test_existing()
 
     assert_text_frame(
         ID3v2_tag_get_composer_frame(tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_COMPOSER_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Composer"),
@@ -101,7 +101,7 @@ void get_test_existing()
 
     assert_comment_frame(
         ID3v2_tag_get_comment_frame(tag),
-        &(ID3v2_comment_frame_input){
+        &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .comment = ID3v2_to_unicode("This is a comment"),
             .language = "eng",
@@ -110,8 +110,8 @@ void get_test_existing()
     );
 
     assert_comment_frame(
-        (ID3v2_comment_frame*) ID3v2_tag_get_comment_frames(tag)->frame,
-        &(ID3v2_comment_frame_input){
+        (ID3v2_CommentFrame*) ID3v2_tag_get_comment_frames(tag)->frame,
+        &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .comment = ID3v2_to_unicode("This is a comment"),
             .language = "eng",
@@ -128,7 +128,7 @@ void get_test_existing()
 
     assert_apic_frame(
         ID3v2_tag_get_album_cover_frame(tag),
-        &(ID3v2_apic_frame_input){
+        &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = ID3v2_MIME_TYPE_PNG,
             .description = "",
@@ -138,16 +138,20 @@ void get_test_existing()
         }
     );
 
-    ID3v2_tag_free(tag);
+    printf("GET TEST EXISTING: OK\n");
+
+    ID3v2_Tag_free(tag);
 }
 
 void get_test_empty()
 {
-    ID3v2_tag* no_tag = ID3v2_read_tag("./extra/no_tag.mp3");
+    ID3v2_Tag* no_tag = ID3v2_read_tag("./extra/no_tag.mp3");
     assert(no_tag == NULL);
 
-    ID3v2_tag* empty_tag = ID3v2_read_tag("./extra/empty.mp3");
+    ID3v2_Tag* empty_tag = ID3v2_read_tag("./extra/empty.mp3");
     assert(empty_tag == NULL);
+
+    printf("GET TEST EMPTY: OK\n");
 }
 
 void get_test_main()

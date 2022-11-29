@@ -15,6 +15,8 @@
 #include "id3v2lib.h"
 #include "test_utils.h"
 
+#include "set_test.h"
+
 #define ORIGINAL_FILE "extra/file.mp3"
 #define EDITED_FILE "extra/file_edited.mp3"
 
@@ -23,11 +25,11 @@ void edit_test()
     // Clone the file to not having to modify the original
     clone_file(ORIGINAL_FILE, EDITED_FILE);
 
-    ID3v2_tag* tag = ID3v2_read_tag(EDITED_FILE);
+    ID3v2_Tag* tag = ID3v2_read_tag(EDITED_FILE);
 
     if (tag == NULL)
     {
-        tag = ID3v2_tag_new();
+        tag = ID3v2_Tag_new();
     }
 
     ID3v2_tag_set_artist(tag, ID3v2_to_unicode("Artist"));
@@ -43,7 +45,7 @@ void edit_test()
     ID3v2_tag_set_comment(tag, "eng", ID3v2_to_unicode("Comment"));
     ID3v2_tag_add_comment_frame(
         tag,
-        &(ID3v2_comment_frame_input){
+        &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .language = "eng",
             .short_description = ID3v2_to_unicode("Short Description"),
@@ -61,7 +63,7 @@ void edit_test()
     ID3v2_tag_set_album_cover(tag, ID3v2_MIME_TYPE_PNG, cover_file_size, picture_data);
     ID3v2_tag_add_apic_frame(
         tag,
-        &(ID3v2_apic_frame_input){
+        &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = ID3v2_MIME_TYPE_PNG,
             .description = ID3v2_to_unicode("Description"),
@@ -72,15 +74,15 @@ void edit_test()
     );
 
     // Write the edited tag
-    ID3v2_tag_write(tag, EDITED_FILE);
+    ID3v2_Tag_write(tag, EDITED_FILE);
 
     // Verify the written data
-    ID3v2_tag* edited_tag = ID3v2_read_tag(EDITED_FILE);
+    ID3v2_Tag* edited_tag = ID3v2_read_tag(EDITED_FILE);
     assert(edited_tag != NULL);
 
     assert_text_frame(
         ID3v2_tag_get_artist_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_ARTIST_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Artist"),
@@ -89,7 +91,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_album_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Album"),
@@ -98,7 +100,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_title_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_TITLE_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Title"),
@@ -107,7 +109,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_track_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_TRACK_FRAME_ID,
             .flags = "\0\0",
             .text = "00",
@@ -116,7 +118,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_album_artist_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_ARTIST_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Album Artist"),
@@ -125,7 +127,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_genre_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_GENRE_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Genre"),
@@ -134,7 +136,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_year_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_YEAR_FRAME_ID,
             .flags = "\0\0",
             .text = "0000",
@@ -143,7 +145,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_disc_number_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_DISC_NUMBER_FRAME_ID,
             .flags = "\0\0",
             .text = "00",
@@ -152,7 +154,7 @@ void edit_test()
 
     assert_text_frame(
         ID3v2_tag_get_composer_frame(edited_tag),
-        &(ID3v2_text_frame_input){
+        &(ID3v2_TextFrameInput){
             .id = ID3v2_COMPOSER_FRAME_ID,
             .flags = "\0\0",
             .text = ID3v2_to_unicode("Writter"),
@@ -161,7 +163,7 @@ void edit_test()
 
     assert_comment_frame(
         ID3v2_tag_get_comment_frame(edited_tag),
-        &(ID3v2_comment_frame_input){
+        &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .language = "eng",
             .short_description = ID3v2_to_unicode(""),
@@ -171,7 +173,7 @@ void edit_test()
 
     assert_comment_frame(
         ID3v2_tag_get_comment_frames(edited_tag)->next->frame,
-        &(ID3v2_comment_frame_input){
+        &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .language = "eng",
             .short_description = ID3v2_to_unicode("Short Description"),
@@ -181,7 +183,7 @@ void edit_test()
 
     assert_apic_frame(
         ID3v2_tag_get_album_cover_frame(edited_tag),
-        &(ID3v2_apic_frame_input){
+        &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = ID3v2_MIME_TYPE_PNG,
             .description = ID3v2_to_unicode(""),
@@ -192,8 +194,8 @@ void edit_test()
     );
 
     assert_apic_frame(
-        ID3v2_tag_get_apic_frames(edited_tag)->next->frame,
-        &(ID3v2_apic_frame_input){
+        (ID3v2_ApicFrame*) ID3v2_tag_get_apic_frames(edited_tag)->next->frame,
+        &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = ID3v2_MIME_TYPE_PNG,
             .description = ID3v2_to_unicode("Description"),
@@ -202,6 +204,8 @@ void edit_test()
             .picture_size = cover_file_size,
         }
     );
+
+    printf("SET TEST: OK\n");
 
     // Clean up
     remove(EDITED_FILE);

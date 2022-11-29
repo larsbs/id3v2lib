@@ -10,8 +10,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "char_stream.private.h"
+#include "utils.private.h"
+
 #include "tag_header.private.h"
 
 ID3v2_TagHeader* ID3v2_TagHeader_read(const char* file_name)
@@ -22,7 +24,10 @@ ID3v2_TagHeader* ID3v2_TagHeader_read(const char* file_name)
     if (fp == NULL) return NULL;
 
     const int bytes_read = fread(tag_header_buffer, sizeof(char), ID3v2_TAG_HEADER_LENGTH, fp);
-    return bytes_read < ID3v2_TAG_HEADER_LENGTH ? NULL : TagHeader_parse(tag_header_buffer);
+    if (bytes_read < ID3v2_TAG_HEADER_LENGTH) return NULL;
+
+    CharStream* header_cs = CharStream_from_buffer(tag_header_buffer, ID3v2_TAG_HEADER_LENGTH);
+    return TagHeader_parse(header_cs);
 }
 
 ID3v2_TagHeader* TagHeader_new(
@@ -53,12 +58,10 @@ ID3v2_TagHeader* TagHeader_new_empty()
     return TagHeader_new(3, 0, 0, 0, 0);
 }
 
-ID3v2_TagHeader* TagHeader_parse(const char* buffer)
+ID3v2_TagHeader* TagHeader_parse(CharStream* header_cs)
 {
-    bool has_id3v2_tag = memcmp(buffer, "ID3", ID3v2_TAG_HEADER_IDENTIFIER_LENGTH) == 0;
+    bool has_id3v2_tag = memcmp(header_cs->stream, "ID3", ID3v2_TAG_HEADER_IDENTIFIER_LENGTH) == 0;
     if (!has_id3v2_tag) return NULL;
-
-    CharStream* header_cs = CharStream_from_buffer(buffer, ID3v2_TAG_HEADER_LENGTH);
 
     char id[ID3v2_TAG_HEADER_IDENTIFIER_LENGTH];
     CharStream_read(header_cs, id, ID3v2_TAG_HEADER_IDENTIFIER_LENGTH);
@@ -84,9 +87,9 @@ ID3v2_TagHeader* TagHeader_parse(const char* buffer)
     if ((flags & (1 << 6)) == (1 << 6))
     {
         // An extended header exists, retrieve its size
-        char raw_eh_size[ID3v2_EXTENDED_HEADED_SIZE_LENGTH];
-        CharStream_read(header_cs, raw_eh_size, ID3v2_EXTENDED_HEADED_SIZE_LENGTH);
-        extended_header_size = syncint_decode(btoi(raw_eh_size, ID3v2_EXTENDED_HEADED_SIZE_LENGTH));
+        char raw_eh_size[ID3v2_EXTENDED_HEADER_SIZE_LENGTH];
+        CharStream_read(header_cs, raw_eh_size, ID3v2_EXTENDED_HEADER_SIZE_LENGTH);
+        extended_header_size = syncint_decode(btoi(raw_eh_size, ID3v2_EXTENDED_HEADER_SIZE_LENGTH));
     }
 
     return TagHeader_new(major_version, minor_version, flags, tag_size, extended_header_size);

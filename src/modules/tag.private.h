@@ -11,10 +11,9 @@
 #define id3v2lib_tag_private_h
 
 #include "char_stream.private.h"
-#include "modules/frame.h"
 #include "modules/tag.h"
-#include "modules/utils.h"
 
-CharStream* tag_to_char_stream(ID3v2_tag* tag);
+ID3v2_Tag* Tag_parse(CharStream* tag_cs);
+CharStream* Tag_to_char_stream(ID3v2_Tag* tag);
 
 #endif

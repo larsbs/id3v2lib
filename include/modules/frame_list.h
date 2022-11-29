@@ -10,11 +10,11 @@
 #ifndef id3v2lib_frame_list_h
 #define id3v2lib_frame_list_h
 
-#include "frame.h"
+typedef struct _ID3v2_Frame ID3v2_Frame;
 
 typedef struct _ID3v2_FrameList
 {
-    ID3v2_frame* frame;
+    ID3v2_Frame* frame;
     struct _ID3v2_FrameList* start;
     struct _ID3v2_FrameList* next;
     struct _ID3v2_FrameList* last;

@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "char_stream.private.h"
 
@@ -31,15 +32,20 @@ CharStream* CharStream_from_buffer(const char* buffer, const int size)
     return cs;
 }
 
+char* CharStream_get_cur(CharStream* cs)
+{
+    return cs->stream + cs->cursor;
+}
+
 void CharStream_write(CharStream* cs, const char* data, const int size)
 {
-    memcpy(cs->stream + cs->cursor, data, size);
+    memcpy(CharStream_get_cur(cs), data, size);
     cs->cursor += size;
 }
 
 int CharStream_read(CharStream* cs, char* dest, const int size)
 {
-    memcpy(dest, cs->stream + cs->cursor, size);
+    memcpy(dest, CharStream_get_cur(cs), size);
     cs->cursor += size;
 }
 
@@ -49,6 +55,29 @@ int CharStream_getc(CharStream* cs)
     int c = cs->stream[cs->cursor];
     cs->cursor++;
     return c;
+}
+
+char* CharStream_slice(CharStream* cs, const int n)
+{
+    char* result = CharStream_get_cur(cs);
+    cs->cursor += n;
+    return result;
+}
+
+void CharStream_seek(CharStream* cs, const int offset, const int whence)
+{
+    switch (whence)
+    {
+        case SEEK_SET:
+            cs->cursor = offset;
+            break;
+        case SEEK_CUR:
+            cs->cursor += offset;
+            break;
+        default:
+            cs->cursor = cs->size;
+            break;
+    }
 }
 
 void CharStream_free(CharStream* cs)
