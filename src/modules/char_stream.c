@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "utils.private.h"
+
 #include "char_stream.private.h"
 
 CharStream* CharStream_new(const int size)
@@ -72,10 +74,10 @@ void CharStream_seek(CharStream* cs, const int offset, const int whence)
             cs->cursor = offset;
             break;
         case SEEK_CUR:
-            cs->cursor += offset;
+            cs->cursor = clamp_int(cs->cursor + offset, 0, cs->size);
             break;
         default:
-            cs->cursor = cs->size;
+            cs->cursor = clamp_int(cs->size + offset, 0, cs->size);
             break;
     }
 }
