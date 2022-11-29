@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "modules/char_stream.private.h"
 #include "modules/frame.private.h"
 #include "modules/frame_list.private.h"
 #include "modules/tag.private.h"
