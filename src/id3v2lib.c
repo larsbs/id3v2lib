@@ -10,11 +10,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "frame.private.h"
-#include "frame_list.private.h"
+#include "modules/frame.private.h"
+#include "modules/frame_list.private.h"
+#include "modules/tag.private.h"
+#include "modules/tag_header.private.h"
+
 #include "id3v2lib.h"
-#include "tag.private.h"
-#include "tag_header.private.h"
 
 ID3v2_Tag* ID3v2_read_tag(const char* file_name)
 {
