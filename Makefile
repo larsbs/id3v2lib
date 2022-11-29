@@ -1,5 +1,5 @@
 CC = gcc
-CPPFLAGS = -I./include -I./src/modules
+CPPFLAGS = -I./include -I./src
 CFLAGS = -g -Wall -std=c99
 
 TARGET = lib/libid3v2

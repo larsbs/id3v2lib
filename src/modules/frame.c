@@ -7,103 +7,68 @@
  * file that was distributed with this source code.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "char_stream.private.h"
+#include "frame_header.private.h"
+#include "frames/apic_frame.private.h"
+#include "frames/comment_frame.private.h"
+#include "frames/text_frame.private.h"
 #include "modules/frame_ids.h"
-#include "frame.private.h"
 #include "utils.private.h"
 
-ID3v2_frame_header* frame_header_new(const char* id, const char* flags, const int size)
+#include "frame.private.h"
+
+ID3v2_Frame* Frame_parse(CharStream* frame_cs, int id3_major_version)
 {
-    ID3v2_frame_header* frame_header = (ID3v2_frame_header*) malloc(sizeof(ID3v2_frame_header));
+    ID3v2_FrameHeader* header = FrameHeader_parse(frame_cs, id3_major_version);
 
-    memcpy(frame_header->id, id, ID3v2_FRAME_HEADER_ID_LENGTH);
-    memcpy(frame_header->flags, flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH);
-    frame_header->size = size;
+    if (header == NULL) return NULL; // no valid frame found
 
-    return frame_header;
-}
-
-Char_stream* frame_header_to_char_stream(ID3v2_frame_header* header)
-{
-    Char_stream* header_cs = char_stream_new(ID3v2_FRAME_HEADER_LENGTH);
-
-    // Header
-    cswrite(header->id, ID3v2_FRAME_HEADER_ID_LENGTH, header_cs);
-    cswrite(itob(header->size), ID3v2_FRAME_HEADER_SIZE_LENGTH, header_cs);
-    cswrite(&header->flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH, header_cs);
-
-    return header_cs;
-}
-
-ID3v2_frame* frame_parse(const char* buffer, int id3_major_version)
-{
-    // Start parsing the frame header
-    const char id[ID3v2_FRAME_HEADER_ID_LENGTH];
-    memcpy(id, buffer, ID3v2_FRAME_HEADER_ID_LENGTH);
-
-    // If the id is 0000, that means we already reached the end and we're inside the padding
-    if (memcmp(id, "\0\0\0\0", 4) == 0)
+    if (FrameHeader_isTextFrame(header))
     {
-        return NULL;
+        // Rewind the stream back so the frame can correctly parse the header
+        CharStream_seek(frame_cs, -ID3v2_FRAME_HEADER_LENGTH, SEEK_CUR);
+        FrameHeader_free(header); // we don't need it, the frame will parse its own header
+        return (ID3v2_Frame*) TextFrame_parse(frame_cs, id3_major_version);
+    }
+    else if (FrameHeader_isCommentFrame(header))
+    {
+        CharStream_seek(frame_cs, -ID3v2_FRAME_HEADER_LENGTH, SEEK_CUR);
+        FrameHeader_free(header);
+        return (ID3v2_Frame*) CommentFrame_parse(frame_cs, id3_major_version);
+    }
+    else if (FrameHeader_isApicFrame(header))
+    {
+        CharStream_seek(frame_cs, -ID3v2_FRAME_HEADER_LENGTH, SEEK_CUR);
+        FrameHeader_free(header);
+        return (ID3v2_Frame*) ApicFrame_parse(frame_cs, id3_major_version);
     }
 
-    int cursor = 0;
-
-    int size = btoi(buffer + (cursor += ID3v2_FRAME_HEADER_ID_LENGTH), ID3v2_FRAME_HEADER_SIZE_LENGTH);
-
-    if (id3_major_version == 4)
-    {
-        size = syncint_decode(size);
-    }
-
-    const char flags[ID3v2_FRAME_HEADER_FLAGS_LENGTH];
-    memcpy(flags, buffer + (cursor += ID3v2_FRAME_HEADER_SIZE_LENGTH), ID3v2_FRAME_HEADER_FLAGS_LENGTH);
-    cursor += ID3v2_FRAME_HEADER_FLAGS_LENGTH;
-
-    ID3v2_frame* frame = (ID3v2_frame*) malloc(sizeof(ID3v2_frame));
-
-    frame->header = frame_header_new(id, flags, size);
-
-    if (frame->header->id[0] == 'T')
-    {
-        // It's a text information frame
-        frame->data = text_frame_data_parse(buffer + cursor, frame->header->size);
-    }
-    else if (frame->header->id[0] == 'C')
-    {
-        // It's a comment information frame
-        frame->data = comment_frame_data_parse(buffer + cursor, frame->header->size);
-    }
-    else if (frame->header->id[0] == 'A')
-    {
-        // It's an attached picture frame
-        frame->data = apic_frame_data_parse(buffer + cursor, frame->header->size);
-    }
-    else
-    {
-        // Unknown frame type, simply copy the raw data into the data property
-        frame->data = (char*) malloc(size * sizeof(char));
-        memcpy(frame->data, buffer + cursor, size);
-    }
+    // Unknown frame type, simply copy the raw data into the data property
+    ID3v2_Frame* frame = (ID3v2_Frame*) malloc(sizeof(ID3v2_Frame));
+    frame->header = header;
+    frame->data = (char*) malloc(header->size * sizeof(char));
+    CharStream_read(frame_cs, frame->data, header->size);
 
     return frame;
 }
 
-void frame_free(ID3v2_frame* frame)
+void Frame_free(ID3v2_Frame* frame)
 {
-    if (frame->header->id[0] == 'T')
+    if (FrameHeader_isTextFrame(frame->header))
     {
-        text_frame_free((ID3v2_text_frame*) frame);
+        TextFrame_free((ID3v2_TextFrame*) frame);
     }
-    else if (frame->header->id[0] == 'C')
+    else if (FrameHeader_isCommentFrame(frame->header))
     {
-        comment_frame_free((ID3v2_comment_frame*) frame);
+        CommentFrame_free((ID3v2_CommentFrame*) frame);
     }
-    else if (frame->header->id[0] == 'A')
+    else if (FrameHeader_isApicFrame(frame->header))
     {
-        // apic_frame_free((ID3v2_apic_frame*) frame);
+        ApicFrame_free((ID3v2_ApicFrame*) frame);
     }
     else
     {
@@ -113,282 +78,22 @@ void frame_free(ID3v2_frame* frame)
     }
 }
 
-Char_stream* frame_to_char_stream(ID3v2_frame* frame)
+CharStream* Frame_to_char_stream(ID3v2_Frame* frame)
 {
-    switch (frame->header->id[0])
+    if (FrameHeader_isTextFrame(frame->header))
     {
-        case 'T':
-            return text_frame_to_char_stream((ID3v2_text_frame*) frame);
-        case 'C':
-            return comment_frame_to_char_stream((ID3v2_comment_frame*) frame);
-        case 'A':
-            return apic_frame_to_char_stream((ID3v2_apic_frame*) frame);
-        default:
-            return NULL;
+        return TextFrame_to_char_stream((ID3v2_TextFrame*) frame);
     }
-}
-
-ID3v2_text_frame* text_frame_new(const char* id, const char* flags, const char* text)
-{
-    ID3v2_text_frame* frame = (ID3v2_text_frame*) malloc(sizeof(ID3v2_text_frame));
-
-    frame->data = text_frame_data_new(text);
-
-    const int frame_size = ID3v2_FRAME_ENCODING_LENGTH + frame->data->size;
-    frame->header = frame_header_new(id, flags, frame_size);
-
-    return frame;
-}
-
-void text_frame_free(ID3v2_text_frame* frame)
-{
-    free(frame->header);
-    free(frame->data->text);
-    free(frame->data);
-    free(frame);
-}
-
-Char_stream* text_frame_to_char_stream(ID3v2_text_frame* frame)
-{
-    if (frame == NULL)
+    else if (FrameHeader_isCommentFrame(frame->header))
+    {
+        return CommentFrame_to_char_stream((ID3v2_CommentFrame*) frame);
+    }
+    else if (FrameHeader_isApicFrame(frame->header))
+    {
+        return ApicFrame_to_char_stream((ID3v2_ApicFrame*) frame);
+    }
+    else
     {
         return NULL;
     }
-
-    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
-    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
-
-    // Header
-    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
-    char_stream_free(frame_header_cs);
-
-    // Data
-    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
-    cswrite(frame->data->text, frame->data->size, frame_cs);
-
-    return frame_cs;
-}
-
-ID3v2_text_frame_data* text_frame_data_new(const char* text)
-{
-    const char encoding = string_has_bom(text) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
-    const int str_termination_size = encoding == ID3v2_ENCODING_ISO ? 1 : 2;
-    const int size = ID3v2_strlen(text) + str_termination_size;
-
-    ID3v2_text_frame_data* data = (ID3v2_text_frame_data*) malloc(sizeof(ID3v2_text_frame_data));
-    data->text = (char*) malloc(size * sizeof(char));
-
-    data->encoding = encoding;
-    data->size = size;
-    data->text = text;
-
-    return data;
-}
-
-ID3v2_text_frame_data* text_frame_data_parse(const char* buffer, int frame_size)
-{
-    if (buffer == NULL)
-    {
-        return NULL;
-    }
-
-    const int size = frame_size - ID3v2_FRAME_ENCODING_LENGTH;
-    char* text = (char*) malloc(size * sizeof(char));
-    memcpy(text, buffer + ID3v2_FRAME_ENCODING_LENGTH, size);
-
-    return text_frame_data_new(text);
-}
-
-ID3v2_comment_frame* comment_frame_new(const char* flags, const char* lang, const char* short_desc, const char* comment)
-{
-    ID3v2_comment_frame* frame = (ID3v2_comment_frame*) malloc(sizeof(ID3v2_comment_frame));
-
-    frame->data = comment_frame_data_new(lang, short_desc, comment);
-
-    const int short_desc_size = ID3v2_strlent(short_desc);
-    const int frame_size = frame->data->size + short_desc_size + ID3v2_FRAME_ENCODING_LENGTH + ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH;
-
-    frame->header = frame_header_new(ID3v2_COMMENT_FRAME_ID, flags, frame_size);
-
-    return frame;
-}
-
-void comment_frame_free(ID3v2_comment_frame* frame)
-{
-    free(frame->header);
-    free(frame->data->comment);
-    free(frame->data->language);
-    free(frame->data->short_description);
-    free(frame->data);
-    free(frame);
-}
-
-Char_stream* comment_frame_to_char_stream(ID3v2_comment_frame* frame)
-{
-    if (frame == NULL)
-    {
-        return NULL;
-    }
-
-    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
-    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
-
-    // Header
-    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
-    char_stream_free(frame_header_cs);
-
-    // Data
-    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
-    cswrite(frame->data->language, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH, frame_cs);
-    cswrite(frame->data->short_description, ID3v2_strlent(frame->data->short_description), frame_cs);
-    cswrite(frame->data->comment, frame->data->size, frame_cs);
-
-    return frame_cs;
-}
-
-ID3v2_comment_frame_data* comment_frame_data_new(const char* lang, const char* short_desc, const char* comment)
-{
-    const char encoding = string_has_bom(comment) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
-    const int comment_size = ID3v2_strlent(comment);
-    const int short_desc_size = ID3v2_strlent(short_desc);
-
-    ID3v2_comment_frame_data* data = (ID3v2_comment_frame_data*) malloc(sizeof(ID3v2_comment_frame_data));
-
-    data->encoding = encoding;
-
-    data->size = comment_size;
-
-    data->language = (char*) malloc(ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH * sizeof(char));
-    memcpy(data->language, lang, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
-
-    data->comment = (char*) malloc(comment_size * sizeof(char));
-    memcpy(data->comment, comment, comment_size);
-
-    data->short_description = (char*) malloc(short_desc_size * sizeof(char));
-    memcpy(data->short_description, short_desc, short_desc_size);
-
-    return data;
-}
-
-ID3v2_comment_frame_data* comment_frame_data_parse(const char* buffer, int frame_size)
-{
-    if (buffer == NULL)
-    {
-        return NULL;
-    }
-
-    int cursor = 0;
-
-    const char* language = (char*) malloc(ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH * sizeof(char));
-    memcpy(language, buffer + (cursor += ID3v2_FRAME_ENCODING_LENGTH), ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
-
-    int short_desc_size = ID3v2_strlent(buffer + (cursor += ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH));
-    const char* short_description = (char*) malloc(short_desc_size * sizeof(char));
-    memcpy(short_description, buffer + cursor, short_desc_size);
-
-    int comment_length = ID3v2_strlent(buffer + (cursor += short_desc_size));
-    const char* comment = (char*) malloc(comment_length * sizeof(char));
-    memcpy(comment, buffer + cursor, comment_length);
-
-    return comment_frame_data_new(language, short_description, comment);
-}
-
-ID3v2_apic_frame* apic_frame_new(const char* flags, const char* description, const char picture_type, const char* mime_type, const int picture_size, const char* data)
-{
-    ID3v2_apic_frame* frame = (ID3v2_apic_frame*) malloc(sizeof(ID3v2_apic_frame));
-
-    frame->data = apic_frame_data_new(description, picture_type, mime_type, picture_size, data);
-
-    const int description_size = ID3v2_strlent(description);
-    const int mime_type_size = ID3v2_strlent(mime_type);
-    const int frame_size = ID3v2_FRAME_ENCODING_LENGTH + mime_type_size + ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH + description_size + frame->data->picture_size;
-
-    frame->header = frame_header_new(ID3v2_ALBUM_COVER_FRAME_ID, flags, frame_size);
-
-    return frame;
-}
-
-void apic_frame_free(ID3v2_apic_frame* frame)
-{
-    free(frame->header);
-    free(frame->data->data);
-    free(frame->data->description);
-    free(frame->data->mime_type);
-    free(frame->data);
-    free(frame);
-}
-
-Char_stream* apic_frame_to_char_stream(ID3v2_apic_frame* frame)
-{
-    if (frame == NULL)
-    {
-        return NULL;
-    }
-
-    Char_stream* frame_header_cs = frame_header_to_char_stream(frame->header);
-    Char_stream* frame_cs = char_stream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
-
-    // Header
-    cswrite(frame_header_cs->stream, frame_header_cs->size, frame_cs);
-    char_stream_free(frame_header_cs);
-
-    // Data
-    cswrite(&frame->data->encoding, ID3v2_FRAME_ENCODING_LENGTH, frame_cs);
-    cswrite(frame->data->mime_type, ID3v2_strlent(frame->data->mime_type), frame_cs);
-    cswrite(&frame->data->picture_type, ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH, frame_cs);
-    cswrite(frame->data->description, ID3v2_strlent(frame->data->description), frame_cs);
-    cswrite(frame->data->data, frame->data->picture_size, frame_cs);
-
-    return frame_cs;
-}
-
-ID3v2_apic_frame_data* apic_frame_data_new(const char* description, const char picture_type, const char* mime_type, const int picture_size, const char* picture_data)
-{
-    ID3v2_apic_frame_data* data = (ID3v2_apic_frame_data*) malloc(sizeof(ID3v2_apic_frame_data));
-
-    const char encoding = string_has_bom(description) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
-    data->encoding = encoding;
-
-    const int desc_size = ID3v2_strlent(description);
-    data->description = (char*) malloc(desc_size * sizeof(char));
-    memcpy(data->description, description, desc_size);
-
-    const int mime_type_size = ID3v2_strlent(mime_type);
-    data->mime_type = (char*) malloc(mime_type_size * sizeof(char));
-    memcpy(data->mime_type, mime_type, mime_type_size);
-
-    data->picture_type = picture_type;
-
-    data->picture_size = picture_size;
-
-    data->data = (char*) malloc(picture_size * sizeof(char));
-    memcpy(data->data, picture_data, picture_size);
-
-    return data;
-}
-
-ID3v2_apic_frame_data* apic_frame_data_parse(const char* buffer, int frame_size)
-{
-    if (buffer == NULL)
-    {
-        return NULL;
-    }
-
-    int cursor = 0;
-
-    const int mime_type_size = ID3v2_strlent(buffer + (cursor += ID3v2_FRAME_ENCODING_LENGTH));
-    const char* mime_type = (char*) malloc(mime_type_size * sizeof(char));
-    memcpy(mime_type, buffer + cursor, mime_type_size);
-
-    const char picture_type = buffer[cursor += mime_type_size];
-
-    const int description_size = ID3v2_strlent(buffer + (cursor += ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH));
-    const char* description = (char*) malloc(description_size * sizeof(char));
-    memcpy(description, buffer + cursor, description_size);
-
-    const int picture_size = frame_size - (cursor += description_size);
-    const char* data = (char*) malloc(picture_size * sizeof(char));
-    memcpy(data, buffer + cursor, picture_size);
-
-    return apic_frame_data_new(description, picture_type, mime_type, picture_size, data);
 }

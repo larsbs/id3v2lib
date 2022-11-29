@@ -14,18 +14,11 @@
 
 #include "modules/utils.h"
 
-#define BOM_LENGTH 2
-
 unsigned int btoi(const char* bytes, int size);
 char* itob(int integer);
 int syncint_encode(int value);
 unsigned int syncint_decode(int value);
 int clamp_int(const int value, const int min, const int max);
-
 bool string_has_bom(const char* string);
-
-Char_stream* char_stream_new(int size);
-void char_stream_free(Char_stream* cs);
-void cswrite(const char* data, size_t size, Char_stream* cs);
 
 #endif

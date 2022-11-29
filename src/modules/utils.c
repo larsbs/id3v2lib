@@ -13,6 +13,8 @@
 
 #include "utils.private.h"
 
+#define BOM_LENGTH 2
+
 char* ID3v2_to_unicode(char* string)
 {
     if (string_has_bom(string))
@@ -44,7 +46,7 @@ char* ID3v2_to_unicode(char* string)
 
 int ID3v2_strlen(const char* string)
 {
-    if (! string_has_bom(string))
+    if (!string_has_bom(string))
     {
         // it's not an unicode string, so we can use the std implementation
         return strlen(string);
@@ -80,7 +82,7 @@ unsigned int btoi(const char* bytes, int size)
 {
     unsigned int result = 0x00;
 
-    for(int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
         result = result << 8;
         result = result | (unsigned char) bytes[i];
@@ -97,7 +99,7 @@ char* itob(int integer)
     // We need to reverse the bytes because Intel uses little endian.
     char* aux = (char*) &integer;
 
-    for(int i = size - 1; i >= 0; i--)
+    for (int i = size - 1; i >= 0; i--)
     {
         result[size - 1 - i] = aux[i];
     }
@@ -149,31 +151,10 @@ bool string_has_bom(const char* string)
         return false;
     }
 
-    if(memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
+    if (memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
     {
         return true;
     }
 
     return false;
-}
-
-Char_stream* char_stream_new(int size)
-{
-    Char_stream* cs = (Char_stream*) malloc(sizeof(Char_stream));
-    cs->stream = (char*) calloc(size, sizeof(char));
-    cs->cursor = 0;
-    cs->size = size;
-    return cs;
-}
-
-void char_stream_free(Char_stream* cs)
-{
-    free(cs->stream);
-    free(cs);
-}
-
-void cswrite(const char* data, size_t size, Char_stream* cs)
-{
-    memcpy(cs->stream + cs->cursor, data, size);
-    cs->cursor += size;
 }

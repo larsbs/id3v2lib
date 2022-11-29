@@ -10,19 +10,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "modules/frame.private.h"
+#include "modules/frame_list.private.h"
+#include "modules/tag.private.h"
+#include "modules/tag_header.private.h"
+
 #include "id3v2lib.h"
-#include "tag.private.h"
-#include "frame.private.h"
-#include "frame_list.private.h"
 
-ID3v2_tag* ID3v2_read_tag(const char* file_name)
+ID3v2_Tag* ID3v2_read_tag(const char* file_name)
 {
-    ID3v2_tag_header* tag_header = tag_header_load(file_name);
+    ID3v2_TagHeader* tag_header = ID3v2_TagHeader_read(file_name);
 
-    if (tag_header == NULL)
-    {
-        return NULL;
-    }
+    if (tag_header == NULL) return NULL;
 
     FILE* file = fopen(file_name, "rb");
     int buffer_length = tag_header->tag_size + ID3v2_TAG_HEADER_LENGTH;
@@ -39,56 +38,16 @@ ID3v2_tag* ID3v2_read_tag(const char* file_name)
     fread(tag_buffer, buffer_length, 1, file);
     fclose(file);
 
-    ID3v2_tag* tag = ID3v2_read_tag_from_buffer(tag_buffer, buffer_length);
+    ID3v2_Tag* tag = ID3v2_read_tag_from_buffer(tag_buffer, buffer_length);
     free(tag_buffer);
 
     return tag;
 }
 
-ID3v2_tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
+ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
 {
-    ID3v2_tag_header* tag_header = tag_header_parse_from_buffer(tag_buffer);
-
-    if (tag_header == NULL)
-    {
-        return NULL;
-    }
-
-    if (buffer_length < tag_header->tag_size + 10)
-    {
-        // The tag is bigger than the provided buffer size.
-        free(tag_header);
-        return NULL;
-    }
-
-    ID3v2_tag* tag = ID3v2_tag_new();
-    tag->header = tag_header;
-
-    int cursor = 0;
-    cursor += ID3v2_TAG_HEADER_LENGTH; // Skip tag header
-
-    if (tag->header->extended_header_size > 0)
-    {
-        // An extended header exists, skip it too
-        cursor += tag->header->extended_header_size + ID3v2_EXTENDED_HEADED_SIZE_LENGTH;
-    }
-
-    ID3v2_frame* current_frame;
-
-    while (cursor < tag->header->tag_size)
-    {
-        current_frame = frame_parse(tag_buffer + cursor, tag->header->major_version);
-
-        if (current_frame == NULL)
-        {
-            break;
-        }
-
-        cursor += ID3v2_FRAME_HEADER_LENGTH + current_frame->header->size;
-        frame_list_add_frame(tag->frames, current_frame);
-    }
-
-    tag->padding_size = (ID3v2_TAG_HEADER_LENGTH + tag->header->extended_header_size + tag->header->tag_size) - cursor;
-
+    CharStream* tag_cs = CharStream_from_buffer(tag_buffer, buffer_length);
+    ID3v2_Tag* tag = Tag_parse(tag_cs);
+    CharStream_free(tag_cs);
     return tag;
 }

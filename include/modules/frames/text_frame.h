@@ -7,20 +7,22 @@
  * file that was distributed with this source code.
  */
 
-#ifndef id3v2lib_frame_h
-#define id3v2lib_frame_h
-
-#define ID3v2_FRAME_ENCODING_LENGTH 1
-
-#define ID3v2_ENCODING_ISO 0
-#define ID3v2_ENCODING_UNICODE 1
+#ifndef id3v2lib_text_frame_h
+#define id3v2lib_text_frame_h
 
 typedef struct _ID3v2_FrameHeader ID3v2_FrameHeader;
 
-typedef struct _ID3v2_Frame
+typedef struct _ID3v2_TextFrameData
+{
+    int size;
+    unsigned char encoding;
+    const unsigned char* text;
+} ID3v2_TextFrameData;
+
+typedef struct _ID3v2_TextFrame
 {
     ID3v2_FrameHeader* header;
-    void* data;
-} ID3v2_Frame;
+    ID3v2_TextFrameData* data;
+} ID3v2_TextFrame;
 
 #endif

@@ -8,8 +8,8 @@
  */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "test_utils.h"
 
@@ -20,7 +20,7 @@ bool has_bom(char* string)
         return false;
     }
 
-    if(memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
+    if (memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
     {
         return true;
     }
@@ -85,10 +85,10 @@ void println_utf16(uint16_t* string, int size)
 
     // If size < 0, then keep iterating until we find the termination marker,
     // otherwise, use size as a safe limit.
-    while(i < size || size < 0)
+    while (i < size || size < 0)
     {
         // break if we reach the termination marker '0000'
-        if(string[i] == 0x0000)
+        if (string[i] == 0x0000)
         {
             break;
         }
@@ -100,7 +100,7 @@ void println_utf16(uint16_t* string, int size)
     printf("\n");
 }
 
-void print_text_frame(ID3v2_text_frame* frame)
+void print_text_frame(ID3v2_TextFrame* frame)
 {
     if (frame == NULL)
     {
@@ -128,7 +128,7 @@ void print_text_frame_text(char* text, int size)
     }
 }
 
-void print_comment_frame(ID3v2_comment_frame* frame)
+void print_comment_frame(ID3v2_CommentFrame* frame)
 {
     if (frame == NULL)
     {
@@ -139,7 +139,7 @@ void print_comment_frame(ID3v2_comment_frame* frame)
     print_text_frame_text(frame->data->comment, frame->data->size);
 }
 
-void print_comment_frames(ID3v2_frame_list* frames)
+void print_comment_frames(ID3v2_FrameList* frames)
 {
     if (frames == NULL)
     {
@@ -149,13 +149,13 @@ void print_comment_frames(ID3v2_frame_list* frames)
 
     while (frames != NULL)
     {
-        ID3v2_comment_frame* comment = (ID3v2_comment_frame*) frames->frame;
+        ID3v2_CommentFrame* comment = (ID3v2_CommentFrame*) frames->frame;
         print_comment_frame(comment);
         frames = frames->next;
     }
 }
 
-void save_apic_frame(ID3v2_apic_frame* frame, char* dir_path)
+void save_apic_frame(ID3v2_ApicFrame* frame, char* dir_path)
 {
     if (frame == NULL)
     {
