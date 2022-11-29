@@ -162,7 +162,7 @@ void ID3v2_Tag_write(ID3v2_Tag* tag, const char* dest)
 /**
  * Getter functions
  */
-ID3v2_Frame* ID3v2_tag_get_frame(ID3v2_Tag* tag, char* frame_id)
+ID3v2_Frame* ID3v2_Tag_get_frame(ID3v2_Tag* tag, char* frame_id)
 {
     if (tag == NULL)
     {
@@ -172,7 +172,7 @@ ID3v2_Frame* ID3v2_tag_get_frame(ID3v2_Tag* tag, char* frame_id)
     return FrameList_get_frame_by_id(tag->frames, frame_id);
 }
 
-ID3v2_FrameList* ID3v2_tag_get_frames(ID3v2_Tag* tag, char* frame_id)
+ID3v2_FrameList* ID3v2_Tag_get_frames(ID3v2_Tag* tag, char* frame_id)
 {
     if (tag == NULL)
     {
@@ -182,85 +182,85 @@ ID3v2_FrameList* ID3v2_tag_get_frames(ID3v2_Tag* tag, char* frame_id)
     return FrameList_get_frames_by_id(tag->frames, frame_id);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_artist_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_artist_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_ARTIST_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_ARTIST_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_album_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_album_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_ALBUM_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_ALBUM_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_title_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_title_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_TITLE_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_TITLE_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_track_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_track_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_TRACK_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_TRACK_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_album_artist_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_album_artist_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_ALBUM_ARTIST_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_ALBUM_ARTIST_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_genre_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_genre_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_GENRE_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_GENRE_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_year_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_year_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_YEAR_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_YEAR_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_disc_number_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_disc_number_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_DISC_NUMBER_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_DISC_NUMBER_FRAME_ID);
 }
 
-ID3v2_TextFrame* ID3v2_tag_get_composer_frame(ID3v2_Tag* tag)
+ID3v2_TextFrame* ID3v2_Tag_get_composer_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_TextFrame*) ID3v2_tag_get_frame(tag, ID3v2_COMPOSER_FRAME_ID);
+    return (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, ID3v2_COMPOSER_FRAME_ID);
 }
 
 /**
  * Since the ID3v2 spec allows defining multiple COMM frames in a
  * single tag, this gets the first COMM frame found. To retrieve every
- * COMM frame found use ID3v2_tag_get_comment_frames(tag) instead.
+ * COMM frame found use ID3v2_Tag_get_comment_frames(tag) instead.
  */
-ID3v2_CommentFrame* ID3v2_tag_get_comment_frame(ID3v2_Tag* tag)
+ID3v2_CommentFrame* ID3v2_Tag_get_comment_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_CommentFrame*) ID3v2_tag_get_frame(tag, ID3v2_COMMENT_FRAME_ID);
+    return (ID3v2_CommentFrame*) ID3v2_Tag_get_frame(tag, ID3v2_COMMENT_FRAME_ID);
 }
 
 /**
  * Since the ID3v2 spec allows defining multiple COMM frames in a
  * single tag, this gets every COMM frame found. To retrieve only the
- * first COMM frame found use ID3v2_tag_get_comment_frame(tag) instead.
+ * first COMM frame found use ID3v2_Tag_get_comment_frame(tag) instead.
  */
-ID3v2_FrameList* ID3v2_tag_get_comment_frames(ID3v2_Tag* tag)
+ID3v2_FrameList* ID3v2_Tag_get_comment_frames(ID3v2_Tag* tag)
 {
-    return ID3v2_tag_get_frames(tag, ID3v2_COMMENT_FRAME_ID);
+    return ID3v2_Tag_get_frames(tag, ID3v2_COMMENT_FRAME_ID);
 }
 
-ID3v2_ApicFrame* ID3v2_tag_get_album_cover_frame(ID3v2_Tag* tag)
+ID3v2_ApicFrame* ID3v2_Tag_get_album_cover_frame(ID3v2_Tag* tag)
 {
-    return (ID3v2_ApicFrame*) ID3v2_tag_get_frame(tag, ID3v2_ALBUM_COVER_FRAME_ID);
+    return (ID3v2_ApicFrame*) ID3v2_Tag_get_frame(tag, ID3v2_ALBUM_COVER_FRAME_ID);
 }
 
-ID3v2_FrameList* ID3v2_tag_get_apic_frames(ID3v2_Tag* tag)
+ID3v2_FrameList* ID3v2_Tag_get_apic_frames(ID3v2_Tag* tag)
 {
-    return ID3v2_tag_get_frames(tag, ID3v2_ALBUM_COVER_FRAME_ID);
+    return ID3v2_Tag_get_frames(tag, ID3v2_ALBUM_COVER_FRAME_ID);
 }
 
 /**
  * Setter functions
  */
-void ID3v2_tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input)
+void ID3v2_Tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input)
 {
     ID3v2_TextFrame* new_frame = TextFrame_new(input->id, input->flags, input->text);
     ID3v2_TextFrame* existing_frame =
@@ -283,9 +283,9 @@ void ID3v2_tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input)
     }
 }
 
-void ID3v2_tag_set_artist(ID3v2_Tag* tag, const char* artist)
+void ID3v2_Tag_set_artist(ID3v2_Tag* tag, const char* artist)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ARTIST_FRAME_ID,
@@ -295,9 +295,9 @@ void ID3v2_tag_set_artist(ID3v2_Tag* tag, const char* artist)
     );
 }
 
-void ID3v2_tag_set_album(ID3v2_Tag* tag, const char* album)
+void ID3v2_Tag_set_album(ID3v2_Tag* tag, const char* album)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_FRAME_ID,
@@ -307,9 +307,9 @@ void ID3v2_tag_set_album(ID3v2_Tag* tag, const char* album)
     );
 }
 
-void ID3v2_tag_set_title(ID3v2_Tag* tag, const char* title)
+void ID3v2_Tag_set_title(ID3v2_Tag* tag, const char* title)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_TITLE_FRAME_ID,
@@ -319,9 +319,9 @@ void ID3v2_tag_set_title(ID3v2_Tag* tag, const char* title)
     );
 }
 
-void ID3v2_tag_set_track(ID3v2_Tag* tag, const char* track)
+void ID3v2_Tag_set_track(ID3v2_Tag* tag, const char* track)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_TRACK_FRAME_ID,
@@ -331,9 +331,9 @@ void ID3v2_tag_set_track(ID3v2_Tag* tag, const char* track)
     );
 }
 
-void ID3v2_tag_set_album_artist(ID3v2_Tag* tag, const char* album_artist)
+void ID3v2_Tag_set_album_artist(ID3v2_Tag* tag, const char* album_artist)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_ARTIST_FRAME_ID,
@@ -343,9 +343,9 @@ void ID3v2_tag_set_album_artist(ID3v2_Tag* tag, const char* album_artist)
     );
 }
 
-void ID3v2_tag_set_genre(ID3v2_Tag* tag, const char* genre)
+void ID3v2_Tag_set_genre(ID3v2_Tag* tag, const char* genre)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_GENRE_FRAME_ID,
@@ -355,9 +355,9 @@ void ID3v2_tag_set_genre(ID3v2_Tag* tag, const char* genre)
     );
 }
 
-void ID3v2_tag_set_year(ID3v2_Tag* tag, const char* year)
+void ID3v2_Tag_set_year(ID3v2_Tag* tag, const char* year)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_YEAR_FRAME_ID,
@@ -367,9 +367,9 @@ void ID3v2_tag_set_year(ID3v2_Tag* tag, const char* year)
     );
 }
 
-void ID3v2_tag_set_disc_number(ID3v2_Tag* tag, const char* disc_number)
+void ID3v2_Tag_set_disc_number(ID3v2_Tag* tag, const char* disc_number)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_DISC_NUMBER_FRAME_ID,
@@ -379,9 +379,9 @@ void ID3v2_tag_set_disc_number(ID3v2_Tag* tag, const char* disc_number)
     );
 }
 
-void ID3v2_tag_set_composer(ID3v2_Tag* tag, const char* composer)
+void ID3v2_Tag_set_composer(ID3v2_Tag* tag, const char* composer)
 {
-    ID3v2_tag_set_text_frame(
+    ID3v2_Tag_set_text_frame(
         tag,
         &(ID3v2_TextFrameInput){
             .id = ID3v2_COMPOSER_FRAME_ID,
@@ -394,11 +394,11 @@ void ID3v2_tag_set_composer(ID3v2_Tag* tag, const char* composer)
 /**
  * This only sets the first COMM frame found.
  */
-void ID3v2_tag_set_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
+void ID3v2_Tag_set_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
 {
     ID3v2_CommentFrame* new_frame =
         CommentFrame_new(input->flags, input->language, input->short_description, input->comment);
-    ID3v2_CommentFrame* existing_frame = ID3v2_tag_get_comment_frame(tag);
+    ID3v2_CommentFrame* existing_frame = ID3v2_Tag_get_comment_frame(tag);
 
     if (existing_frame == NULL)
     {
@@ -417,7 +417,7 @@ void ID3v2_tag_set_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
     }
 }
 
-void ID3v2_tag_add_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
+void ID3v2_Tag_add_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
 {
     ID3v2_CommentFrame* new_frame =
         CommentFrame_new(input->flags, input->language, input->short_description, input->comment);
@@ -425,9 +425,9 @@ void ID3v2_tag_add_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
     tag->header->tag_size += new_frame->header->size;
 }
 
-void ID3v2_tag_set_comment(ID3v2_Tag* tag, const char* lang, const char* comment)
+void ID3v2_Tag_set_comment(ID3v2_Tag* tag, const char* lang, const char* comment)
 {
-    ID3v2_tag_set_comment_frame(
+    ID3v2_Tag_set_comment_frame(
         tag,
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
@@ -441,7 +441,7 @@ void ID3v2_tag_set_comment(ID3v2_Tag* tag, const char* lang, const char* comment
 /**
  * This only sets the first APIC frame found.
  */
-void ID3v2_tag_set_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
+void ID3v2_Tag_set_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
 {
     ID3v2_ApicFrame* new_frame = ApicFrame_new(
         input->flags,
@@ -451,7 +451,7 @@ void ID3v2_tag_set_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
         input->picture_size,
         input->data
     );
-    ID3v2_ApicFrame* existing_frame = ID3v2_tag_get_album_cover_frame(tag);
+    ID3v2_ApicFrame* existing_frame = ID3v2_Tag_get_album_cover_frame(tag);
 
     if (existing_frame == NULL)
     {
@@ -470,7 +470,7 @@ void ID3v2_tag_set_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
     }
 }
 
-void ID3v2_tag_add_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
+void ID3v2_Tag_add_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
 {
     ID3v2_ApicFrame* new_frame = ApicFrame_new(
         input->flags,
@@ -487,14 +487,14 @@ void ID3v2_tag_add_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
 /**
  * This only sets the front album cover (picture_type = 0x03)
  */
-void ID3v2_tag_set_album_cover(
+void ID3v2_Tag_set_album_cover(
     ID3v2_Tag* tag,
     const char* mime_type,
     const int size,
     const char* data
 )
 {
-    ID3v2_tag_set_apic_frame(
+    ID3v2_Tag_set_apic_frame(
         tag,
         &(ID3v2_ApicFrameInput){
             .flags = "\0\0",

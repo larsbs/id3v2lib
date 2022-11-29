@@ -19,7 +19,7 @@ void get_test_existing()
     ID3v2_Tag* tag = ID3v2_read_tag("./extra/file.mp3");
 
     assert_text_frame(
-        ID3v2_tag_get_artist_frame(tag),
+        ID3v2_Tag_get_artist_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ARTIST_FRAME_ID,
             .flags = "\0\0",
@@ -28,7 +28,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_album_frame(tag),
+        ID3v2_Tag_get_album_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_FRAME_ID,
             .flags = "\0\0",
@@ -37,7 +37,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_title_frame(tag),
+        ID3v2_Tag_get_title_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_TITLE_FRAME_ID,
             .flags = "\0\0",
@@ -46,7 +46,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_track_frame(tag),
+        ID3v2_Tag_get_track_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_TRACK_FRAME_ID,
             .flags = "\0\0",
@@ -55,7 +55,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_album_artist_frame(tag),
+        ID3v2_Tag_get_album_artist_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_ARTIST_FRAME_ID,
             .flags = "\0\0",
@@ -64,7 +64,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_genre_frame(tag),
+        ID3v2_Tag_get_genre_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_GENRE_FRAME_ID,
             .flags = "\0\0",
@@ -73,7 +73,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_year_frame(tag),
+        ID3v2_Tag_get_year_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_YEAR_FRAME_ID,
             .flags = "\0\0",
@@ -82,7 +82,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_disc_number_frame(tag),
+        ID3v2_Tag_get_disc_number_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_DISC_NUMBER_FRAME_ID,
             .flags = "\0\0",
@@ -91,7 +91,7 @@ void get_test_existing()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_composer_frame(tag),
+        ID3v2_Tag_get_composer_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_COMPOSER_FRAME_ID,
             .flags = "\0\0",
@@ -100,7 +100,7 @@ void get_test_existing()
     );
 
     assert_comment_frame(
-        ID3v2_tag_get_comment_frame(tag),
+        ID3v2_Tag_get_comment_frame(tag),
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .comment = ID3v2_to_unicode("This is a comment"),
@@ -110,7 +110,7 @@ void get_test_existing()
     );
 
     assert_comment_frame(
-        (ID3v2_CommentFrame*) ID3v2_tag_get_comment_frames(tag)->frame,
+        (ID3v2_CommentFrame*) ID3v2_Tag_get_comment_frames(tag)->frame,
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .comment = ID3v2_to_unicode("This is a comment"),
@@ -127,7 +127,7 @@ void get_test_existing()
     fread(picture_data, 1, cover_file_size, album_cover_file);
 
     assert_apic_frame(
-        ID3v2_tag_get_album_cover_frame(tag),
+        ID3v2_Tag_get_album_cover_frame(tag),
         &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = ID3v2_MIME_TYPE_PNG,

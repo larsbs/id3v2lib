@@ -32,18 +32,18 @@ void edit_test()
         tag = ID3v2_Tag_new();
     }
 
-    ID3v2_tag_set_artist(tag, ID3v2_to_unicode("Artist"));
-    ID3v2_tag_set_album(tag, ID3v2_to_unicode("Album"));
-    ID3v2_tag_set_title(tag, ID3v2_to_unicode("Title"));
-    ID3v2_tag_set_track(tag, "00");
-    ID3v2_tag_set_album_artist(tag, ID3v2_to_unicode("Album Artist"));
-    ID3v2_tag_set_genre(tag, ID3v2_to_unicode("Genre"));
-    ID3v2_tag_set_year(tag, "0000");
-    ID3v2_tag_set_disc_number(tag, "00");
-    ID3v2_tag_set_composer(tag, ID3v2_to_unicode("Writter"));
+    ID3v2_Tag_set_artist(tag, ID3v2_to_unicode("Artist"));
+    ID3v2_Tag_set_album(tag, ID3v2_to_unicode("Album"));
+    ID3v2_Tag_set_title(tag, ID3v2_to_unicode("Title"));
+    ID3v2_Tag_set_track(tag, "00");
+    ID3v2_Tag_set_album_artist(tag, ID3v2_to_unicode("Album Artist"));
+    ID3v2_Tag_set_genre(tag, ID3v2_to_unicode("Genre"));
+    ID3v2_Tag_set_year(tag, "0000");
+    ID3v2_Tag_set_disc_number(tag, "00");
+    ID3v2_Tag_set_composer(tag, ID3v2_to_unicode("Writter"));
 
-    ID3v2_tag_set_comment(tag, "eng", ID3v2_to_unicode("Comment"));
-    ID3v2_tag_add_comment_frame(
+    ID3v2_Tag_set_comment(tag, "eng", ID3v2_to_unicode("Comment"));
+    ID3v2_Tag_add_comment_frame(
         tag,
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
@@ -60,8 +60,8 @@ void edit_test()
     const char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
     fread(picture_data, 1, cover_file_size, album_cover);
 
-    ID3v2_tag_set_album_cover(tag, ID3v2_MIME_TYPE_PNG, cover_file_size, picture_data);
-    ID3v2_tag_add_apic_frame(
+    ID3v2_Tag_set_album_cover(tag, ID3v2_MIME_TYPE_PNG, cover_file_size, picture_data);
+    ID3v2_Tag_add_apic_frame(
         tag,
         &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
@@ -81,7 +81,7 @@ void edit_test()
     assert(edited_tag != NULL);
 
     assert_text_frame(
-        ID3v2_tag_get_artist_frame(edited_tag),
+        ID3v2_Tag_get_artist_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ARTIST_FRAME_ID,
             .flags = "\0\0",
@@ -90,7 +90,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_album_frame(edited_tag),
+        ID3v2_Tag_get_album_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_FRAME_ID,
             .flags = "\0\0",
@@ -99,7 +99,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_title_frame(edited_tag),
+        ID3v2_Tag_get_title_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_TITLE_FRAME_ID,
             .flags = "\0\0",
@@ -108,7 +108,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_track_frame(edited_tag),
+        ID3v2_Tag_get_track_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_TRACK_FRAME_ID,
             .flags = "\0\0",
@@ -117,7 +117,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_album_artist_frame(edited_tag),
+        ID3v2_Tag_get_album_artist_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_ARTIST_FRAME_ID,
             .flags = "\0\0",
@@ -126,7 +126,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_genre_frame(edited_tag),
+        ID3v2_Tag_get_genre_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_GENRE_FRAME_ID,
             .flags = "\0\0",
@@ -135,7 +135,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_year_frame(edited_tag),
+        ID3v2_Tag_get_year_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_YEAR_FRAME_ID,
             .flags = "\0\0",
@@ -144,7 +144,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_disc_number_frame(edited_tag),
+        ID3v2_Tag_get_disc_number_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_DISC_NUMBER_FRAME_ID,
             .flags = "\0\0",
@@ -153,7 +153,7 @@ void edit_test()
     );
 
     assert_text_frame(
-        ID3v2_tag_get_composer_frame(edited_tag),
+        ID3v2_Tag_get_composer_frame(edited_tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_COMPOSER_FRAME_ID,
             .flags = "\0\0",
@@ -162,7 +162,7 @@ void edit_test()
     );
 
     assert_comment_frame(
-        ID3v2_tag_get_comment_frame(edited_tag),
+        ID3v2_Tag_get_comment_frame(edited_tag),
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .language = "eng",
@@ -172,7 +172,7 @@ void edit_test()
     );
 
     assert_comment_frame(
-        ID3v2_tag_get_comment_frames(edited_tag)->next->frame,
+        ID3v2_Tag_get_comment_frames(edited_tag)->next->frame,
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .language = "eng",
@@ -182,7 +182,7 @@ void edit_test()
     );
 
     assert_apic_frame(
-        ID3v2_tag_get_album_cover_frame(edited_tag),
+        ID3v2_Tag_get_album_cover_frame(edited_tag),
         &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = ID3v2_MIME_TYPE_PNG,
@@ -194,7 +194,7 @@ void edit_test()
     );
 
     assert_apic_frame(
-        (ID3v2_ApicFrame*) ID3v2_tag_get_apic_frames(edited_tag)->next->frame,
+        (ID3v2_ApicFrame*) ID3v2_Tag_get_apic_frames(edited_tag)->next->frame,
         &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = ID3v2_MIME_TYPE_PNG,
