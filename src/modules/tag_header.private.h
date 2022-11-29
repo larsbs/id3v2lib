@@ -10,8 +10,9 @@
 #ifndef id3v2lib_tag_header_private_h
 #define id3v2lib_tag_header_private_h
 
-#include "char_stream.private.h"
 #include "modules/tag_header.h"
+
+typedef struct _CharStream CharStream;
 
 ID3v2_TagHeader* TagHeader_new(
     const int major_version,

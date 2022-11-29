@@ -12,18 +12,60 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "frame.private.h"
-#include "frame_header.private.h"
-#include "frame_list.private.h"
 #include "frames/apic_frame.private.h"
 #include "frames/comment_frame.private.h"
 #include "frames/text_frame.private.h"
+#include "modules/char_stream.private.h"
+#include "modules/frame.private.h"
+#include "modules/frame_header.private.h"
 #include "modules/frame_ids.h"
+#include "modules/frame_list.private.h"
 #include "modules/picture_types.h"
-#include "tag_header.private.h"
-#include "utils.private.h"
+#include "modules/tag_header.private.h"
+#include "modules/utils.private.h"
 
 #include "tag.private.h"
+
+ID3v2_Tag* ID3v2_Tag_new(ID3v2_TagHeader* header, const int padding_size)
+{
+    ID3v2_Tag* tag = (ID3v2_Tag*) malloc(sizeof(ID3v2_Tag));
+    tag->header = header == NULL ? TagHeader_new_empty() : header;
+    tag->frames = FrameList_new();
+    tag->padding_size = 0;
+
+    return tag;
+}
+
+ID3v2_Tag* ID3v2_Tag_new_empty()
+{
+    return ID3v2_Tag_new(NULL, 0);
+}
+
+ID3v2_Tag* Tag_parse(CharStream* tag_cs)
+{
+    ID3v2_TagHeader* header = TagHeader_parse(tag_cs);
+    if (header == NULL) return NULL;
+
+    ID3v2_Tag* tag = ID3v2_Tag_new(header, 0);
+
+    if (header->extended_header_size > 0)
+    {
+        // An extended header exists, skip it
+        CharStream_seek(tag_cs, header->extended_header_size, SEEK_SET);
+    }
+
+    ID3v2_Frame* current_frame;
+    while (tag_cs->cursor < tag->header->tag_size)
+    {
+        current_frame = Frame_parse(tag_cs, tag->header->major_version);
+        if (current_frame == NULL) break;
+        FrameList_add_frame(tag->frames, current_frame);
+    }
+
+    tag->padding_size = tag_cs->size - tag_cs->cursor;
+
+    return tag;
+}
 
 CharStream* Tag_to_char_stream(ID3v2_Tag* tag)
 {
@@ -46,10 +88,7 @@ CharStream* Tag_to_char_stream(ID3v2_Tag* tag)
     {
         CharStream* frame_cs = Frame_to_char_stream(frames->frame);
 
-        if (frame_cs == NULL)
-        {
-            exit(1);
-        }
+        if (frame_cs == NULL) exit(1);
 
         CharStream_write(tag_cs, frame_cs->stream, frame_cs->size);
         CharStream_free(frame_cs);
@@ -60,58 +99,9 @@ CharStream* Tag_to_char_stream(ID3v2_Tag* tag)
     return tag_cs;
 }
 
-ID3v2_Tag* ID3v2_Tag_new()
-{
-    ID3v2_Tag* tag = (ID3v2_Tag*) malloc(sizeof(ID3v2_Tag));
-    tag->header = TagHeader_new_empty();
-    tag->frames = FrameList_new();
-    tag->padding_size = 0;
-
-    return tag;
-}
-
-ID3v2_Tag* Tag_parse(CharStream* tag_cs)
-{
-    ID3v2_TagHeader* header = TagHeader_parse(tag_cs);
-    if (header == NULL) return NULL;
-
-    ID3v2_Tag* tag = ID3v2_Tag_new();
-
-    free(tag->header);
-    tag->header = header;
-
-    if (header->extended_header_size > 0)
-    {
-        // An extended header exists, skip it
-        CharStream_seek(tag_cs, header->extended_header_size, SEEK_SET);
-    }
-
-    ID3v2_Frame* current_frame;
-    while (tag_cs->cursor < tag->header->tag_size)
-    {
-        current_frame = Frame_parse(tag_cs, tag->header->major_version);
-        if (current_frame == NULL) break;
-        FrameList_add_frame(tag->frames, current_frame);
-    }
-
-    tag->padding_size = tag_cs->size - tag_cs->cursor;
-
-    return tag;
-}
-
-void ID3v2_Tag_free(ID3v2_Tag* tag)
-{
-    free(tag->header);
-    ID3v2_FrameList_free(tag->frames);
-    free(tag);
-}
-
 void ID3v2_Tag_write(ID3v2_Tag* tag, const char* dest)
 {
-    if (tag == NULL)
-    {
-        return;
-    }
+    if (tag == NULL) return;
 
     ID3v2_TagHeader* existing_tag_header = ID3v2_TagHeader_read(dest);
     const int original_size =
@@ -164,21 +154,13 @@ void ID3v2_Tag_write(ID3v2_Tag* tag, const char* dest)
  */
 ID3v2_Frame* ID3v2_Tag_get_frame(ID3v2_Tag* tag, char* frame_id)
 {
-    if (tag == NULL)
-    {
-        return NULL;
-    }
-
+    if (tag == NULL) return NULL;
     return FrameList_get_frame_by_id(tag->frames, frame_id);
 }
 
 ID3v2_FrameList* ID3v2_Tag_get_frames(ID3v2_Tag* tag, char* frame_id)
 {
-    if (tag == NULL)
-    {
-        return NULL;
-    }
-
+    if (tag == NULL) return NULL;
     return FrameList_get_frames_by_id(tag->frames, frame_id);
 }
 
@@ -505,4 +487,11 @@ void ID3v2_Tag_set_album_cover(
             .data = data,
         }
     );
+}
+
+void ID3v2_Tag_free(ID3v2_Tag* tag)
+{
+    free(tag->header);
+    ID3v2_FrameList_free(tag->frames);
+    free(tag);
 }

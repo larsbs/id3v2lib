@@ -29,7 +29,7 @@ void edit_test()
 
     if (tag == NULL)
     {
-        tag = ID3v2_Tag_new();
+        tag = ID3v2_Tag_new_empty();
     }
 
     ID3v2_Tag_set_artist(tag, ID3v2_to_unicode("Artist"));
