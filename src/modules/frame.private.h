@@ -15,7 +15,9 @@
 typedef struct _CharStream CharStream;
 
 ID3v2_Frame* Frame_parse(CharStream* frame_cs, int id3_major_version);
-void Frame_free(ID3v2_Frame* frame);
+
 CharStream* Frame_to_char_stream(ID3v2_Frame* frame);
+
+void Frame_free(ID3v2_Frame* frame);
 
 #endif

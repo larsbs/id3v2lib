@@ -11,13 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "char_stream.private.h"
-#include "frame_header.private.h"
-#include "frames/apic_frame.private.h"
-#include "frames/comment_frame.private.h"
-#include "frames/text_frame.private.h"
+#include "modules/char_stream.private.h"
+#include "modules/frame_header.private.h"
 #include "modules/frame_ids.h"
-#include "utils.private.h"
+#include "modules/frames/apic_frame.private.h"
+#include "modules/frames/comment_frame.private.h"
+#include "modules/frames/text_frame.private.h"
+#include "modules/utils.private.h"
 
 #include "frame.private.h"
 
@@ -56,28 +56,6 @@ ID3v2_Frame* Frame_parse(CharStream* frame_cs, int id3_major_version)
     return frame;
 }
 
-void Frame_free(ID3v2_Frame* frame)
-{
-    if (FrameHeader_isTextFrame(frame->header))
-    {
-        TextFrame_free((ID3v2_TextFrame*) frame);
-    }
-    else if (FrameHeader_isCommentFrame(frame->header))
-    {
-        CommentFrame_free((ID3v2_CommentFrame*) frame);
-    }
-    else if (FrameHeader_isApicFrame(frame->header))
-    {
-        ApicFrame_free((ID3v2_ApicFrame*) frame);
-    }
-    else
-    {
-        // Unknown frame id, so naivelly try our best to free it
-        free(frame->header);
-        free(frame->data);
-    }
-}
-
 CharStream* Frame_to_char_stream(ID3v2_Frame* frame)
 {
     if (FrameHeader_isTextFrame(frame->header))
@@ -94,6 +72,33 @@ CharStream* Frame_to_char_stream(ID3v2_Frame* frame)
     }
     else
     {
-        return NULL;
+        // Unknown frame type, dump whatever we have in memory for that frame
+        CharStream* frame_cs = CharStream_new(frame->header->size + ID3v2_FRAME_HEADER_LENGTH);
+        CharStream* header_cs = FrameHeader_to_char_stream(frame->header);
+        CharStream_write(frame_cs, header_cs->stream, ID3v2_FRAME_HEADER_LENGTH);
+        CharStream_write(frame_cs, frame->data, frame->header->size);
+        return frame_cs;
+    }
+}
+
+void Frame_free(ID3v2_Frame* frame)
+{
+    if (FrameHeader_isTextFrame(frame->header))
+    {
+        TextFrame_free((ID3v2_TextFrame*) frame);
+    }
+    else if (FrameHeader_isCommentFrame(frame->header))
+    {
+        CommentFrame_free((ID3v2_CommentFrame*) frame);
+    }
+    else if (FrameHeader_isApicFrame(frame->header))
+    {
+        ApicFrame_free((ID3v2_ApicFrame*) frame);
+    }
+    else
+    {
+        // Unknown frame id, naively try our best to free it
+        free(frame->header);
+        free(frame->data);
     }
 }
