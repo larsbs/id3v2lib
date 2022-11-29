@@ -14,9 +14,9 @@
 
 typedef struct _Frame_header_assertion
 {
-    char* id;
+    const char* id;
     int size;
-    char* flags;
+    const char* flags;
 } Frame_header_assertion;
 
 void assert_frame_header(ID3v2_Frame* frame, Frame_header_assertion comparison);

@@ -15,8 +15,8 @@ typedef struct _ID3v2_FrameHeader ID3v2_FrameHeader;
 typedef struct _ID3v2_TextFrameData
 {
     int size;
-    unsigned char encoding;
-    const unsigned char* text;
+    char encoding;
+    char* text;
 } ID3v2_TextFrameData;
 
 typedef struct _ID3v2_TextFrame

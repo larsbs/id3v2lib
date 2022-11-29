@@ -11,44 +11,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "id3v2lib.h"
+
 #include "test_utils.h"
 
-bool has_bom(char* string)
+bool has_bom(const char* string)
 {
-    if (string == NULL)
-    {
-        return false;
-    }
-
-    if (memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0)
-    {
-        return true;
-    }
-
-    return false;
+    if (string == NULL) return false;
+    return memcmp("\xFF\xFE", string, 2) == 0 || memcmp("\xFE\xFF", string, 2) == 0;
 }
 
-uint16_t* char_to_utf16(char* string, int size)
+uint16_t* char_to_utf16(const char* string, int size)
 {
-    if (size < 0)
-    {
-        // If size < 0, compute the size finding the position of the termination marker
-        size = 1;
-        char prev = string[0];
-        while (1)
-        {
-            char curr = string[size++];
-
-            if (prev == 0x00 && curr == 0x00)
-            {
-                size++;
-                break;
-            }
-
-            prev = curr;
-        }
-    }
-
+    size = size < 0 ? ID3v2_strlent(string) : size;
     uint16_t* result = (uint16_t*) malloc(size * sizeof(uint16_t));
     memcpy(result, string, size);
     return result;
@@ -111,7 +86,7 @@ void print_text_frame(ID3v2_TextFrame* frame)
     print_text_frame_text(frame->data->text, frame->data->size);
 }
 
-void print_text_frame_text(char* text, int size)
+void print_text_frame_text(const char* text, const int size)
 {
     if (text == NULL)
     {

@@ -47,8 +47,10 @@ void CharStream_write(CharStream* cs, const char* data, const int size)
 
 int CharStream_read(CharStream* cs, char* dest, const int size)
 {
-    memcpy(dest, CharStream_get_cur(cs), size);
-    cs->cursor += size;
+    const int final_size = clamp_int(size, 0, cs->size - cs->cursor);
+    memcpy(dest, CharStream_get_cur(cs), final_size);
+    cs->cursor += final_size;
+    return final_size;
 }
 
 int CharStream_getc(CharStream* cs)

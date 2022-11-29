@@ -21,13 +21,13 @@
 typedef unsigned short uint16_t;
 #endif
 
-bool has_bom(char* string);
-void print_text_frame_text(char* text, int size);
+bool has_bom(const char* string);
+void print_text_frame_text(const char* text, const int size);
 void print_text_frame(ID3v2_TextFrame* frame);
 void print_comment_frame(ID3v2_CommentFrame* frame);
 void print_comment_frames(ID3v2_FrameList* frames);
 void save_apic_frame(ID3v2_ApicFrame* frame, char* dir_path);
-uint16_t* char_to_utf16(char* string, int size);
+uint16_t* char_to_utf16(const char* string, int size);
 void println_utf16(uint16_t* string, int size);
 char* to_unicode(char* string);
 void clone_file(const char* src, const char* dest);

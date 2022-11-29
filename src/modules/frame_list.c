@@ -52,7 +52,7 @@ void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_Frame* frame)
 /**
  * Returns the first frame matching frame_id
  */
-ID3v2_Frame* FrameList_get_frame_by_id(ID3v2_FrameList* list, char* frame_id)
+ID3v2_Frame* FrameList_get_frame_by_id(ID3v2_FrameList* list, const char* frame_id)
 {
     while (list != NULL && list->frame != NULL)
     {
@@ -70,7 +70,7 @@ ID3v2_Frame* FrameList_get_frame_by_id(ID3v2_FrameList* list, char* frame_id)
 /**
  * Returns all the frames matching frame_id in a sublist
  */
-ID3v2_FrameList* FrameList_get_frames_by_id(ID3v2_FrameList* list, char* frame_id)
+ID3v2_FrameList* FrameList_get_frames_by_id(ID3v2_FrameList* list, const char* frame_id)
 {
     ID3v2_FrameList* sublist = FrameList_new();
 

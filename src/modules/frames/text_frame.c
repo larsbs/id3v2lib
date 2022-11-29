@@ -11,9 +11,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../char_stream.private.h"
-#include "../frame.private.h"
-#include "../frame_header.private.h"
+#include "modules/char_stream.private.h"
+#include "modules/frame.private.h"
+#include "modules/frame_header.private.h"
+#include "modules/utils.private.h"
 
 #include "text_frame.private.h"
 

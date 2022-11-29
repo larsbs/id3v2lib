@@ -113,6 +113,7 @@ void ID3v2_Tag_write(ID3v2_Tag* tag, const char* dest)
         0,
         ID3v2_TAG_DEFAULT_PADDING_LENGTH
     );
+    tag->padding_size += extra_padding_length;
     CharStream* tag_cs = Tag_to_char_stream(tag);
 
     // Perform operations on a temp file in case things go wrong

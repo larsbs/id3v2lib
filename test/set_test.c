@@ -57,7 +57,7 @@ void edit_test()
     fseek(album_cover, 0L, SEEK_END);
     const int cover_file_size = ftell(album_cover);
     fseek(album_cover, 0L, SEEK_SET);
-    const char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
+    char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
     fread(picture_data, 1, cover_file_size, album_cover);
 
     ID3v2_Tag_set_album_cover(tag, ID3v2_MIME_TYPE_PNG, cover_file_size, picture_data);
@@ -172,7 +172,7 @@ void edit_test()
     );
 
     assert_comment_frame(
-        ID3v2_Tag_get_comment_frames(edited_tag)->next->frame,
+        (ID3v2_CommentFrame*) ID3v2_Tag_get_comment_frames(edited_tag)->next->frame,
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .language = "eng",

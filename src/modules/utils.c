@@ -75,7 +75,7 @@ int ID3v2_strlen(const char* string)
 
 int ID3v2_strlent(const char* string)
 {
-    const termination_character_length = string_has_bom(string) ? 2 : 1;
+    const int termination_character_length = string_has_bom(string) ? 2 : 1;
     return ID3v2_strlen(string) + termination_character_length;
 }
 

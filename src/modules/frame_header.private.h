@@ -10,9 +10,10 @@
 #ifndef id3v2lib_frame_header_private_h
 #define id3v2lib_frame_header_private_h
 
+#include <stdbool.h>
+
 #include "modules/frame_header.h"
 
-#define bool _Bool;
 typedef struct _CharStream CharStream;
 
 ID3v2_FrameHeader* FrameHeader_new(const char* id, const char* flags, const int size);

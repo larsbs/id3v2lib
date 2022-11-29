@@ -124,7 +124,7 @@ void get_test_existing()
     fseek(album_cover_file, 0L, SEEK_END);
     const int cover_file_size = ftell(album_cover_file);
     fseek(album_cover_file, 0L, SEEK_SET);
-    const char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
+    char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
     fread(picture_data, 1, cover_file_size, album_cover_file);
 
     assert_apic_frame(

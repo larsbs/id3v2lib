@@ -65,9 +65,9 @@ ID3v2_FrameList* ID3v2_Tag_get_apic_frames(ID3v2_Tag* tag);
  */
 typedef struct _ID3v2_TextFrameInput
 {
-    char* id;
-    char* flags;
-    char* text;
+    const char* id;
+    const char* flags;
+    const char* text;
 } ID3v2_TextFrameInput;
 
 void ID3v2_Tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input);
@@ -84,10 +84,10 @@ void ID3v2_Tag_set_composer(ID3v2_Tag* tag, const char* composer);
 
 typedef struct _ID3v2_CommentFrameInput
 {
-    char* flags;
-    char* language;
-    char* short_description;
-    char* comment;
+    const char* flags;
+    const char* language;
+    const char* short_description;
+    const char* comment;
 } ID3v2_CommentFrameInput;
 
 void ID3v2_Tag_set_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input);
@@ -100,8 +100,8 @@ typedef struct _ID3v2_ApicFrameInput
     const char* flags;
     const char* mime_type;
     const char* description;
-    char picture_type;
-    int picture_size;
+    const char picture_type;
+    const int picture_size;
     const char* data;
 } ID3v2_ApicFrameInput;
 

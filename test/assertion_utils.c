@@ -8,6 +8,7 @@
  */
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -88,7 +89,8 @@ void assert_comment_frame(ID3v2_CommentFrame* frame, ID3v2_CommentFrameInput* co
 
 void assert_apic_frame(ID3v2_ApicFrame* frame, ID3v2_ApicFrameInput* comparison)
 {
-    const encoding = has_bom(comparison->description) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
+    const char encoding =
+        has_bom(comparison->description) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;
 
     assert(comparison->description != NULL);
     const int description_size = ID3v2_strlent(comparison->description);
