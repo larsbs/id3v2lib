@@ -10,12 +10,10 @@
 #ifndef id3v2lib_tag_h
 #define id3v2lib_tag_h
 
-#include "frame.h"
-#include "frame_list.h"
-#include "tag_header.h"
-
 #define ID3v2_TAG_DEFAULT_PADDING_LENGTH 2048
 
+typedef struct _ID3v2_TagHeader ID3v2_TagHeader;
+typedef struct _ID3v2_FrameList ID3v2_FrameList;
 typedef struct _ID3v2_TextFrame ID3v2_TextFrame;
 typedef struct _ID3v2_CommentFrame ID3v2_CommentFrame;
 typedef struct _ID3v2_ApicFrame ID3v2_ApicFrame;
