@@ -12,8 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "char_stream.private.h"
-#include "utils.private.h"
+#include "modules/char_stream.private.h"
+#include "modules/utils.private.h"
 
 #include "frame_header.private.h"
 

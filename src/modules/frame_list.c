@@ -10,8 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "frame.private.h"
-#include "frame_header.private.h"
+#include "modules/frame.private.h"
+#include "modules/frame_header.private.h"
+#include "modules/frame_list.private.h"
 
 #include "frame_list.private.h"
 
@@ -101,10 +102,7 @@ void ID3v2_FrameList_free(ID3v2_FrameList* list)
  */
 void FrameList_replace_frame(ID3v2_FrameList* list, ID3v2_Frame* old_frame, ID3v2_Frame* new_frame)
 {
-    if (list == NULL)
-    {
-        return;
-    }
+    if (list == NULL) return;
 
     while (list != NULL)
     {

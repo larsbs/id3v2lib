@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "utils.private.h"
+#include "modules/utils.private.h"
 
 #include "char_stream.private.h"
 
