@@ -64,9 +64,9 @@ void delete_test_main()
     assert(ID3v2_Tag_get_comment_frame(edited_tag) == NULL);
     assert(ID3v2_Tag_get_album_cover_frame(edited_tag) == NULL);
 
-    // ID3v2_delete_tag(EDITED_FILE);
-    // ID3v2_Tag* deleted_tag = ID3v2_read_tag(EDITED_FILE);
-    // assert(deleted_tag == NULL);
+    ID3v2_delete_tag(EDITED_FILE);
+    ID3v2_Tag* deleted_tag = ID3v2_read_tag(EDITED_FILE);
+    assert(deleted_tag == NULL);
 
     // Clean up
     remove(EDITED_FILE);

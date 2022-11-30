@@ -52,3 +52,35 @@ ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
     CharStream_free(tag_cs);
     return tag;
 }
+
+void ID3v2_delete_tag(const char* file_name)
+{
+    ID3v2_TagHeader* tag_header = ID3v2_TagHeader_read(file_name);
+
+    if (tag_header == NULL) return;
+
+    FILE* file_fp = fopen(file_name, "rb");
+    FILE* temp_fp = tmpfile();
+
+    fseek(file_fp, tag_header->tag_size + ID3v2_TAG_HEADER_LENGTH, SEEK_SET);
+
+    int c = 0;
+
+    while ((c = getc(file_fp)) != EOF)
+    {
+        putc(c, temp_fp);
+    }
+
+    // Finally copy the temp file back into the destination file
+    fclose(file_fp);
+    file_fp = fopen(file_name, "w+b");
+    fseek(temp_fp, 0L, SEEK_SET);
+
+    while ((c = getc(temp_fp)) != EOF)
+    {
+        putc(c, file_fp);
+    }
+
+    fclose(temp_fp);
+    fclose(file_fp);
+}
