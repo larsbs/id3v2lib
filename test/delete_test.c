@@ -45,7 +45,7 @@ void delete_test_main()
     // ID3v2_Tag_delete_apic_frame(tag, 0);
     ID3v2_Tag_delete_album_cover(tag); // Equivalent to the above
 
-    ID3v2_Tag_write(tag, EDITED_FILE);
+    ID3v2_write_tag(EDITED_FILE, tag);
 
     // Verify the written data
     ID3v2_Tag* edited_tag = ID3v2_read_tag(EDITED_FILE);

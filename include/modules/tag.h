@@ -28,7 +28,6 @@ typedef struct _ID3v2_Tag
 ID3v2_Tag* ID3v2_Tag_new(ID3v2_TagHeader* header, const int padding_size);
 ID3v2_Tag* ID3v2_Tag_new_empty();
 void ID3v2_Tag_free(ID3v2_Tag* tag);
-void ID3v2_Tag_write(ID3v2_Tag* tag, const char* dest);
 
 /**
  * Getter functions

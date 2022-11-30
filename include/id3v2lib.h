@@ -29,6 +29,9 @@ extern "C" {
 
 ID3v2_Tag* ID3v2_read_tag(const char* file_name);
 ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_size);
+
+void ID3v2_write_tag(const char* file_name, ID3v2_Tag* tag);
+
 void ID3v2_delete_tag(const char* file_name);
 
 #ifdef __cplusplus

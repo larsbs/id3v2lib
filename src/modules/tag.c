@@ -106,57 +106,6 @@ CharStream* Tag_to_char_stream(ID3v2_Tag* tag)
     return tag_cs;
 }
 
-void ID3v2_Tag_write(ID3v2_Tag* tag, const char* dest)
-{
-    if (tag == NULL) return;
-
-    ID3v2_TagHeader* existing_tag_header = ID3v2_TagHeader_read(dest);
-    const int original_size =
-        existing_tag_header != NULL ? existing_tag_header->tag_size + ID3v2_TAG_HEADER_LENGTH : 0;
-    free(existing_tag_header);
-
-    const int extra_padding_length = clamp_int(
-        ID3v2_TAG_DEFAULT_PADDING_LENGTH - tag->padding_size,
-        0,
-        ID3v2_TAG_DEFAULT_PADDING_LENGTH
-    );
-    tag->padding_size += extra_padding_length;
-    CharStream* tag_cs = Tag_to_char_stream(tag);
-
-    // Perform operations on a temp file in case things go wrong
-    FILE* temp_fp = tmpfile();
-
-    // First write the tag to the temp file
-    fwrite(tag_cs->stream, sizeof(char), tag_cs->size, temp_fp);
-
-    // And then, read the original audio data and copy it to
-    // the temp file so it's located after the tag
-    FILE* dest_fp = fopen(dest, "r+b");
-    fseek(dest_fp, original_size, SEEK_SET); // move to the end of the original tag
-
-    int c = 0;
-
-    while ((c = getc(dest_fp)) != EOF)
-    {
-        putc(c, temp_fp);
-    }
-
-    // Finally copy the temp file back into the destination file
-    fclose(dest_fp);
-    dest_fp = fopen(dest, "w+b");
-    fseek(temp_fp, 0L, SEEK_SET);
-
-    while ((c = getc(temp_fp)) != EOF)
-    {
-        putc(c, dest_fp);
-    }
-
-    fclose(temp_fp);
-    fclose(dest_fp);
-
-    CharStream_free(tag_cs);
-}
-
 /**
  * Getter functions
  */

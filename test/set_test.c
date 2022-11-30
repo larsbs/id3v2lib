@@ -74,7 +74,7 @@ void edit_test()
     );
 
     // Write the edited tag
-    ID3v2_Tag_write(tag, EDITED_FILE);
+    ID3v2_write_tag(EDITED_FILE, tag);
 
     // Verify the written data
     ID3v2_Tag* edited_tag = ID3v2_read_tag(EDITED_FILE);
