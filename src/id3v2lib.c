@@ -18,9 +18,30 @@
 
 #include "id3v2lib.h"
 
+ID3v2_TagHeader* ID3v2_read_tag_header(const char* file_name)
+{
+    FILE* fp = fopen(file_name, "rb");
+    char tag_header_buffer[ID3v2_TAG_HEADER_LENGTH];
+
+    if (fp == NULL) return NULL;
+
+    const int bytes_read = fread(tag_header_buffer, sizeof(char), ID3v2_TAG_HEADER_LENGTH, fp);
+    if (bytes_read < ID3v2_TAG_HEADER_LENGTH) return NULL;
+
+    return ID3v2_read_tag_header_from_buffer(tag_header_buffer, bytes_read);
+}
+
+ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer, int buffer_length)
+{
+    CharStream* cs = CharStream_from_buffer(buffer, buffer_length);
+    ID3v2_TagHeader* header = TagHeader_parse(cs);
+    CharStream_free(cs);
+    return header;
+}
+
 ID3v2_Tag* ID3v2_read_tag(const char* file_name)
 {
-    ID3v2_TagHeader* tag_header = ID3v2_TagHeader_read(file_name);
+    ID3v2_TagHeader* tag_header = ID3v2_read_tag_header(file_name);
 
     if (tag_header == NULL) return NULL;
 
@@ -57,7 +78,7 @@ void ID3v2_write_tag(const char* file_name, ID3v2_Tag* tag)
 {
     if (tag == NULL) return;
 
-    ID3v2_TagHeader* existing_tag_header = ID3v2_TagHeader_read(file_name);
+    ID3v2_TagHeader* existing_tag_header = ID3v2_read_tag_header(file_name);
     const int original_size =
         existing_tag_header != NULL ? existing_tag_header->tag_size + ID3v2_TAG_HEADER_LENGTH : 0;
     free(existing_tag_header);
@@ -106,7 +127,7 @@ void ID3v2_write_tag(const char* file_name, ID3v2_Tag* tag)
 
 void ID3v2_delete_tag(const char* file_name)
 {
-    ID3v2_TagHeader* tag_header = ID3v2_TagHeader_read(file_name);
+    ID3v2_TagHeader* tag_header = ID3v2_read_tag_header(file_name);
 
     if (tag_header == NULL) return;
 

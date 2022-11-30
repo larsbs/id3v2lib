@@ -17,20 +17,6 @@
 
 #include "tag_header.private.h"
 
-ID3v2_TagHeader* ID3v2_TagHeader_read(const char* file_name)
-{
-    FILE* fp = fopen(file_name, "rb");
-    char tag_header_buffer[ID3v2_TAG_HEADER_LENGTH];
-
-    if (fp == NULL) return NULL;
-
-    const int bytes_read = fread(tag_header_buffer, sizeof(char), ID3v2_TAG_HEADER_LENGTH, fp);
-    if (bytes_read < ID3v2_TAG_HEADER_LENGTH) return NULL;
-
-    CharStream* header_cs = CharStream_from_buffer(tag_header_buffer, ID3v2_TAG_HEADER_LENGTH);
-    return TagHeader_parse(header_cs);
-}
-
 ID3v2_TagHeader* TagHeader_new(
     const int major_version,
     const int minor_version,

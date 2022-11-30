@@ -28,6 +28,4 @@ typedef struct _ID3v2_TagHeader
     unsigned int extended_header_size;
 } ID3v2_TagHeader;
 
-ID3v2_TagHeader* ID3v2_TagHeader_read(const char* file_name);
-
 #endif
