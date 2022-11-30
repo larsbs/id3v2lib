@@ -17,7 +17,6 @@ typedef struct _ID3v2_FrameList
     ID3v2_Frame* frame;
     struct _ID3v2_FrameList* start;
     struct _ID3v2_FrameList* next;
-    struct _ID3v2_FrameList* last;
 } ID3v2_FrameList;
 
 void ID3v2_FrameList_free(ID3v2_FrameList* list);

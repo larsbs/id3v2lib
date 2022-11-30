@@ -36,7 +36,6 @@ void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_Frame* frame)
     if (list->start == NULL)
     {
         list->start = list;
-        list->last = list;
         list->frame = frame;
     }
     else
@@ -44,8 +43,14 @@ void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_Frame* frame)
         ID3v2_FrameList* current = FrameList_new();
         current->frame = frame;
         current->start = list->start;
-        list->last->next = current;
-        list->last = current;
+
+        ID3v2_FrameList* last = list;
+        while (last->next != NULL)
+        {
+            last = last->next;
+        }
+
+        last->next = current;
     }
 }
 
