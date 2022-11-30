@@ -96,6 +96,47 @@ void ID3v2_FrameList_free(ID3v2_FrameList* list)
     }
 }
 
+ID3v2_Frame* FrameList_remove_frame_by_id(ID3v2_FrameList* list, const char* frame_id)
+{
+    if (list == NULL) return NULL;
+
+    while (list != NULL)
+    {
+        if (strncmp(list->frame->header->id, frame_id, 4) == 0)
+        {
+            ID3v2_Frame* removed = list->frame;
+            ID3v2_FrameList* new_head_old_ptr = list->next != NULL ? list->next : FrameList_new();
+            *list = *new_head_old_ptr;
+            free(new_head_old_ptr);
+            return removed;
+        }
+
+        list = list->next;
+    }
+
+    return NULL;
+}
+
+ID3v2_Frame* FrameList_remove_frame(ID3v2_FrameList* list, ID3v2_Frame* to_remove)
+{
+    if (list == NULL) return NULL;
+
+    while (list != NULL)
+    {
+        if (list->frame == to_remove)
+        {
+            ID3v2_FrameList* new_head_old_ptr = list->next != NULL ? list->next : FrameList_new();
+            *list = *new_head_old_ptr;
+            free(new_head_old_ptr);
+            return to_remove;
+        }
+
+        list = list->next;
+    }
+
+    return NULL;
+}
+
 /**
  * This does not free the replaced frame. That's responsibility
  * of the calling routine.

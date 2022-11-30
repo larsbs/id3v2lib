@@ -84,6 +84,13 @@ CharStream* Tag_to_char_stream(ID3v2_Tag* tag)
 
     // Write frames
     ID3v2_FrameList* frames = tag->frames;
+
+    if (frames->frame == NULL)
+    {
+        // The tag doesn't have any frames
+        return tag_cs;
+    }
+
     while (frames != NULL)
     {
         CharStream* frame_cs = Frame_to_char_stream(frames->frame);
@@ -495,4 +502,106 @@ void ID3v2_Tag_free(ID3v2_Tag* tag)
     free(tag->header);
     ID3v2_FrameList_free(tag->frames);
     free(tag);
+}
+
+void ID3v2_Tag_delete_frame(ID3v2_Tag* tag, const char* frame_id)
+{
+    ID3v2_Frame* deleted = FrameList_remove_frame_by_id(tag->frames, frame_id);
+    tag->header->tag_size -= deleted->header->size + ID3v2_FRAME_HEADER_LENGTH;
+    Frame_free(deleted);
+}
+
+void ID3v2_Tag_delete_artist(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_ARTIST_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_album(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_ALBUM_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_title(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_TITLE_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_track(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_TRACK_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_album_artist(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_ALBUM_ARTIST_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_genre(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_GENRE_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_year(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_YEAR_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_disc_number(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_DISC_NUMBER_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_composer(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_COMPOSER_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_comment_frame(ID3v2_Tag* tag, const int index)
+{
+    int i = 0;
+    ID3v2_FrameList* head = ID3v2_Tag_get_comment_frames(tag);
+
+    while (head != NULL)
+    {
+        ID3v2_CommentFrame* to_delete = (ID3v2_CommentFrame*) head->frame;
+
+        if (i == index)
+        {
+            FrameList_remove_frame(tag->frames, to_delete);
+            break;
+        }
+
+        i++;
+        head = head->next;
+    }
+}
+
+void ID3v2_Tag_delete_comment(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_COMMENT_FRAME_ID);
+}
+
+void ID3v2_Tag_delete_apic_frame(ID3v2_Tag* tag, const int index)
+{
+    int i = 0;
+    ID3v2_FrameList* head = ID3v2_Tag_get_apic_frames(tag);
+
+    while (head != NULL)
+    {
+        ID3v2_ApicFrame* to_delete = (ID3v2_ApicFrame*) head->frame;
+
+        if (i == index)
+        {
+            FrameList_remove_frame(tag->frames, to_delete);
+            break;
+        }
+
+        i++;
+        head = head->next;
+    }
+}
+
+void ID3v2_Tag_delete_album_cover(ID3v2_Tag* tag)
+{
+    ID3v2_Tag_delete_frame(tag, ID3v2_ALBUM_COVER_FRAME_ID);
 }

@@ -34,7 +34,12 @@ ID3v2_FrameHeader* FrameHeader_parse(CharStream* header_cs, const int id3_major_
     CharStream_read(header_cs, id, ID3v2_FRAME_HEADER_ID_LENGTH);
 
     // If the id is 0000, that means we already reached the end and we're inside the padding
-    if (memcmp(id, "\0\0\0\0", ID3v2_FRAME_HEADER_ID_LENGTH) == 0) return NULL;
+    if (memcmp(id, "\0\0\0\0", ID3v2_FRAME_HEADER_ID_LENGTH) == 0)
+    {
+        // Rewind the char stream and return NULL
+        CharStream_seek(header_cs, -ID3v2_FRAME_HEADER_ID_LENGTH, SEEK_CUR);
+        return NULL;
+    }
 
     int size = btoi(
         CharStream_slice(header_cs, ID3v2_FRAME_HEADER_SIZE_LENGTH),

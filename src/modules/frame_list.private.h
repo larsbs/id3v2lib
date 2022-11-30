@@ -19,6 +19,8 @@ void FrameList_add_frame(ID3v2_FrameList* list, ID3v2_Frame* frame);
 ID3v2_Frame* FrameList_get_frame_by_id(ID3v2_FrameList* list, const char* frame_id);
 ID3v2_FrameList* FrameList_get_frames_by_id(ID3v2_FrameList* list, const char* frame_id);
 
+ID3v2_Frame* FrameList_remove_frame_by_id(ID3v2_FrameList* list, const char* frame_id);
+ID3v2_Frame* FrameList_remove_frame(ID3v2_FrameList* list, ID3v2_Frame* to_remove);
 void FrameList_replace_frame(ID3v2_FrameList* list, ID3v2_Frame* old_frame, ID3v2_Frame* new_frame);
 
 #endif

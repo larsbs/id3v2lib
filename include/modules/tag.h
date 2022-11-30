@@ -115,4 +115,25 @@ void ID3v2_Tag_set_album_cover(
     const char* data
 );
 
+/**
+ * Delete functions
+ */
+void ID3v2_Tag_delete_frame(ID3v2_Tag* tag, const char* frame_id);
+
+void ID3v2_Tag_delete_artist(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_album(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_title(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_track(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_album_artist(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_genre(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_year(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_disc_number(ID3v2_Tag* tag);
+void ID3v2_Tag_delete_composer(ID3v2_Tag* tag);
+
+void ID3v2_Tag_delete_comment_frame(ID3v2_Tag* tag, const int index);
+void ID3v2_Tag_delete_comment(ID3v2_Tag* tag);
+
+void ID3v2_Tag_delete_apic_frame(ID3v2_Tag* tag, const int index);
+void ID3v2_Tag_delete_album_cover(ID3v2_Tag* tag);
+
 #endif

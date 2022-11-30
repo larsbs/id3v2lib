@@ -7,15 +7,9 @@
  * file that was distributed with this source code.
  */
 
-#include <stdio.h>
+#ifndef id3v2lib_delete_test_h
+#define id3v2lib_delete_test_h
 
-#include "delete_test.h"
-#include "get_test.h"
-#include "set_test.h"
+void delete_test_main();
 
-int main()
-{
-    get_test_main();
-    set_test_main();
-    delete_test_main();
-}
+#endif

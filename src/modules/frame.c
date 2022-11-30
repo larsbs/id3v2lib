@@ -58,6 +58,8 @@ ID3v2_Frame* Frame_parse(CharStream* frame_cs, int id3_major_version)
 
 CharStream* Frame_to_char_stream(ID3v2_Frame* frame)
 {
+    if (frame == NULL) return NULL;
+
     if (FrameHeader_isTextFrame(frame->header))
     {
         return TextFrame_to_char_stream((ID3v2_TextFrame*) frame);
@@ -83,6 +85,8 @@ CharStream* Frame_to_char_stream(ID3v2_Frame* frame)
 
 void Frame_free(ID3v2_Frame* frame)
 {
+    if (frame == NULL) return;
+
     if (FrameHeader_isTextFrame(frame->header))
     {
         TextFrame_free((ID3v2_TextFrame*) frame);

@@ -205,10 +205,10 @@ void edit_test()
         }
     );
 
-    printf("SET TEST: OK\n");
-
     // Clean up
     remove(EDITED_FILE);
+
+    printf("SET TEST: OK\n");
 }
 
 void new_tag_test()
