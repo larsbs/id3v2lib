@@ -84,6 +84,7 @@ extern "C"
     void remove_tag(const char* file_name);
     void set_tag(const char* file_name, ID3v2_tag* tag);
     void free_tag(ID3v2_tag* tag);
+    void free_frame(ID3v2_frame* frame);
 
     // Getter functions
     ID3v2_frame* tag_get_title(ID3v2_tag* tag);
