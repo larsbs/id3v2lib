@@ -18,6 +18,4 @@ ID3v2_Frame* Frame_parse(CharStream* frame_cs, int id3_major_version);
 
 CharStream* Frame_to_char_stream(ID3v2_Frame* frame);
 
-void Frame_free(ID3v2_Frame* frame);
-
 #endif

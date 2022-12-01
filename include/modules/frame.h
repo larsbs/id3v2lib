@@ -23,4 +23,6 @@ typedef struct _ID3v2_Frame
     void* data;
 } ID3v2_Frame;
 
+void ID3v2_Frame_free(ID3v2_Frame* frame);
+
 #endif

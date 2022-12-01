@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 
+#include "compat_test.h"
 #include "delete_test.h"
 #include "get_test.h"
 #include "set_test.h"
@@ -18,4 +19,5 @@ int main()
     get_test_main();
     set_test_main();
     delete_test_main();
+    compat_test_main();
 }

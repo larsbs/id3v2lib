@@ -28,12 +28,12 @@ ID3v2_TagHeader* ID3v2_read_tag_header(const char* file_name)
     const int bytes_read = fread(tag_header_buffer, sizeof(char), ID3v2_TAG_HEADER_LENGTH, fp);
     if (bytes_read < ID3v2_TAG_HEADER_LENGTH) return NULL;
 
-    return ID3v2_read_tag_header_from_buffer(tag_header_buffer, bytes_read);
+    return ID3v2_read_tag_header_from_buffer(tag_header_buffer);
 }
 
-ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer, int buffer_length)
+ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer)
 {
-    CharStream* cs = CharStream_from_buffer(buffer, buffer_length);
+    CharStream* cs = CharStream_from_buffer(buffer, ID3v2_TAG_HEADER_LENGTH);
     ID3v2_TagHeader* header = TagHeader_parse(cs);
     CharStream_free(cs);
     return header;
@@ -66,7 +66,7 @@ ID3v2_Tag* ID3v2_read_tag(const char* file_name)
     return tag;
 }
 
-ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_length)
+ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, const int buffer_length)
 {
     CharStream* tag_cs = CharStream_from_buffer(tag_buffer, buffer_length);
     ID3v2_Tag* tag = Tag_parse(tag_cs);

@@ -218,7 +218,7 @@ void ID3v2_Tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input)
             (ID3v2_Frame*) new_frame
         );
         tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
-        Frame_free((ID3v2_Frame*) existing_frame);
+        ID3v2_Frame_free((ID3v2_Frame*) existing_frame);
     }
 }
 
@@ -352,7 +352,7 @@ void ID3v2_Tag_set_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
             (ID3v2_Frame*) new_frame
         );
         tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
-        Frame_free((ID3v2_Frame*) existing_frame);
+        ID3v2_Frame_free((ID3v2_Frame*) existing_frame);
     }
 }
 
@@ -405,7 +405,7 @@ void ID3v2_Tag_set_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
             (ID3v2_Frame*) new_frame
         );
         tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
-        Frame_free((ID3v2_Frame*) existing_frame);
+        ID3v2_Frame_free((ID3v2_Frame*) existing_frame);
     }
 }
 
@@ -457,7 +457,7 @@ void ID3v2_Tag_delete_frame(ID3v2_Tag* tag, const char* frame_id)
 {
     ID3v2_Frame* deleted = FrameList_remove_frame_by_id(tag->frames, frame_id);
     tag->header->tag_size -= deleted->header->size + ID3v2_FRAME_HEADER_LENGTH;
-    Frame_free(deleted);
+    ID3v2_Frame_free(deleted);
 }
 
 void ID3v2_Tag_delete_artist(ID3v2_Tag* tag)

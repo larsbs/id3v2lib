@@ -83,7 +83,7 @@ CharStream* Frame_to_char_stream(ID3v2_Frame* frame)
     }
 }
 
-void Frame_free(ID3v2_Frame* frame)
+void ID3v2_Frame_free(ID3v2_Frame* frame)
 {
     if (frame == NULL) return;
 

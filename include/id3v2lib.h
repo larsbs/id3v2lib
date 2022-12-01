@@ -28,10 +28,10 @@ extern "C" {
 #include "modules/utils.h"
 
 ID3v2_TagHeader* ID3v2_read_tag_header(const char* file_name);
-ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer, int buffer_length);
+ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer);
 
 ID3v2_Tag* ID3v2_read_tag(const char* file_name);
-ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, int buffer_size);
+ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* tag_buffer, const int buffer_size);
 
 void ID3v2_write_tag(const char* file_name, ID3v2_Tag* tag);
 

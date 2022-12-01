@@ -1,14 +1,18 @@
 # id3v2lib
 
-id3v2lib is a library written in C to read and edit id3 tags from mp3 files. It is focused on the ease of use. As it is a personal project, the software is provided "as is" without warranty of any kind.
+> Click [here]() to view the docs for version 1.0.
 
-It is licensed under BSD License. See LICENSE for details.
+id3v2lib is a library written in C to read and edit id3 tags from mp3 files. It's focused on the ease of use.
+
+It is licensed under a BSD License. See [LICENSE](LICENSE) for details.
 
 It is a work in progress so some functionality is not implemented yet.
 
+## TOC
+
 ## What it can do?
 
-id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. It can read and edit a small subset of tags by default. Specifically, the most used tags:
+id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. However, it's not compatible with id3v1 tags. By default, it can read and edit a small subset of tags. Specifically, the most used tags:
 
 * Title
 * Album
@@ -23,25 +27,39 @@ id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. It can read an
 
 However, it can be extended, in a very easy manner, to read other id3 tags.
 
-## Building id3v2lib
+## Building and id3v2lib
+
+## Building using Make in UNIX systems
+
+To build the library using Make, simply cd into the project's folder and run:
+
+```bash
+$ make
+```
+
+After the building step is finished, you'll find the compiled libraries inside the `lib` folder.
 
 ### Building using CMake
 
 The id3v2lib library is built using CMake 2.6+ on all platforms. On most systems you can build and install the library using the following commands:
 
-	$ mkdir build && cd build
-	$ cmake ..
-	$ make && make install
+```bash
+$ mkdir build && cd build
+$ cmake ..
+$ make && make install
+```
 
-Most of the times, you need to run the `make install` command with *su* privileges.
+Most of the time, you'll need to run `make install` with *su* privileges.
 
 ### Building using Microsoft Visual Studio
 
 Microsoft Visual Studio needs a slightly different way of building.
 Open the Visual Studio Developers Console, ch into the id3v2lib folder and execute the following:
 
-	$ mkdir build && cd build
-	$ cmake ..
+```bash
+$ mkdir build && cd build
+$ cmake ..
+```
 
 This should leave you with several MSVS projects in the \build directory. Open ALL_BUILD.vcxproj with Visual Studio and build it as usual.
 The resulting lib file can be found in \build\src\Debug\id3v2.lib
@@ -49,6 +67,7 @@ The resulting lib file can be found in \build\src\Debug\id3v2.lib
 ## Usage
 
 You only have to include the main header of the library:
+
 ```C
 #include <id3v2lib.h>
 
@@ -57,19 +76,26 @@ int main(int argc, char* argv[])
 	// Etc..
 }
 ```
-And when compiling, link against the static library:
+
+And then, link against the static library during compilation:
 
 	$ gcc -o example example.c -lid3v2
 
-## Main functions
+## API
 
 ### File functions
 
-This functions interacts directly with the file to edit. This functions are:
+These functions interacts directly with the file to edit:
 
-* `ID3v2_tag* load_tag(const char* filename)`
-* `void remove_tag(const char* filename)`
-* `void set_tag(const char* filename, ID3v2_tag* tag)`
+* `ID3v2_TagHeader* ID3v2_read_tag_header(const char* file_name)`
+* `ID3v2_Tag* ID3v2_read_tag(const char* file_name)`
+* `void ID3v2_write_tag(const char* file_name, ID3v2_Tag* Tag)`
+* `void ID3v2_delete_tag(const char* file_name)`
+
+Alternatively, there are other functions that will take a buffer as an argument instead of a file name:
+
+ * `ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer)`
+ * `ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* buffer, const int size)`
 
 ### Tag functions
 
@@ -193,14 +219,18 @@ if( ! (copyright_frame = tag_get_frame(tag, "TCOP")))
 set_text_frame("A copyright message", 0, "TCOP", copyright_frame);
 ```
 
+## Migrating from 1.0
+
+TODO
+
 ## Projects
 
-If your project is using this library, let me know it and I will put it here.
+Is your project is using this library? Let me know it and I'll add it here!
 
 ## Copyright
 
-Copyright (c) 2013 Lars Ruiz. See LICENSE for details.
+Copyright (c) 2013 Lars Ruiz. See [LICENSE](LICENSE) for details.
 
 ## Questions?
 
-If you have any questions, please feel free to ask me. I will try to answer it ASAP.
+If you have any questions or suggestions, please feel free to ask or raise an issue.
