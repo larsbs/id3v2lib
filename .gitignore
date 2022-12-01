@@ -1,6 +1,15 @@
-build
-/Debug/
+# Directories
+lib/
+test/
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Misc files
 .cproject
 .project
 .DS_Store
-test
+.vscode
