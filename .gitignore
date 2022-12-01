@@ -12,3 +12,4 @@ test/
 .cproject
 .project
 .DS_Store
+.vscode
