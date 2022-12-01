@@ -77,11 +77,13 @@ int main(int argc, char* argv[])
 }
 ```
 
-And then, link against the static library during compilation:
+And then, link against the library during compilation:
 
 	$ gcc -o example example.c -lid3v2
 
 ## API
+
+Every intended public facing function or type is prefixed with `ID3v2_` to help with autocompletion, prevent conflicts and make easier identifying wich functions belong to the public API and which functions belong to the internal API.
 
 ### File functions
 
@@ -92,110 +94,126 @@ These functions interacts directly with the file to edit:
 * `void ID3v2_write_tag(const char* file_name, ID3v2_Tag* Tag)`
 * `void ID3v2_delete_tag(const char* file_name)`
 
-Alternatively, there are other functions that will take a buffer as an argument instead of a file name:
+Alternatively, there's another set of functions that will take a buffer as an argument instead of a file name in case you prefer/need to handle file opening/reading yourself:
 
  * `ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer)`
  * `ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* buffer, const int size)`
 
 ### Tag functions
 
-This functions interacts with the tags in the file. They are classified in three groups:
+These functions interacts with the different frames found in the tag. For the most used frames, a set of specific functions is provided. In case less known frames need to be manipulated, general purpose functions that interact with any frame id are also provided. More in the section about [extending functionality](extending_functionality).
 
 #### Getter functions
 
-Retrieve information from a tag, they have the following name pattern:
+Retrieve information from a frame, they have the following name pattern:
 
-* `tag_get_[frame]` where frame is the name of the desired field from which to obtain information. It can be one of the previously mentioned tags.
+* `ID3v2_Tag_get_[frame]_frame` where frame is the name of the desired frame to find. It can be one of the previously mentioned tags.
 
 #### Setter functions
 
-Set the information of a field, they have the following name pattern:
+Set new information in a frame, they have the following name pattern:
 
-* `tag_set_[frame]` where frame is the name of the desired field to edit. It can be one of the previously mentioned tags.
+* `ID3v2_Tag_set_[frame]` where frame is the name of the desired frame to edit. It can be one of the previously mentioned tags.
 
 #### Delete functions
 
-Delete individual fields in the tag, they have the following name pattern:
+Delete frames from the tag, they have the following name pattern:
 
-* `tag_delete_[frame]` where frame is the name of the desired field to delete. It can be one of the previously mentioned tags.
+* `ID3v2_Tag_delete_[frame]` where frame is the name of the desired frame to delete. It can be one of the previously mentioned tags.
 
 ## Examples
+
+For more examples, go to the [tests](tests) folder.
 
 #### Load tags
 
 ```C
-ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
+
+// Alternatively, the buffer version can be used
+// ID3v2_Tag* tag = ID3v2_read_tag_from_buffer(buffer, size);
+
 if(tag == NULL)
 {
-	tag = new_tag();
+	tag = ID3v2_Tag_new();
 }
 
-// Load the fields from the tag
-ID3v2_frame* artist_frame = tag_get_artist(tag); // Get the full artist frame
-// We need to parse the frame content to make readable
-ID3v2_frame_text_content* artist_content = parse_text_frame_content(artist_frame);
-printf("ARTIST: %s\n", artist_content->data); // Show the artist info
+// Read data from the tag
+ID3v2_TextFrame* artist_frame = ID3v2_Tag_get_artist_frame(tag);
+printf("artist: %s", artist_frame->text); // this only works if encoding = ISO
 
-ID3v2_frame* title_frame = tag_get_title(tag);
-ID3v2_frame_text_content* title_content = parse_text_frame_content(title_frame);
-printf("TITLE: %s\n", title_content->data);
+ID3v2_TextFrame* album_frame = ID3v2_Tag_get_album_frame(tag);
+printf("album: %s", album_frame->text); // this only works if encoding = ISO
 ```
 
 #### Edit tags
 
 ```C
-ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
+
+// Alternatively, the buffer version can be used
+// ID3v2_Tag* tag = ID3v2_read_tag_from_buffer(buffer, size);
+
 if(tag == NULL)
 {
-	tag = new_tag();
+	tag = ID3v2_Tag_new();
 }
 
 // Set the new info
-tag_set_title("Title", 0, tag);
-tag_set_artist("Artist", 0, tag);
+ID3v2_Tag_set_title(tag, ID3v2_to_unicode("Title"));
+ID3v2_Tag_set_artist(tag, ID3v2_to_unicode("Artist"));
 
-// Write the new tag to the file
-set_tag("file.mp3", tag);
+// Write the updated tag to the file
+ID3v2_write_tag("file.mp3", tag);
 ```
 
 #### Delete tags
 
 ```C
-ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
+
+// Alternatively, the buffer version can be used
+// ID3v2_Tag* tag = ID3v2_read_tag_from_buffer(buffer, size);
+
 if(tag == NULL)
 {
-	tag = new_tag();
+	tag = ID3v2_Tag_new();
 }
 
 // We can delete single frames
-tag_delete_title(tag);
-tag_delete_artist(tag);
+ID3v2_Tag_delete_title(tag);
+ID3v2_Tag_delete_artist(tag);
 
 // Write the new tag to the file
-set_tag("file.mp3", tag);
+ID3v2_write_tag("file.mp3", tag);
 
 // Or we can delete the full tag
-remove_tag("file.mp3")
+ID3v2_delete_tag("file.mp3")
 ```
 
 ## Extending functionality
+
+In case you need to read more esoteric frames than the ones provided by default, the library can be extended very easily to fit your needs.
 
 #### Read new frames
 
 Suppose we want to read the frame that stores the copyright message (TCOP). We have to do the following:
 
 ```C
-ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
+
+// Alternatively, the buffer version can be used
+// ID3v2_Tag* tag = ID3v2_read_tag_from_buffer(buffer, size);
+
 if(tag == NULL)
 {
-	tag = new_tag();
+	tag = ID3v2_Tag_new();
 }
 
-ID3v2_frame* copyright_frame = tag_get_frame(tag, "TCOP"); // Get the copyright message frame
-// We need to parse the frame content to make it readable, as the copyright message is a text frame,
-// we use the parse_text_frame_content function.
-ID3v2_frame_text_content* copyright_content = parse_text_frame_content(copyright_frame);
-printf("COPYRIGHT: %s\n", copyright_content->data); // Show the copyright info
+// That's it, the only extra bit necessary here is taking into account that TCOP is a
+// text frame and we have to do the casting manually.
+ID3v2_TextFrame* copyright_frame = (ID3v2_TextFrame*) ID3v2_Tag_get_frame(tag, "TCOP");
+printf("copyright: %s", copyright_frame->text); // this only works if encoding = ISO
 ```
 
 #### Edit new frames
@@ -203,20 +221,24 @@ printf("COPYRIGHT: %s\n", copyright_content->data); // Show the copyright info
 Suppose that now, we want to edit the copyright frame. We have to do the following:
 
 ```C
-ID3v2_tag* tag = load_tag("file.mp3"); // Load the full tag from the file
+ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
+
+// Alternatively, the buffer version can be used
+// ID3v2_Tag* tag = ID3v2_read_tag_from_buffer(buffer, size);
+
 if(tag == NULL)
 {
-	tag = new_tag();
+	tag = ID3v2_Tag_new();
 }
 
-ID3v2_frame* copyright_frame = NULL;
-if( ! (copyright_frame = tag_get_frame(tag, "TCOP")))
-{
-    copyright_frame = new_frame();
-    add_to_list(tag->frames, copyright_frame);
-}
-
-set_text_frame("A copyright message", 0, "TCOP", copyright_frame);
+// Since TCOP is a text frame, we have to use the generic function that deals
+// with text frames. There's another generic function to deal with comment frames
+// and another one that deals with apic frames.
+ID3v2_Tag_set_text_frame(tag, &(ID3v2_TextFrameInput) {
+	.id = "TCOP",
+	.flags = "\0\0",
+	.text = "A copyright message"
+});
 ```
 
 ## Migrating from 1.0
