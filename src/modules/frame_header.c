@@ -62,7 +62,9 @@ CharStream* FrameHeader_to_char_stream(ID3v2_FrameHeader* header)
     CharStream* header_cs = CharStream_new(ID3v2_FRAME_HEADER_LENGTH);
 
     CharStream_write(header_cs, header->id, ID3v2_FRAME_HEADER_ID_LENGTH);
-    CharStream_write(header_cs, itob(header->size), ID3v2_FRAME_HEADER_SIZE_LENGTH);
+    char* size_bytes = itob(header->size);
+    CharStream_write(header_cs, size_bytes, ID3v2_FRAME_HEADER_SIZE_LENGTH);
+    free(size_bytes);
     CharStream_write(header_cs, (const char*) &header->flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH);
 
     return header_cs;

@@ -76,11 +76,10 @@ CharStream* Tag_to_char_stream(ID3v2_Tag* tag)
     CharStream_write(tag_cs, &tag->header->major_version, ID3v2_TAG_HEADER_MAJOR_VERSION_LENGTH);
     CharStream_write(tag_cs, &tag->header->minor_version, ID3v2_TAG_HEADER_MINOR_VERSION_LENGTH);
     CharStream_write(tag_cs, &tag->header->flags, ID3v2_TAG_HEADER_FLAGS_LENGTH);
-    CharStream_write(
-        tag_cs,
-        itob(syncint_encode(tag->header->tag_size)),
-        ID3v2_TAG_HEADER_TAG_SIZE_LENGTH
-    );
+
+    char* size_bytes = itob(syncint_encode(tag->header->tag_size));
+    CharStream_write(tag_cs, size_bytes, ID3v2_TAG_HEADER_TAG_SIZE_LENGTH);
+    free(size_bytes);
 
     // Write frames
     ID3v2_FrameList* frames = tag->frames;
