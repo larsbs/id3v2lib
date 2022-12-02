@@ -45,7 +45,7 @@ set(ID3V2_SRC
   "${CMAKE_CURRENT_SOURCE_DIR}/id3v2lib.compat.c"
 )
 
-add_library(id3v2lib STATIC ${ID3V2_SRC} ${ID3V2_HEADERS})
+add_library(id3v2lib ${ID3V2_SRC} ${ID3V2_HEADERS})
 
 target_include_directories(id3v2lib
   PUBLIC
