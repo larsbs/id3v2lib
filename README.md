@@ -65,15 +65,18 @@ After the building step is finished, you'll find the compiled library inside the
 
 ### Building using CMake
 
-It's possible to use CMake 2.6+ to build id3v2lib on all platforms. On most unix systems, you can build and install the library using the following commands:
+It's possible to use CMake 3.1+ to build id3v2lib on all platforms. You can build and install the library using the following commands:
 
 ```bash
 $ mkdir build && cd build
 $ cmake ..
-$ make && make install
+$ cmake --build .
+$ cmake --install .
 ```
 
-It's possible that you'll need to run `make install` with *su* privileges.
+It's possible that you'll need *su* privileges during the installation step.
+
+> By default a **static version** of the library will be generated. However, If a shared library is required, the output library type can be easily toggled with `-DBUILD_SHARED_LIBS=ON` or `-DBUILD_SHARED_LIBS=OFF`
 
 ### Building using Microsoft Visual Studio
 
