@@ -10,6 +10,30 @@ It is a work in progress so some functionality is not implemented yet.
 
 ## TOC
 
+  * [What it can do?](#what-it-can-do-)
+  * [Building and installing id3v2lib](#building-and-installing-id3v2lib)
+  * [Building using Make in UNIX systems](#building-using-make-in-unix-systems)
+    + [Building using CMake](#building-using-cmake)
+    + [Building using Microsoft Visual Studio](#building-using-microsoft-visual-studio)
+  * [Usage](#usage)
+  * [API](#api)
+    + [File functions](#file-functions)
+    + [Tag functions](#tag-functions)
+      - [Getter functions](#getter-functions)
+      - [Setter functions](#setter-functions)
+      - [Delete functions](#delete-functions)
+  * [Examples](#examples)
+      - [Load tags](#load-tags)
+      - [Edit tags](#edit-tags)
+      - [Delete tags](#delete-tags)
+  * [Extending functionality](#extending-functionality)
+      - [Read new frames](#read-new-frames)
+      - [Edit new frames](#edit-new-frames)
+  * [Compatibility layer](#compatibility-layer)
+  * [Projects](#projects)
+  * [Copyright](#copyright)
+  * [Questions?](#questions-)
+
 ## What it can do?
 
 id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. However, it's not compatible with id3v1 tags. By default, it can read and edit a small subset of tags. Specifically, the most used tags:
@@ -27,7 +51,7 @@ id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. However, it's 
 
 However, it can be extended, in a very easy manner, to read other id3 tags.
 
-## Building and id3v2lib
+## Building and installing id3v2lib
 
 ## Building using Make in UNIX systems
 
@@ -37,11 +61,11 @@ To build the library using Make, simply cd into the project's folder and run:
 $ make
 ```
 
-After the building step is finished, you'll find the compiled libraries inside the `lib` folder.
+After the building step is finished, you'll find the compiled library inside the `lib` folder.
 
 ### Building using CMake
 
-The id3v2lib library is built using CMake 2.6+ on all platforms. On most systems you can build and install the library using the following commands:
+It's possible to use CMake 2.6+ to build id3v2lib on all platforms. On most unix systems, you can build and install the library using the following commands:
 
 ```bash
 $ mkdir build && cd build
@@ -49,7 +73,7 @@ $ cmake ..
 $ make && make install
 ```
 
-Most of the time, you'll need to run `make install` with *su* privileges.
+It's possible that you'll need to run `make install` with *su* privileges.
 
 ### Building using Microsoft Visual Studio
 
@@ -241,9 +265,25 @@ ID3v2_Tag_set_text_frame(tag, &(ID3v2_TextFrameInput) {
 });
 ```
 
-## Migrating from 1.0
+## Compatibility layer
 
-TODO
+In case you're not able to migrate your code to the new version of the library, a compatibility layer is provided that will make use of the new internals while presenting the old API. However, it's recommended that whenver possible, a full migration to the new API is done as the maintenance of this compatibility layer is not guarantee for future versions.
+
+To use the compatibility layer simply include `id3v2lib.compat.h` instead of the regular one. This will allow you to keep using the old functions but using the revamped code internally.
+
+```C
+#include <id3v2lib.compat.h>
+
+void main()
+{
+    ID3v2_tag* tag = load_tag("file.mp3");
+    if (tag == NULL) tag = new_tag();
+
+    ID3v2_frame* album_frame = tag_get_album(tag);
+    ID3v2_frame_text_content* album_content = parse_text_frame_content(album_frame);
+		printf("Album: %s", album_content->data);
+}
+```
 
 ## Projects
 
