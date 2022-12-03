@@ -1,6 +1,6 @@
 # id3v2lib
 
-> Click [here]() to view the docs for version 1.0.
+> Click [here](https://github.com/larsbs/id3v2lib/blob/d8c9f3ff27dbf82d8136550efd8de334d688e21e/README.md) to view the docs for version 1.0.
 
 id3v2lib is a library written in C to read and edit id3 tags from mp3 files. It's focused on the ease of use.
 
