@@ -78,19 +78,6 @@ It's possible that you'll need *su* privileges during the installation step.
 
 > By default a **static version** of the library will be generated. However, If a shared library is required, the output library type can be easily toggled with `-DBUILD_SHARED_LIBS=ON` or `-DBUILD_SHARED_LIBS=OFF`
 
-### Building using Microsoft Visual Studio
-
-Microsoft Visual Studio needs a slightly different way of building.
-Open the Visual Studio Developers Console, ch into the id3v2lib folder and execute the following:
-
-```bash
-$ mkdir build && cd build
-$ cmake ..
-```
-
-This should leave you with several MSVS projects in the \build directory. Open ALL_BUILD.vcxproj with Visual Studio and build it as usual.
-The resulting lib file can be found in \build\src\Debug\id3v2.lib
-
 ## Usage
 
 You only have to include the main header of the library:
@@ -104,9 +91,11 @@ int main(int argc, char* argv[])
 }
 ```
 
-And then, link against the library during compilation:
+And then, remember to link against the library during compilation:
 
-	$ gcc -o example example.c -lid3v2
+```bash
+$ gcc -o example example.c -lid3v2
+```
 
 ## API
 

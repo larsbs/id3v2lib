@@ -515,7 +515,7 @@ void ID3v2_Tag_delete_comment_frame(ID3v2_Tag* tag, const int index)
 
         if (i == index)
         {
-            FrameList_remove_frame(tag->frames, to_delete);
+            FrameList_remove_frame(tag->frames, (ID3v2_Frame*) to_delete);
             break;
         }
 
@@ -540,7 +540,7 @@ void ID3v2_Tag_delete_apic_frame(ID3v2_Tag* tag, const int index)
 
         if (i == index)
         {
-            FrameList_remove_frame(tag->frames, to_delete);
+            FrameList_remove_frame(tag->frames, (ID3v2_Frame*) to_delete);
             break;
         }
 

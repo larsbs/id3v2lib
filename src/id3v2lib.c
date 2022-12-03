@@ -15,6 +15,7 @@
 #include "modules/frame_list.private.h"
 #include "modules/tag.private.h"
 #include "modules/tag_header.private.h"
+#include "modules/utils.private.h"
 
 #include "id3v2lib.h"
 
