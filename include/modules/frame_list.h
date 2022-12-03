@@ -19,6 +19,15 @@ typedef struct _ID3v2_FrameList
     struct _ID3v2_FrameList* next;
 } ID3v2_FrameList;
 
+/**
+ * Frees list nodes and the frames within.
+ */
 void ID3v2_FrameList_free(ID3v2_FrameList* list);
+
+/**
+ * This only frees the list nodes leaving freeing the frames
+ * to the calling routine.
+ */
+void ID3v2_FrameList_unlink(ID3v2_FrameList* list);
 
 #endif

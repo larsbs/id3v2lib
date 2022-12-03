@@ -19,32 +19,38 @@ void get_test_existing()
 {
     ID3v2_Tag* tag = ID3v2_read_tag("./extra/file.mp3");
 
+    char* artist = ID3v2_to_unicode("Ethereal Darkness");
     assert_text_frame(
         ID3v2_Tag_get_artist_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ARTIST_FRAME_ID,
             .flags = "\0\0",
-            .text = ID3v2_to_unicode("Ethereal Darkness"),
+            .text = artist,
         }
     );
+    free(artist);
 
+    char* album = ID3v2_to_unicode("Smoke And Shadows");
     assert_text_frame(
         ID3v2_Tag_get_album_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_FRAME_ID,
             .flags = "\0\0",
-            .text = ID3v2_to_unicode("Smoke And Shadows"),
+            .text = album,
         }
     );
+    free(album);
 
+    char* title = ID3v2_to_unicode("Rivers");
     assert_text_frame(
         ID3v2_Tag_get_title_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_TITLE_FRAME_ID,
             .flags = "\0\0",
-            .text = ID3v2_to_unicode("Rivers"),
+            .text = title,
         }
     );
+    free(title);
 
     assert_text_frame(
         ID3v2_Tag_get_track_frame(tag),
@@ -55,23 +61,27 @@ void get_test_existing()
         }
     );
 
+    char* album_artist = ID3v2_to_unicode("Ethereal Darkness");
     assert_text_frame(
         ID3v2_Tag_get_album_artist_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_ALBUM_ARTIST_FRAME_ID,
             .flags = "\0\0",
-            .text = ID3v2_to_unicode("Ethereal Darkness"),
+            .text = album_artist,
         }
     );
+    free(album_artist);
 
+    char* genre = ID3v2_to_unicode("Melodic Death Metal");
     assert_text_frame(
         ID3v2_Tag_get_genre_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_GENRE_FRAME_ID,
             .flags = "\0\0",
-            .text = ID3v2_to_unicode("Melodic Death Metal"),
+            .text = genre,
         }
     );
+    free(genre);
 
     assert_text_frame(
         ID3v2_Tag_get_year_frame(tag),
@@ -91,41 +101,52 @@ void get_test_existing()
         }
     );
 
+    char* composer = ID3v2_to_unicode("Composer");
     assert_text_frame(
         ID3v2_Tag_get_composer_frame(tag),
         &(ID3v2_TextFrameInput){
             .id = ID3v2_COMPOSER_FRAME_ID,
             .flags = "\0\0",
-            .text = ID3v2_to_unicode("Composer"),
+            .text = composer,
         }
     );
+    free(composer);
+
+    char* comment = ID3v2_to_unicode("This is a comment");
+    char* short_description = ID3v2_to_unicode("");
 
     assert_comment_frame(
         ID3v2_Tag_get_comment_frame(tag),
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
-            .comment = ID3v2_to_unicode("This is a comment"),
+            .comment = comment,
             .language = "eng",
-            .short_description = ID3v2_to_unicode(""),
+            .short_description = short_description,
         }
     );
 
+    ID3v2_FrameList* comments = ID3v2_Tag_get_comment_frames(tag);
     assert_comment_frame(
-        (ID3v2_CommentFrame*) ID3v2_Tag_get_comment_frames(tag)->frame,
+        (ID3v2_CommentFrame*) comments->frame,
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
-            .comment = ID3v2_to_unicode("This is a comment"),
+            .comment = comment,
             .language = "eng",
-            .short_description = ID3v2_to_unicode(""),
+            .short_description = short_description,
         }
     );
 
-    FILE* album_cover_file = fopen("extra/album_cover.png", "rb");
-    fseek(album_cover_file, 0L, SEEK_END);
-    const int cover_file_size = ftell(album_cover_file);
-    fseek(album_cover_file, 0L, SEEK_SET);
+    ID3v2_FrameList_unlink(comments);
+    free(comment);
+    free(short_description);
+
+    FILE* album_cover_fp = fopen("extra/album_cover.png", "rb");
+    fseek(album_cover_fp, 0L, SEEK_END);
+    const int cover_file_size = ftell(album_cover_fp);
+    fseek(album_cover_fp, 0L, SEEK_SET);
     char* picture_data = (char*) malloc(cover_file_size * sizeof(char));
-    fread(picture_data, 1, cover_file_size, album_cover_file);
+    fread(picture_data, 1, cover_file_size, album_cover_fp);
+    fclose(album_cover_fp);
 
     assert_apic_frame(
         ID3v2_Tag_get_album_cover_frame(tag),
@@ -138,10 +159,11 @@ void get_test_existing()
             .picture_size = cover_file_size,
         }
     );
-
-    printf("GET TEST EXISTING: OK\n");
+    free(picture_data);
 
     ID3v2_Tag_free(tag);
+
+    printf("GET TEST EXISTING: OK\n");
 }
 
 void get_test_empty()

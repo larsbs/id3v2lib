@@ -89,7 +89,7 @@ CharStream* CommentFrame_to_char_stream(ID3v2_CommentFrame* frame)
 
 void CommentFrame_free(ID3v2_CommentFrame* frame)
 {
-    free(frame->header);
+    FrameHeader_free(frame->header);
     free(frame->data->comment);
     free(frame->data->short_description);
     free(frame->data);

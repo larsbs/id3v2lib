@@ -96,7 +96,7 @@ CharStream* ApicFrame_to_char_stream(ID3v2_ApicFrame* frame)
 
 void ApicFrame_free(ID3v2_ApicFrame* frame)
 {
-    free(frame->header);
+    FrameHeader_free(frame->header);
     free(frame->data->data);
     free(frame->data->description);
     free(frame->data->mime_type);

@@ -59,7 +59,6 @@ ID3v2_TagHeader* TagHeader_parse(CharStream* header_cs)
     if (major_version != 3 && major_version != 4)
     {
         // No supported id3 tag found
-        CharStream_free(header_cs);
         return NULL;
     }
 
@@ -80,4 +79,9 @@ ID3v2_TagHeader* TagHeader_parse(CharStream* header_cs)
     }
 
     return TagHeader_new(major_version, minor_version, flags, tag_size, extended_header_size);
+}
+
+void TagHeader_free(ID3v2_TagHeader* header)
+{
+    free(header);
 }

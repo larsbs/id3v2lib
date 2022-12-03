@@ -67,7 +67,7 @@ CharStream* TextFrame_to_char_stream(ID3v2_TextFrame* frame)
 
 void TextFrame_free(ID3v2_TextFrame* frame)
 {
-    free(frame->header);
+    FrameHeader_free(frame->header);
     free(frame->data->text);
     free(frame->data);
     free(frame);

@@ -71,5 +71,8 @@ void delete_test_main()
     // Clean up
     remove(EDITED_FILE);
 
+    ID3v2_Tag_free(tag);
+    ID3v2_Tag_free(edited_tag);
+
     printf("DELETE TEST: OK\n");
 }

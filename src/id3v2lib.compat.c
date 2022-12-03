@@ -94,6 +94,21 @@ void add_uniq_to_list(ID3v2_frame_list* head, ID3v2_frame* frame)
     add_to_list(head->start, frame);
 }
 
+ID3v2_frame* get_from_list(ID3v2_frame_list* list, const char* frame_id)
+{
+    while (list != NULL && list->frame != NULL)
+    {
+        if (strncmp(list->frame->frame_id, frame_id, 4) == 0)
+        {
+            return list->frame;
+        }
+
+        list = list->next;
+    }
+
+    return NULL;
+}
+
 ID3v2_tag* new_tag()
 {
     ID3v2_tag* tag = (ID3v2_tag*) malloc(sizeof(ID3v2_tag));
@@ -115,9 +130,12 @@ ID3v2_tag* load_tag(const char* file_name)
     const int buffer_size = header->tag_size + ID3v2_TAG_HEADER_LENGTH;
     char* buffer = (char*) malloc(buffer_size * sizeof(char));
     fread(buffer, sizeof(char), buffer_size, fp);
+    fclose(fp);
 
     ID3v2_tag* tag = load_tag_with_buffer(buffer, buffer_size);
+
     free(buffer);
+    TagHeader_free(header);
 
     return tag;
 }
@@ -178,92 +196,76 @@ void free_frame(ID3v2_frame* frame)
 
 void free_tag(ID3v2_tag* tag)
 {
-    ID3v2_frame_list* list;
-
     free(tag->raw);
     free(tag->tag_header);
     ID3v2_Tag_free(tag->tag);
 
-    list = tag->frames;
+    ID3v2_frame_list* list = tag->frames;
 
     while (list != NULL)
     {
-        if (list->frame)
-        {
-            free_frame(list->frame);
-        }
-
-        list = list->next;
+        free_frame(list->frame);
+        ID3v2_frame_list* new_head = list->next;
+        free(list);
+        list = new_head;
     }
 
-    free(list);
     free(tag);
 }
 
 ID3v2_frame* tag_get_title(ID3v2_tag* tag)
 {
-    ID3v2_Frame* title_frame = (ID3v2_Frame*) ID3v2_Tag_get_title_frame(tag->tag);
-    return frame_to_compat_frame(title_frame);
+    return get_from_list(tag->frames, ID3v2_TITLE_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_artist(ID3v2_tag* tag)
 {
-    ID3v2_Frame* artist_frame = (ID3v2_Frame*) ID3v2_Tag_get_artist_frame(tag->tag);
-    return frame_to_compat_frame(artist_frame);
+    return get_from_list(tag->frames, ID3v2_ARTIST_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_album(ID3v2_tag* tag)
 {
-    ID3v2_Frame* album_frame = (ID3v2_Frame*) ID3v2_Tag_get_album_frame(tag->tag);
-    return frame_to_compat_frame(album_frame);
+    return get_from_list(tag->frames, ID3v2_ALBUM_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_album_artist(ID3v2_tag* tag)
 {
-    ID3v2_Frame* album_artist_frame = (ID3v2_Frame*) ID3v2_Tag_get_album_artist_frame(tag->tag);
-    return frame_to_compat_frame(album_artist_frame);
+    return get_from_list(tag->frames, ID3v2_ALBUM_ARTIST_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_genre(ID3v2_tag* tag)
 {
-    ID3v2_Frame* genre_frame = (ID3v2_Frame*) ID3v2_Tag_get_genre_frame(tag->tag);
-    return frame_to_compat_frame(genre_frame);
+    return get_from_list(tag->frames, ID3v2_GENRE_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_track(ID3v2_tag* tag)
 {
-    ID3v2_Frame* track_frame = (ID3v2_Frame*) ID3v2_Tag_get_track_frame(tag->tag);
-    return frame_to_compat_frame(track_frame);
+    return get_from_list(tag->frames, ID3v2_TRACK_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_year(ID3v2_tag* tag)
 {
-    ID3v2_Frame* year_frame = (ID3v2_Frame*) ID3v2_Tag_get_year_frame(tag->tag);
-    return frame_to_compat_frame(year_frame);
+    return get_from_list(tag->frames, ID3v2_YEAR_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_comment(ID3v2_tag* tag)
 {
-    ID3v2_Frame* comment_frame = (ID3v2_Frame*) ID3v2_Tag_get_comment_frame(tag->tag);
-    return frame_to_compat_frame(comment_frame);
+    return get_from_list(tag->frames, ID3v2_COMMENT_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_disc_number(ID3v2_tag* tag)
 {
-    ID3v2_Frame* disc_number_frame = (ID3v2_Frame*) ID3v2_Tag_get_disc_number_frame(tag->tag);
-    return frame_to_compat_frame(disc_number_frame);
+    return get_from_list(tag->frames, ID3v2_DISC_NUMBER_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_composer(ID3v2_tag* tag)
 {
-    ID3v2_Frame* composer_frame = (ID3v2_Frame*) ID3v2_Tag_get_composer_frame(tag->tag);
-    return frame_to_compat_frame(composer_frame);
+    return get_from_list(tag->frames, ID3v2_COMPOSER_FRAME_ID);
 }
 
 ID3v2_frame* tag_get_album_cover(ID3v2_tag* tag)
 {
-    ID3v2_Frame* album_cover_frame = (ID3v2_Frame*) ID3v2_Tag_get_album_cover_frame(tag->tag);
-    return frame_to_compat_frame(album_cover_frame);
+    return get_from_list(tag->frames, ID3v2_ALBUM_COVER_FRAME_ID);
 }
 
 ID3v2_frame_text_content* parse_text_frame_content(ID3v2_frame* frame)
@@ -274,7 +276,8 @@ ID3v2_frame_text_content* parse_text_frame_content(ID3v2_frame* frame)
 
     content->encoding = text_frame->data->encoding;
     content->size = text_frame->data->size;
-    content->data = text_frame->data->text;
+    content->data = (char*) malloc(content->size * sizeof(char));
+    memcpy(content->data, text_frame->data->text, content->size);
 
     return content;
 }

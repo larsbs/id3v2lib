@@ -96,8 +96,20 @@ void ID3v2_FrameList_free(ID3v2_FrameList* list)
 {
     while (list != NULL)
     {
-        free(list->frame);
-        list = list->next;
+        ID3v2_Frame_free(list->frame);
+        ID3v2_FrameList* next_head = list->next;
+        free(list);
+        list = next_head;
+    }
+}
+
+void ID3v2_FrameList_unlink(ID3v2_FrameList* list)
+{
+    while (list != NULL)
+    {
+        ID3v2_FrameList* next_head = list->next;
+        free(list);
+        list = next_head;
     }
 }
 

@@ -27,6 +27,8 @@ ID3v2_TagHeader* ID3v2_read_tag_header(const char* file_name)
     if (fp == NULL) return NULL;
 
     const int bytes_read = fread(tag_header_buffer, sizeof(char), ID3v2_TAG_HEADER_LENGTH, fp);
+    fclose(fp);
+
     if (bytes_read < ID3v2_TAG_HEADER_LENGTH) return NULL;
 
     return ID3v2_read_tag_header_from_buffer(tag_header_buffer);
@@ -54,7 +56,7 @@ ID3v2_Tag* ID3v2_read_tag(const char* file_name)
     {
         perror("Could not allocate buffer.");
         fclose(file);
-        free(tag_header);
+        TagHeader_free(tag_header);
         return NULL;
     }
 
@@ -62,7 +64,9 @@ ID3v2_Tag* ID3v2_read_tag(const char* file_name)
     fclose(file);
 
     ID3v2_Tag* tag = ID3v2_read_tag_from_buffer(tag_buffer, buffer_length);
+
     free(tag_buffer);
+    TagHeader_free(tag_header);
 
     return tag;
 }
@@ -153,6 +157,8 @@ void ID3v2_delete_tag(const char* file_name)
     {
         putc(c, file_fp);
     }
+
+    TagHeader_free(tag_header);
 
     fclose(temp_fp);
     fclose(file_fp);

@@ -10,6 +10,8 @@
 #ifndef id3v2lib_utils_h
 #define id3v2lib_utils_h
 
+#define EMPTY_UNICODE_STR "\xFF\xFE\x00\x00"
+
 /**
  * Turns an iso string (one byte per character) into an
  * utf-16 string (two byes per character). Takes care of

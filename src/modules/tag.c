@@ -370,7 +370,7 @@ void ID3v2_Tag_set_comment(ID3v2_Tag* tag, const char* lang, const char* comment
         &(ID3v2_CommentFrameInput){
             .flags = "\0\0",
             .language = lang,
-            .short_description = ID3v2_to_unicode(""),
+            .short_description = EMPTY_UNICODE_STR,
             .comment = comment,
         }
     );
@@ -437,7 +437,7 @@ void ID3v2_Tag_set_album_cover(
         &(ID3v2_ApicFrameInput){
             .flags = "\0\0",
             .mime_type = mime_type,
-            .description = ID3v2_to_unicode(""),
+            .description = EMPTY_UNICODE_STR,
             .picture_size = size,
             .picture_type = ID3v2_PIC_TYPE_FRONT_COVER,
             .data = data,
@@ -447,7 +447,7 @@ void ID3v2_Tag_set_album_cover(
 
 void ID3v2_Tag_free(ID3v2_Tag* tag)
 {
-    free(tag->header);
+    TagHeader_free(tag->header);
     ID3v2_FrameList_free(tag->frames);
     free(tag);
 }
@@ -456,6 +456,8 @@ void ID3v2_Tag_delete_frame(ID3v2_Tag* tag, const char* frame_id)
 {
     ID3v2_Frame* deleted = FrameList_remove_frame_by_id(tag->frames, frame_id);
     tag->header->tag_size -= deleted->header->size + ID3v2_FRAME_HEADER_LENGTH;
+    // Maybe we should just return the frame instead of taking the responsibility
+    // of freeing it?
     ID3v2_Frame_free(deleted);
 }
 
@@ -516,12 +518,15 @@ void ID3v2_Tag_delete_comment_frame(ID3v2_Tag* tag, const int index)
         if (i == index)
         {
             FrameList_remove_frame(tag->frames, (ID3v2_Frame*) to_delete);
+            ID3v2_Frame_free(to_delete);
             break;
         }
 
         i++;
         head = head->next;
     }
+
+    ID3v2_FrameList_unlink(head);
 }
 
 void ID3v2_Tag_delete_comment(ID3v2_Tag* tag)
@@ -541,12 +546,15 @@ void ID3v2_Tag_delete_apic_frame(ID3v2_Tag* tag, const int index)
         if (i == index)
         {
             FrameList_remove_frame(tag->frames, (ID3v2_Frame*) to_delete);
+            ID3v2_Frame_free(to_delete);
             break;
         }
 
         i++;
         head = head->next;
     }
+
+    ID3v2_FrameList_unlink(head);
 }
 
 void ID3v2_Tag_delete_album_cover(ID3v2_Tag* tag)
