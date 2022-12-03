@@ -8,7 +8,7 @@ It is licensed under a BSD License. See [LICENSE](LICENSE) for details.
 
 ## TOC
 
-  * [What it can do?](#what-it-can-do-)
+  * [What can it do?](#what-can-it-do-)
   * [Building and installing id3v2lib](#building-and-installing-id3v2lib)
   * [Building using Make in UNIX systems](#building-using-make-in-unix-systems)
     + [Building using CMake](#building-using-cmake)
@@ -32,7 +32,7 @@ It is licensed under a BSD License. See [LICENSE](LICENSE) for details.
   * [Copyright](#copyright)
   * [Questions?](#questions-)
 
-## What it can do?
+## What can it do?
 
 id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. However, it's not compatible with id3v1 tags. By default, it can read and edit a small subset of tags. Specifically, the most used tags:
 
