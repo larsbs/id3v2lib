@@ -87,7 +87,7 @@ You only have to include the main header of the library:
 
 int main(int argc, char* argv[])
 {
-	// Etc..
+  // Etc..
 }
 ```
 
@@ -151,7 +151,7 @@ ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
 
 if(tag == NULL)
 {
-	tag = ID3v2_Tag_new();
+  tag = ID3v2_Tag_new();
 }
 
 // Read data from the tag
@@ -172,7 +172,7 @@ ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
 
 if(tag == NULL)
 {
-	tag = ID3v2_Tag_new();
+  tag = ID3v2_Tag_new();
 }
 
 // Set the new info
@@ -193,7 +193,7 @@ ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
 
 if(tag == NULL)
 {
-	tag = ID3v2_Tag_new();
+  tag = ID3v2_Tag_new();
 }
 
 // We can delete single frames
@@ -223,7 +223,7 @@ ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
 
 if(tag == NULL)
 {
-	tag = ID3v2_Tag_new();
+  tag = ID3v2_Tag_new();
 }
 
 // That's it, the only extra bit necessary here is taking into account that TCOP is a
@@ -244,16 +244,16 @@ ID3v2_tag* tag = ID3v2_read_tag("file.mp3"); // Load the full tag from the file
 
 if(tag == NULL)
 {
-	tag = ID3v2_Tag_new();
+  tag = ID3v2_Tag_new();
 }
 
 // Since TCOP is a text frame, we have to use the generic function that deals
 // with text frames. There's another generic function to deal with comment frames
 // and another one that deals with apic frames.
 ID3v2_Tag_set_text_frame(tag, &(ID3v2_TextFrameInput) {
-	.id = "TCOP",
-	.flags = "\0\0",
-	.text = "A copyright message"
+  .id = "TCOP",
+  .flags = "\0\0",
+  .text = "A copyright message"
 });
 ```
 
@@ -273,7 +273,7 @@ void main()
 
     ID3v2_frame* album_frame = tag_get_album(tag);
     ID3v2_frame_text_content* album_content = parse_text_frame_content(album_frame);
-		printf("Album: %s", album_content->data);
+    printf("Album: %s", album_content->data);
 }
 ```
 
