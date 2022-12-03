@@ -6,8 +6,6 @@ id3v2lib is a library written in C to read and edit id3 tags from mp3 files. It'
 
 It is licensed under a BSD License. See [LICENSE](LICENSE) for details.
 
-It is a work in progress so some functionality is not implemented yet.
-
 ## TOC
 
   * [What it can do?](#what-it-can-do-)
