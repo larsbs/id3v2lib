@@ -1,3 +1,5 @@
+![logo](logo.png)
+
 # id3v2lib
 
 > Click [here](https://github.com/larsbs/id3v2lib/blob/d8c9f3ff27dbf82d8136550efd8de334d688e21e/README.md) to view the docs for version 1.0.
@@ -34,7 +36,7 @@ It is licensed under a BSD License. See [LICENSE](LICENSE) for details.
 
 ## What can it do?
 
-id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. However, it's not compatible with id3v1 tags. By default, it can read and edit a small subset of tags. Specifically, the most used tags:
+id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. However, it's not compatible with id3v1 tags. By default, it can read and edit a small subset of well known tags. Specifically:
 
 * Title
 * Album
@@ -47,7 +49,7 @@ id3v2lib can read and edit id3 v2.3 and v2.4 tags from mp3 files. However, it's 
 * Disc Number
 * Album Cover
 
-However, it can be extended, in a very easy manner, to read other id3 tags.
+However, the library can be extended in a very easy way, to read all the tags available.
 
 ## Building and installing id3v2lib
 
@@ -63,7 +65,7 @@ After the building step is finished, you'll find the compiled library inside the
 
 ### Building using CMake
 
-It's possible to use CMake 3.1+ to build id3v2lib on all platforms. You can build and install the library using the following commands:
+It's possible to use CMake 3.1+ to build id3v2lib on most platforms. To build and install the library, navigate into the project's directory and then run the following commands:
 
 ```bash
 $ mkdir build && cd build
@@ -72,13 +74,13 @@ $ cmake --build .
 $ cmake --install .
 ```
 
-It's possible that you'll need *su* privileges during the installation step.
+It's possible that *su* privileges will be needed for the installation step.
 
 > By default a **static version** of the library will be generated. However, If a shared library is required, the output library type can be easily toggled with `-DBUILD_SHARED_LIBS=ON` or `-DBUILD_SHARED_LIBS=OFF`
 
 ## Usage
 
-You only have to include the main header of the library:
+Include the main header of the library:
 
 ```C
 #include <id3v2lib.h>
@@ -89,15 +91,15 @@ int main(int argc, char* argv[])
 }
 ```
 
-And then, remember to link against the library during compilation:
+And then, link against the library during compilation:
 
 ```bash
-$ gcc -o example example.c -lid3v2
+$ gcc -o example example.c -lid3v2lib
 ```
 
 ## API
 
-Every intended public facing function or type is prefixed with `ID3v2_` to help with autocompletion, prevent conflicts and make easier identifying wich functions belong to the public API and which functions belong to the internal API.
+Every intended public facing function or type is prefixed with `ID3v2_` to help with autocompletion, prevent conflicts and make identifying wich functions belong to the public API and which functions belong to the internal API easier.
 
 ### File functions
 
@@ -108,7 +110,7 @@ These functions interacts directly with the file to edit:
 * `void ID3v2_write_tag(const char* file_name, ID3v2_Tag* Tag)`
 * `void ID3v2_delete_tag(const char* file_name)`
 
-Alternatively, there's another set of functions that will take a buffer as an argument instead of a file name in case you prefer/need to handle file opening/reading yourself:
+Alternatively, there's another set of functions that will take a buffer as an argument instead of a file name in case that's preferred/needed:
 
  * `ID3v2_TagHeader* ID3v2_read_tag_header_from_buffer(const char* buffer)`
  * `ID3v2_Tag* ID3v2_read_tag_from_buffer(const char* buffer, const int size)`
@@ -137,7 +139,7 @@ Delete frames from the tag, they have the following name pattern:
 
 ## Examples
 
-For more examples, go to the [tests](tests) folder.
+For more examples, go to the [test](test) folder.
 
 #### Load tags
 
