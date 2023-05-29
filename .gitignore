@@ -15,4 +15,5 @@ build/
 .DS_Store
 .idea/
 .vscode/
+.ccls-cache/
 main_test
