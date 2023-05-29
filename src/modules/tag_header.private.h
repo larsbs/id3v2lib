@@ -24,6 +24,4 @@ ID3v2_TagHeader* TagHeader_new(
 ID3v2_TagHeader* TagHeader_new_empty();
 ID3v2_TagHeader* TagHeader_parse(CharStream* stream);
 
-void TagHeader_free(ID3v2_TagHeader* header);
-
 #endif
