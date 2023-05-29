@@ -28,6 +28,6 @@ typedef struct _ID3v2_TagHeader
     unsigned int extended_header_size;
 } ID3v2_TagHeader;
 
-void TagHeader_free(ID3v2_TagHeader* header);
+void ID3v2_TagHeader_free(ID3v2_TagHeader* header);
 
 #endif

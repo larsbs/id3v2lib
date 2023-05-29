@@ -447,7 +447,7 @@ void ID3v2_Tag_set_album_cover(
 
 void ID3v2_Tag_free(ID3v2_Tag* tag)
 {
-    TagHeader_free(tag->header);
+    ID3v2_TagHeader_free(tag->header);
     ID3v2_FrameList_free(tag->frames);
     free(tag);
 }

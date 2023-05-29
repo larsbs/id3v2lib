@@ -135,7 +135,7 @@ ID3v2_tag* load_tag(const char* file_name)
     ID3v2_tag* tag = load_tag_with_buffer(buffer, buffer_size);
 
     free(buffer);
-    TagHeader_free(header);
+    ID3v2_TagHeader_free(header);
 
     return tag;
 }
