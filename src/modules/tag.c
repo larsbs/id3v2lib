@@ -108,13 +108,13 @@ CharStream* Tag_to_char_stream(ID3v2_Tag* tag)
 /**
  * Getter functions
  */
-ID3v2_Frame* ID3v2_Tag_get_frame(ID3v2_Tag* tag, char* frame_id)
+ID3v2_Frame* ID3v2_Tag_get_frame(ID3v2_Tag* tag, const char* frame_id)
 {
     if (tag == NULL) return NULL;
     return FrameList_get_frame_by_id(tag->frames, frame_id);
 }
 
-ID3v2_FrameList* ID3v2_Tag_get_frames(ID3v2_Tag* tag, char* frame_id)
+ID3v2_FrameList* ID3v2_Tag_get_frames(ID3v2_Tag* tag, const char* frame_id)
 {
     if (tag == NULL) return NULL;
     return FrameList_get_frames_by_id(tag->frames, frame_id);
@@ -447,7 +447,7 @@ void ID3v2_Tag_set_album_cover(
 
 void ID3v2_Tag_free(ID3v2_Tag* tag)
 {
-    TagHeader_free(tag->header);
+    ID3v2_TagHeader_free(tag->header);
     ID3v2_FrameList_free(tag->frames);
     free(tag);
 }

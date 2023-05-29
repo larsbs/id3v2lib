@@ -37,13 +37,13 @@ void ID3v2_Tag_free(ID3v2_Tag* tag);
  * Returns the first frame found with the provided id. If you need
  * more than the first occurrence, then, use ID3v2_Tag_get_frames(tag, frame_id);
  */
-ID3v2_Frame* ID3v2_Tag_get_frame(ID3v2_Tag* tag, char* frame_id);
+ID3v2_Frame* ID3v2_Tag_get_frame(ID3v2_Tag* tag, const char* frame_id);
 
 /**
  * Returns all the frames matching frame_id in a sublist. If you only need
  * the first occurrence, then, use ID3v2_Tag_get_frame(tag, frame_id);
  */
-ID3v2_FrameList* ID3v2_Tag_get_frames(ID3v2_Tag* tag, char* frame_id);
+ID3v2_FrameList* ID3v2_Tag_get_frames(ID3v2_Tag* tag, const char* frame_id);
 
 ID3v2_TextFrame* ID3v2_Tag_get_artist_frame(ID3v2_Tag* tag);
 ID3v2_TextFrame* ID3v2_Tag_get_album_frame(ID3v2_Tag* tag);
