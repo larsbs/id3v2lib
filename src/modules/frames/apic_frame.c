@@ -51,18 +51,18 @@ ID3v2_ApicFrame* ApicFrame_parse(CharStream* frame_cs, const int id3_major_versi
     CharStream_seek(frame_cs, ID3v2_FRAME_ENCODING_LENGTH, SEEK_CUR); // skip encoding
 
     const int mime_type_size = ID3v2_strlent(CharStream_get_cur(frame_cs));
-    char mime_type[mime_type_size];
+    char* mime_type = malloc(mime_type_size * sizeof(char));
     CharStream_read(frame_cs, mime_type, mime_type_size);
 
     const char picture_type = CharStream_getc(frame_cs);
 
     const int description_size = ID3v2_strlent(CharStream_get_cur(frame_cs));
-    char description[description_size];
+    char* description = malloc(description_size * sizeof(char));
     CharStream_read(frame_cs, description, description_size);
 
     const int pic_size = header->size - ID3v2_FRAME_ENCODING_LENGTH - mime_type_size -
                          ID3v2_APIC_FRAME_PICTURE_TYPE_LENGTH - description_size;
-    char pic_data[pic_size];
+    char* pic_data = malloc(pic_size * sizeof(char));
     CharStream_read(frame_cs, pic_data, pic_size);
 
     ID3v2_ApicFrame* frame =
@@ -70,6 +70,9 @@ ID3v2_ApicFrame* ApicFrame_parse(CharStream* frame_cs, const int id3_major_versi
 
     FrameHeader_free(header); // we only needed the header to parse the data
 
+    free(mime_type);
+    free(description);
+    free(pic_data);
     return frame;
 }
 

@@ -37,13 +37,14 @@ ID3v2_TextFrame* TextFrame_parse(CharStream* frame_cs, const int id3_major_versi
     CharStream_seek(frame_cs, ID3v2_FRAME_ENCODING_LENGTH, SEEK_CUR); // skip encoding
 
     const int text_size = header->size - ID3v2_FRAME_ENCODING_LENGTH;
-    char text[text_size];
+    char* text = malloc(text_size * sizeof(char));
     CharStream_read(frame_cs, text, text_size);
 
     ID3v2_TextFrame* frame = TextFrame_new(header->id, header->flags, text);
 
     FrameHeader_free(header); // we only needed the header to parse the data
 
+    free(text);
     return frame;
 }
 
