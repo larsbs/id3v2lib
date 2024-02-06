@@ -37,8 +37,13 @@ ID3v2_TextFrame* TextFrame_parse(CharStream* frame_cs, const int id3_major_versi
     CharStream_seek(frame_cs, ID3v2_FRAME_ENCODING_LENGTH, SEEK_CUR); // skip encoding
 
     const int text_size = header->size - ID3v2_FRAME_ENCODING_LENGTH;
-    char* text = malloc(text_size * sizeof(char));
+    const size_t string_termination_bytes = 2;
+    char* text = malloc((string_termination_bytes + text_size) * sizeof(char));
     CharStream_read(frame_cs, text, text_size);
+
+    // Adding string termination bytes in case the stored string doesn't have those
+    for (int i = 0; i < string_termination_bytes; ++i)
+        text[text_size + i] = 0x00;
 
     ID3v2_TextFrame* frame = TextFrame_new(header->id, header->flags, text);
 
