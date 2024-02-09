@@ -49,17 +49,19 @@ ID3v2_CommentFrame* CommentFrame_parse(CharStream* frame_cs, const int id3_major
     CharStream_read(frame_cs, lang, ID3v2_COMMENT_FRAME_LANGUAGE_LENGTH);
 
     const int short_desc_size = ID3v2_strlent(CharStream_get_cur(frame_cs));
-    char short_desc[short_desc_size];
+    char* short_desc = malloc(short_desc_size * sizeof (char));
     CharStream_read(frame_cs, short_desc, short_desc_size);
 
     const int comment_size = ID3v2_strlent(CharStream_get_cur(frame_cs));
-    char comment[comment_size];
+    char* comment = malloc(comment_size * sizeof(char));
     CharStream_read(frame_cs, comment, comment_size);
 
     ID3v2_CommentFrame* frame = CommentFrame_new(header->flags, lang, short_desc, comment);
 
     FrameHeader_free(header); // we only needed the header to parse the data
 
+    free(comment);
+    free(short_desc);
     return frame;
 }
 
