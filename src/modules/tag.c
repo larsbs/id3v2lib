@@ -198,12 +198,8 @@ ID3v2_FrameList* ID3v2_Tag_get_apic_frames(ID3v2_Tag* tag)
 /**
  * Setter functions
  */
-void ID3v2_Tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input)
+void ID3v2_Tag_set_frame_internal(ID3v2_Tag* tag, ID3v2_Frame* new_frame, ID3v2_Frame* existing_frame)
 {
-    ID3v2_TextFrame* new_frame = TextFrame_new(input->id, input->flags, input->text);
-    ID3v2_TextFrame* existing_frame =
-        (ID3v2_TextFrame*) FrameList_get_frame_by_id(tag->frames, input->id);
-
     if (existing_frame == NULL)
     {
         FrameList_add_frame(tag->frames, (ID3v2_Frame*) new_frame);
@@ -219,6 +215,26 @@ void ID3v2_Tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input)
         tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
         ID3v2_Frame_free((ID3v2_Frame*) existing_frame);
     }
+}
+
+void ID3v2_Tag_set_frame(ID3v2_Tag* tag, const ID3v2_FrameInput* input)
+{
+    ID3v2_Frame* new_frame = (ID3v2_Frame*) malloc(sizeof(ID3v2_Frame));
+    new_frame->header = FrameHeader_new(input->id, input->flags, input->size);
+    new_frame->data = (char*) malloc(input->size * sizeof(char));
+    memcpy(new_frame->data, input->data, input->size);
+
+    ID3v2_Frame* existing_frame = FrameList_get_frame_by_id(tag->frames, input->id);
+    ID3v2_Tag_set_frame_internal(tag, new_frame, existing_frame);
+}
+
+void ID3v2_Tag_set_text_frame(ID3v2_Tag* tag, ID3v2_TextFrameInput* input)
+{
+    ID3v2_TextFrame* new_frame = TextFrame_new(input->id, input->flags, input->text);
+    ID3v2_TextFrame* existing_frame =
+        (ID3v2_TextFrame*) FrameList_get_frame_by_id(tag->frames, input->id);
+
+    ID3v2_Tag_set_frame_internal(tag, (ID3v2_Frame*)new_frame, (ID3v2_Frame*)existing_frame);
 }
 
 void ID3v2_Tag_set_artist(ID3v2_Tag* tag, const char* artist)
@@ -338,21 +354,7 @@ void ID3v2_Tag_set_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
         CommentFrame_new(input->flags, input->language, input->short_description, input->comment);
     ID3v2_CommentFrame* existing_frame = ID3v2_Tag_get_comment_frame(tag);
 
-    if (existing_frame == NULL)
-    {
-        FrameList_add_frame(tag->frames, (ID3v2_Frame*) new_frame);
-        tag->header->tag_size += new_frame->header->size;
-    }
-    else
-    {
-        FrameList_replace_frame(
-            tag->frames,
-            (ID3v2_Frame*) existing_frame,
-            (ID3v2_Frame*) new_frame
-        );
-        tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
-        ID3v2_Frame_free((ID3v2_Frame*) existing_frame);
-    }
+    ID3v2_Tag_set_frame_internal(tag, (ID3v2_Frame*)new_frame, (ID3v2_Frame*)existing_frame);
 }
 
 void ID3v2_Tag_add_comment_frame(ID3v2_Tag* tag, ID3v2_CommentFrameInput* input)
@@ -391,21 +393,7 @@ void ID3v2_Tag_set_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)
     );
     ID3v2_ApicFrame* existing_frame = ID3v2_Tag_get_album_cover_frame(tag);
 
-    if (existing_frame == NULL)
-    {
-        FrameList_add_frame(tag->frames, (ID3v2_Frame*) new_frame);
-        tag->header->tag_size += new_frame->header->size;
-    }
-    else
-    {
-        FrameList_replace_frame(
-            tag->frames,
-            (ID3v2_Frame*) existing_frame,
-            (ID3v2_Frame*) new_frame
-        );
-        tag->header->tag_size += (new_frame->header->size - existing_frame->header->size);
-        ID3v2_Frame_free((ID3v2_Frame*) existing_frame);
-    }
+    ID3v2_Tag_set_frame_internal(tag, (ID3v2_Frame*)new_frame, (ID3v2_Frame*)existing_frame);
 }
 
 void ID3v2_Tag_add_apic_frame(ID3v2_Tag* tag, ID3v2_ApicFrameInput* input)

@@ -24,6 +24,21 @@ void assert_frame_header(ID3v2_Frame* frame, Frame_header_assertion comparison)
     assert(memcmp(frame->header->flags, comparison.flags, ID3v2_FRAME_HEADER_FLAGS_LENGTH) == 0);
 }
 
+void assert_frame(ID3v2_Frame* frame, ID3v2_FrameInput* comparison) {
+    // Header
+    assert_frame_header(
+        frame,
+        (Frame_header_assertion){
+            .id = comparison->id,
+            .size = comparison->size,
+            .flags = comparison->flags,
+        }
+    );
+
+    // Data
+    assert(memcmp(frame->data, comparison->data, comparison->size) == 0);   
+}
+
 void assert_text_frame(ID3v2_TextFrame* frame, ID3v2_TextFrameInput* comparison)
 {
     const char encoding = has_bom(comparison->text) ? ID3v2_ENCODING_UNICODE : ID3v2_ENCODING_ISO;

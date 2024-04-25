@@ -19,6 +19,7 @@ typedef struct _Frame_header_assertion
     const char* flags;
 } Frame_header_assertion;
 
+void assert_frame(ID3v2_Frame* frame, ID3v2_FrameInput* comparison);
 void assert_frame_header(ID3v2_Frame* frame, Frame_header_assertion comparison);
 void assert_text_frame(ID3v2_TextFrame* frame, ID3v2_TextFrameInput* comparison);
 void assert_comment_frame(ID3v2_CommentFrame* frame, ID3v2_CommentFrameInput* comparison);

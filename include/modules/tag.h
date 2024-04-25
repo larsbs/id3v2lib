@@ -62,6 +62,16 @@ ID3v2_FrameList* ID3v2_Tag_get_apic_frames(ID3v2_Tag* tag);
 /**
  * Setter functions
  */
+typedef struct _ID3v2_FrameInput
+{
+    const char* id;
+    const char* flags;
+    const char* data;
+    const int size;
+} ID3v2_FrameInput;
+
+void ID3v2_Tag_set_frame(ID3v2_Tag* tag, const ID3v2_FrameInput* input);
+
 typedef struct _ID3v2_TextFrameInput
 {
     const char* id;

@@ -248,6 +248,31 @@ void edit_test()
 
 void new_tag_test()
 {
+    const char* frame_id = "GEOB";
+    const char frame_data[8] = {0xD, 0xE, 0xA, 0xD, 0xB, 0xE, 0xE, 0xF};
+
+    // set a new, non-standard frame
+    ID3v2_Tag* tag = ID3v2_Tag_new_empty();   
+    ID3v2_FrameInput new_frame = {
+        .id = frame_id,
+        .flags = "\0\0",
+        .data = &frame_data[0],
+        .size = 8
+    };
+    ID3v2_Tag_set_frame(tag, &new_frame);
+
+    // verify the frame
+    assert_frame(
+        ID3v2_Tag_get_frame(tag, frame_id), 
+        &(ID3v2_FrameInput){
+            .id = frame_id,
+            .flags = "\0\0",
+            .data = &frame_data[0],
+            .size = 8,
+        }
+    );
+
+    ID3v2_Tag_free(tag);
 }
 
 void set_test_main()

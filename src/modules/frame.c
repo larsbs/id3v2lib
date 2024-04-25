@@ -104,5 +104,6 @@ void ID3v2_Frame_free(ID3v2_Frame* frame)
         // Unknown frame id, naively try our best to free it
         free(frame->header);
         free(frame->data);
+        free(frame);
     }
 }
